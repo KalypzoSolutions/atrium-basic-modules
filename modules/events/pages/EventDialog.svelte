@@ -24,9 +24,12 @@
 		ColorBadge,
 		ConfirmDialog,
 		FormField,
+		NumberStepper,
 		SharePanel,
 		toastWithUndo
 	} from '$lib/components/layout';
+	import { SelectField } from '$lib/components/ui/select-field';
+	import type { RoomOptions } from '../peer-contracts';
 	import type { ShareCandidate, ShareEntry, ShareOwner } from '$lib/components/layout';
 	import { shareKey } from '$lib/components/layout/share-types';
 	import {
@@ -109,6 +112,13 @@
 	let sharesTouched = $state(false);
 	let owner = $state<ShareOwner | undefined>(undefined);
 	let recurrence = $state<RecurrenceRule | null>(null);
+	// Raumbuchung (Modul `rooms`, optional): `roomOptions` = null → Abschnitt ausgeblendet
+	let roomOptions = $state<RoomOptions | null>(null);
+	let roomOn = $state(false);
+	let roomMode = $state<'flexible' | 'fixed'>('flexible');
+	let roomId = $state<string | null>(null);
+	let roomPersons = $state(10);
+	let roomFeatures = $state<string[]>([]);
 	/** Auswahl „Nur dieser Termin / Ganze Serie“ (Bearbeiten bzw. Löschen) */
 	let choice = $state<'edit' | 'delete' | null>(null);
 	let choiceOpen = $state(false);
@@ -234,6 +244,11 @@
 		sharesTouched = false;
 		owner = { name: 'Du' };
 		recurrence = null;
+		roomOn = false;
+		roomMode = 'flexible';
+		roomId = null;
+		roomPersons = 10;
+		roomFeatures = [];
 		choice = null;
 		choiceOpen = false;
 		actionBusy = false;
@@ -267,6 +282,11 @@
 		}));
 		onWebsite = e.onWebsite;
 		recurrence = e.recurrence ? structuredClone($state.snapshot(e.recurrence)) : null;
+		roomOn = !!e.roomRequest;
+		roomMode = e.roomRequest?.mode ?? 'flexible';
+		roomId = e.roomRequest?.roomId ?? null;
+		roomPersons = e.roomRequest?.persons ?? 10;
+		roomFeatures = [...(e.roomRequest?.featureIds ?? [])];
 		owner = e.owner
 			? {
 					name: e.access.isOwner ? `${e.owner.name} (du)` : e.owner.name,
@@ -295,12 +315,14 @@
 		current = m;
 		loading = !!id;
 		try {
-			const [g, e] = await Promise.all([
+			const [g, e, r] = await Promise.all([
 				apiFetch<EventGroupRef[]>(`${BASE}/groups`),
-				id ? apiFetch<EventDetail>(detailUrl(id, occ)) : null
+				id ? apiFetch<EventDetail>(detailUrl(id, occ)) : null,
+				apiFetch<RoomOptions | null>(`${BASE}/room-options`).catch(() => null)
 			]);
 			if (mine !== seq) return;
 			groups = g;
+			roomOptions = r;
 			if (e) {
 				loaded = e;
 				fill(e);
@@ -735,6 +757,27 @@
 		open = false;
 	}
 
+	/** `room` nur senden, wenn die Raumplanung verfügbar ist (sonst bleibt eine bestehende Buchung unberührt) */
+	function roomPayload() {
+		if (!roomOptions?.canBook) return {};
+		if (!roomOn) return loaded?.roomRequest ? { room: null } : {};
+		return {
+			room: {
+				mode: roomMode,
+				roomId: roomMode === 'fixed' ? roomId : null,
+				persons: roomPersons,
+				featureIds: roomMode === 'flexible' ? [...roomFeatures] : []
+			}
+		};
+	}
+
+	const roomModeOptions = $derived([
+		{ value: 'flexible', label: 'Nach Anforderungen (kleinster passender Raum)' },
+		...(roomOptions?.canFix || roomMode === 'fixed'
+			? [{ value: 'fixed', label: 'Bestimmten Raum festlegen' }]
+			: [])
+	]);
+
 	function showErrors(next: Record<string, string>, message: string) {
 		fieldErrors = next;
 		error = message;
@@ -760,7 +803,8 @@
 			groupIds,
 			shares: shares.map((s) => ({ type: s.type ?? 'user', id: s.userId, level: s.level })),
 			onWebsite,
-			recurrence: recurrence ? $state.snapshot(recurrence) : null
+			recurrence: recurrence ? $state.snapshot(recurrence) : null,
+			...roomPayload()
 		});
 		if (!parsed.success) {
 			showErrors(issuesToErrors(parsed.error.issues), 'Bitte die markierten Felder prüfen.');
@@ -778,6 +822,7 @@
 						method: 'POST',
 						body: JSON.stringify(parsed.data)
 					});
+			if (saved.roomWarning) toast.warning(`Raum nicht angepasst: ${saved.roomWarning}`);
 			toast.success(
 				id
 					? parsed.data.recurrence
@@ -1047,6 +1092,72 @@
 										aria-describedby={describe('location')}
 									/>
 								</FormField>
+							{/if}
+							{#if viewing && loaded?.room}
+								<div class="grid gap-1.5">
+									<span class="text-sm font-medium">Raum</span>
+									<p class="text-sm">{loaded.room.name ?? 'Noch kein Raum frei'}</p>
+								</div>
+							{:else if !viewing && roomOptions?.canBook && !occEdit}
+								<div class="space-y-3 rounded-md border p-3">
+									<div class="flex items-center gap-2">
+										<Checkbox id="ev-room-on" bind:checked={roomOn} />
+										<Label for="ev-room-on">Raum buchen (Raumplanung)</Label>
+									</div>
+									{#if roomOn}
+										<SelectField
+											label="Art der Raumbuchung"
+											options={roomModeOptions}
+											value={roomMode}
+											onchange={(v) => (roomMode = v === 'fixed' ? 'fixed' : 'flexible')}
+										/>
+										<div class="grid gap-4 sm:grid-cols-2">
+											{#if roomMode === 'fixed'}
+												<FormField label="Raum" id="ev-room-id" error={fieldErrors.room}>
+													<SelectField
+														id="ev-room-id"
+														label="Raum"
+														options={roomOptions.rooms.map((r) => ({
+															value: r.id,
+															label: `${r.name} (${r.capacity} Plätze)`
+														}))}
+														value={roomId}
+														onchange={(v) => (roomId = v)}
+														placeholder="Raum wählen"
+													/>
+												</FormField>
+											{/if}
+											<FormField label="Personen" id="ev-room-persons">
+												<NumberStepper
+													id="ev-room-persons"
+													label="Personen"
+													bind:value={roomPersons}
+													min={1}
+													max={5000}
+												/>
+											</FormField>
+											{#if roomMode === 'flexible'}
+												<FormField label="Benötigt" id="ev-room-features" error={fieldErrors.room}>
+													<MultiSelect
+														id="ev-room-features"
+														label="Benötigte Merkmale"
+														options={roomOptions.features.map((f) => ({
+															value: f.id,
+															label: f.name
+														}))}
+														value={roomFeatures}
+														onchange={(v) => (roomFeatures = v)}
+														placeholder="Keine besonderen Anforderungen"
+													/>
+												</FormField>
+											{/if}
+										</div>
+										<p class="text-xs text-muted-foreground">
+											Nur für Termine mit Uhrzeit an einem Tag, einmalig oder wöchentlich. Der Raum
+											steht danach als Ort im Termin und im Kalender-Abo.
+										</p>
+									{/if}
+								</div>
 							{/if}
 							<div class="grid gap-4 sm:grid-cols-2">
 								<FormField

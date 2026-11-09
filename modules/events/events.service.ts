@@ -5,6 +5,7 @@
  * Modul-Transaktion gelesen/geschrieben (`load*`, `write*`), Namen aus Core-Diensten
  * (Benutzerverzeichnis, Gruppen, Principals, Einstellungen) erst DANACH aufgelöst (`build*`).
  */
+import { roomKey, roomNames, roomRequestOf } from './rooms-link';
 import { sql } from 'drizzle-orm';
 import { todayBerlin } from '$lib/sdk/dates';
 import {
@@ -571,8 +572,10 @@ function toItem(
 	row: OccurrenceRow,
 	access: EventAccess,
 	owners: Map<string, UserRef>,
-	groups: Map<string, EventGroupRef>
+	groups: Map<string, EventGroupRef>,
+	rooms: Map<string, string | null>
 ): EventItem {
+	const roomKeyOf = roomKey(row);
 	return {
 		id: row.id,
 		title: row.title,
@@ -596,7 +599,8 @@ function toItem(
 		key: row.key,
 		occurrenceDate: row.occurrenceDate,
 		recurrence: row.recurrence,
-		isException: row.isException
+		isException: row.isException,
+		room: rooms.has(roomKeyOf) ? { name: rooms.get(roomKeyOf) ?? null } : null
 	};
 }
 
@@ -611,8 +615,9 @@ export async function buildItems(
 		rows.map((r) => r.ownerId)
 	);
 	const groups = await loadGroupMap(ctx);
+	const rooms = await roomNames(ctx, rows);
 	return rows.map((r) =>
-		toItem(r, access.get(r.id) ?? { level: 'read', isOwner: false }, owners, groups)
+		toItem(r, access.get(r.id) ?? { level: 'read', isOwner: false }, owners, groups, rooms)
 	);
 }
 
@@ -657,6 +662,7 @@ export async function buildDetail(
 				? (exceptions?.get(row.occurrenceDate)?.override ?? null)
 				: null,
 		cancelledDates: exc.filter((e) => e.cancelled).map((e) => e.date),
-		exceptionDates: exc.filter((e) => e.override).map((e) => e.date)
+		exceptionDates: exc.filter((e) => e.override).map((e) => e.date),
+		roomRequest: access.level === 'edit' ? await roomRequestOf(ctx, row.id) : null
 	};
 }

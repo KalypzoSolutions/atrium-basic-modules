@@ -79,7 +79,7 @@ export function entryFromEvent(e: EventItem): ExportEntry {
 		key: e.key ?? e.id,
 		kind: 'event',
 		title: e.title,
-		location: e.location,
+		location: e.location ?? e.room?.name ?? null,
 		description: e.description,
 		startsOn: e.startsOn,
 		startsTime: e.startsTime,

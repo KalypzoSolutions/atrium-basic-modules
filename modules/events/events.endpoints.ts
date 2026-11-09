@@ -43,6 +43,7 @@ import {
 	type OccurrenceRow
 } from './events.service';
 import { addDays, isOccurrence } from './recurrence';
+import { checkRoom, removeRoom, roomRequestOf, roomsService, syncRoom } from './rooms-link';
 import {
 	MAX_OCCURRENCES,
 	MODULE_ID,
@@ -55,6 +56,7 @@ import {
 	occurrenceInput,
 	occurrenceParams,
 	type EventAccess,
+	type EventInput,
 	type EventList
 } from './schemas';
 
@@ -101,6 +103,27 @@ type DetailData = Awaited<ReturnType<typeof loadDetailData>>;
 
 const detailOf = (ctx: RequestContext, d: DetailData) =>
 	buildDetail(ctx, d.occ, d.access, d.shares, d.series, d.exceptions);
+
+/** Termindaten aus der Eingabe für die Raumbuchung */
+const roomRow = (b: EventInput) => ({
+	title: b.title,
+	startsOn: b.startsOn,
+	startsTime: b.startsTime,
+	endsOn: b.endsOn,
+	endsTime: b.endsTime,
+	recurrence: b.recurrence
+});
+
+const cancelledOf = (d: Pick<DetailData, 'exceptions'>) =>
+	[...(d.exceptions?.values() ?? [])].filter((e) => e.cancelled).map((e) => e.date);
+
+/** Raumbuchung an abgesagte/wiederhergestellte Vorkommen anpassen (nach dem Commit, wirft nie) */
+async function resyncRoom(ctx: RequestContext, id: string, data: DetailData): Promise<void> {
+	const request = await roomRequestOf(ctx, id);
+	if (!request) return;
+	const row = await moduleDb(MODULE_ID).transaction((tx) => loadEventRow(tx, id));
+	if (row) await syncRoom(ctx, id, row, request, cancelledOf(data));
+}
 
 /** Gemeinsame Prüfung für die Vorkommen-Endpoints: Bearbeiten, Serie, gültiges Datum */
 async function requireOccurrence(
@@ -206,6 +229,19 @@ export async function listVisibleOccurrences(
 export const eventEndpoints = [
 	defineEndpoint({
 		method: 'GET',
+		path: '/room-options',
+		summary:
+			'Räume und Merkmale für die Raumbuchung am Termin (Modul „Räume“); `null`, wenn nicht verfügbar',
+		tags,
+		permission: 'events.event.view',
+		handler: async ({ ctx }) => {
+			const svc = await roomsService();
+			return svc ? svc.roomOptions(ctx) : null;
+		}
+	}),
+
+	defineEndpoint({
+		method: 'GET',
 		path: '/events',
 		summary: 'Sichtbare Termine und Serien-Vorkommen (Zeitraum, Suche, Tag, Gruppe)',
 		tags,
@@ -242,6 +278,7 @@ export const eventEndpoints = [
 					fields: Object.keys(body.override ?? {}).length
 				}
 			});
+			await resyncRoom(ctx, params.id, data);
 			await notifyOccurrence(ctx, params.id, params.date, {
 				cancelled: body.cancelled,
 				override: (body.override ?? null) as Record<string, unknown> | null
@@ -268,6 +305,7 @@ export const eventEndpoints = [
 			await core.audit.logFromContext(ctx, 'events.event.occurrence_reset', {
 				target: params.id
 			});
+			await resyncRoom(ctx, params.id, data);
 			return detail;
 		}
 	}),
@@ -304,6 +342,8 @@ export const eventEndpoints = [
 			if (!ownerId) throw errors.badRequest('Termine können nur von Benutzern angelegt werden');
 			await validatePrincipals(ctx, MODULE_ID, body.shares);
 			await validateGroupIds(ctx, body.groupIds);
+			// Raum zuerst prüfen (Probelauf), damit kein Termin ohne den gewünschten Raum entsteht
+			if (body.room) await checkRoom(ctx, null, roomRow(body), body.room);
 
 			const id = crypto.randomUUID();
 			const row = await moduleDb(MODULE_ID).transaction(async (tx) => {
@@ -311,6 +351,16 @@ export const eventEndpoints = [
 				return loadEventRow(tx, id);
 			});
 			if (!row) throw errors.notFound('Termin nicht gefunden');
+			if (body.room) {
+				const warning = await syncRoom(ctx, id, row, body.room);
+				if (warning) {
+					// Raum inzwischen vergeben (gleichzeitige Buchung): Termin wieder entfernen
+					await moduleDb(MODULE_ID).transaction((tx) =>
+						tx.execute(sql`DELETE FROM events WHERE id = ${id}`)
+					);
+					throw errors.conflict(warning);
+				}
+			}
 			const access: EventAccess = { level: 'edit', isOwner: true };
 			const detail = await buildDetail(
 				ctx,
@@ -364,6 +414,17 @@ export const eventEndpoints = [
 				keep: new Set(stored.shares.map((s) => `${s.type}:${s.id}`))
 			});
 			await validateGroupIds(ctx, body.groupIds, new Set(stored.groupIds));
+			// Raum: neue Anforderung, entfernen (`null`) oder bestehende an geänderte Zeiten anpassen
+			const room = body.room !== undefined ? body.room : await roomRequestOf(ctx, params.id);
+			const hadRoom = body.room === null && (await roomRequestOf(ctx, params.id)) !== null;
+			if (room) {
+				const cancelled = await moduleDb(MODULE_ID).transaction(async (tx) =>
+					[...((await loadExceptions(tx, [params.id])).get(params.id)?.values() ?? [])]
+						.filter((e) => e.cancelled)
+						.map((e) => e.date)
+				);
+				await checkRoom(ctx, params.id, roomRow(body), room, cancelled);
+			}
 
 			const before = await eventSnapshot(params.id);
 			const data = await moduleDb(MODULE_ID).transaction(async (tx) => {
@@ -373,7 +434,11 @@ export const eventEndpoints = [
 				// Zugriff neu bestimmen (Freigaben können sich geändert haben)
 				return loadDetailData(tx, ctx, params.id, keys);
 			});
-			const detail = await detailOf(ctx, data);
+			const roomWarning =
+				room || hadRoom
+					? await syncRoom(ctx, params.id, roomRow(body), room, cancelledOf(data))
+					: null;
+			const detail = { ...(await detailOf(ctx, data)), roomWarning };
 			await core.audit.logFromContext(ctx, 'events.event.updated', {
 				target: params.id,
 				metadata: {
@@ -414,6 +479,7 @@ export const eventEndpoints = [
 				await tx.execute(sql`DELETE FROM events WHERE id = ${params.id}`);
 			});
 			await core.audit.logFromContext(ctx, 'events.event.deleted', { target: params.id });
+			await removeRoom(ctx, params.id);
 			await notifyEventDeleted(ctx, before);
 			return { id: params.id, deleted: true };
 		}

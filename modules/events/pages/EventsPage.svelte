@@ -367,7 +367,7 @@
 						{#if e.onWebsite}<Badge variant="secondary" class="shrink-0">Website</Badge>{/if}
 					</div>
 				</Table.Cell>
-				<Table.Cell>{e.location ?? '–'}</Table.Cell>
+				<Table.Cell>{e.location ?? e.room?.name ?? '–'}</Table.Cell>
 				<Table.Cell>
 					{#if e.groups.length}
 						<div class="flex flex-wrap gap-1">
