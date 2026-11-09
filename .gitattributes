@@ -1,0 +1,26 @@
+# Zeilenenden einheitlich LF – unabhängig von core.autocrlf und Betriebssystem.
+# Migrations-Prüfsummen werden zusätzlich zeilenendenunabhängig berechnet (docs/database.md),
+# trotzdem sollen Checkouts und Docker-Builds überall dieselben Bytes enthalten.
+* text=auto eol=lf
+
+# Windows-Skripte brauchen CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binärdateien: nie umwandeln, nicht diffen
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.epbackup binary

@@ -1,0 +1,21 @@
+{
+	"schema": 1,
+	"id": "files",
+	"name": "Dateien",
+	"description": "Cloud-Ablage mit Ordnern, Vorschau, Freigaben und öffentlichen Links",
+	"version": "1.3.0",
+	"core": ">=2.0.0-0 <3.0.0",
+	"dependencies": {},
+	"optionalDependencies": {
+		"members": {
+			"version": "^1.14.0"
+		}
+	},
+	"permissions": [
+		"files.file.manage-all",
+		"files.file.view",
+		"files.link.create",
+		"files.quota.manage"
+	],
+	"npm": {}
+}

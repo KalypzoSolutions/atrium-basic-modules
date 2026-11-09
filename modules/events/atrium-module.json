@@ -1,0 +1,30 @@
+{
+	"schema": 1,
+	"id": "events",
+	"name": "Termine",
+	"description": "Interne Termine und Termine für die Stammeswebsite",
+	"version": "1.5.0",
+	"core": ">=2.0.0-0 <3.0.0",
+	"dependencies": {},
+	"optionalDependencies": {
+		"members": {
+			"version": "^1.14.0"
+		},
+		"actions": {
+			"version": "^1.9.0"
+		},
+		"tasks": {
+			"version": "^1.2.0"
+		}
+	},
+	"permissions": [
+		"events.ai.use",
+		"events.event.create",
+		"events.event.edit-all",
+		"events.event.publish",
+		"events.event.view",
+		"events.event.view-all",
+		"events.website.read"
+	],
+	"npm": {}
+}

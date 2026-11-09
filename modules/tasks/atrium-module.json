@@ -1,0 +1,25 @@
+{
+	"schema": 1,
+	"id": "tasks",
+	"name": "Aufgaben",
+	"description": "Kanban-Boards mit Phasen, Zeitleiste, Aufgaben, Unteraufgaben, Zuständigen und Vorlagen – auch für Aktionen",
+	"version": "1.2.0",
+	"core": ">=2.0.0-0 <3.0.0",
+	"dependencies": {},
+	"optionalDependencies": {
+		"members": {
+			"version": "^1.14.0"
+		},
+		"actions": {
+			"version": "^1.9.0"
+		}
+	},
+	"permissions": [
+		"tasks.ai.use",
+		"tasks.board.create",
+		"tasks.board.edit-all",
+		"tasks.board.view",
+		"tasks.board.view-all"
+	],
+	"npm": {}
+}

@@ -1,0 +1,52 @@
+# CI des Module-Repos: Module gegen den gepinnten Core (.core = Submodul auf festem Tag) – Pflicht.
+# Zusätzlich gegen den aktuellen Core-Stand (`main`) als Warnung (continue-on-error).
+name: CI
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  TZ: UTC
+  CI: 'true'
+  APP_SECRET: build-time-placeholder-build-time-placeholder
+
+jobs:
+  modules:
+    name: Module (${{ matrix.core }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        core: [pinned, main]
+    continue-on-error: ${{ matrix.core == 'main' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+          # Core liegt (privat) in KalypzoSolutions: Token mit Lesezugriff als Secret CORE_REPO_TOKEN hinterlegen
+          token: ${{ secrets.CORE_REPO_TOKEN || github.token }}
+      - name: Core auf main (nur Warnlauf)
+        if: matrix.core == 'main'
+        run: git -C .core fetch origin main && git -C .core checkout origin/main
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .core/.nvmrc
+      - run: npm run setup
+      - run: npm run check:catalog
+      - run: npm run check:migrations
+      - run: npm run format:check
+      - name: Typprüfung
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: npm run check
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build

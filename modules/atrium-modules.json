@@ -1,0 +1,27 @@
+{
+	"schema": 1,
+	"name": "Atrium – Basismodule",
+	"description": "Allgemeine Basismodule für Kalypzo Atrium: Dateien, Notizen, Aufgaben, Whiteboards, Termine.",
+	"modules": [
+		{
+			"id": "events",
+			"path": "events"
+		},
+		{
+			"id": "files",
+			"path": "files"
+		},
+		{
+			"id": "notes",
+			"path": "notes"
+		},
+		{
+			"id": "tasks",
+			"path": "tasks"
+		},
+		{
+			"id": "whiteboard",
+			"path": "whiteboard"
+		}
+	]
+}
