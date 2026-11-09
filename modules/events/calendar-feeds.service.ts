@@ -10,6 +10,7 @@
  *   und Tags; Aktionen über `ActionsService.listCalendarActions` (sichtbare + eigene Anmeldungen).
  * Core-Aufrufe nie innerhalb einer Modul-Transaktion (PGlite).
  */
+import { roomKey, roomNames } from './rooms-link';
 import { sql, type SQL } from 'drizzle-orm';
 import {
 	core,
@@ -301,13 +302,16 @@ export async function renderFeed(token: string): Promise<Response> {
 	const events: IcsEvent[] = [];
 
 	if (dto.includeEvents) {
-		for (const o of await feedOccurrences(ctx, window, dto)) {
+		const occurrences = await feedOccurrences(ctx, window, dto);
+		// Ort ohne Angabe: gebuchter Raum (Modul `rooms`, optional)
+		const rooms = await roomNames(ctx, occurrences);
+		for (const o of occurrences) {
 			const url = `${origin}/modules/events?event=${o.id}${o.occurrenceDate ? `&occurrence=${o.occurrenceDate}` : ''}`;
 			events.push({
 				uid: `${o.id}${o.occurrenceDate ? `-${o.occurrenceDate}` : ''}@events.${host}`,
 				title: o.title,
 				description: withLink(o.description, url),
-				location: o.location,
+				location: o.location ?? rooms.get(roomKey(o)) ?? null,
 				url,
 				categories: o.tags,
 				startsOn: o.startsOn,

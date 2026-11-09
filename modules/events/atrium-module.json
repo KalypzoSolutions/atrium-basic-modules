@@ -3,7 +3,7 @@
 	"id": "events",
 	"name": "Termine",
 	"description": "Interne Termine und Termine für die Stammeswebsite",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"core": ">=2.0.0-0 <3.0.0",
 	"dependencies": {},
 	"optionalDependencies": {
@@ -15,6 +15,10 @@
 		},
 		"tasks": {
 			"version": "^1.2.0"
+		},
+		"rooms": {
+			"version": "^1.0.0",
+			"source": "github:KalypzoSolutions/atrium-gemeinde-modules/modules/rooms"
 		}
 	},
 	"permissions": [

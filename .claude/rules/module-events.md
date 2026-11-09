@@ -5,7 +5,7 @@ paths: ["modules/events/**", "tests/**/events*", "src/lib/sdk/**/sharing.ts", "t
 # Modul `events` (Termine)
 
 Interne Termine des Stammes und Termine für die **Stammeswebsite**, auch als **Serien** (Wiederholungstermine).
-Schema `mod_events`, Version 1.5.0, keine harten
+Schema `mod_events`, Version 1.6.0, keine harten
 Abhängigkeiten; `optionalDependencies: ['members', 'actions']` (`actions` nur fürs Kalender-Abo) (Gruppen für Zuordnung, Gruppen/Mitglieder als Freigabe-Ziele –
 ohne `members` nur Stamm, Rollen, Benutzer*innen). Erstes Modul mit der generischen **Freigabe an Principals**
 (`$lib/sdk/server/sharing.ts`, siehe `architecture.md` → „Freigabe an Principals“). Navigation „Termine“ (Icon `calendar`)
@@ -302,3 +302,20 @@ Nutzerentscheidung: Termine **und** Aktionen; **mehrere Abos je Person** mit Fil
   `events`-Bereich, löscht sie also nicht mit. Lesepfade tolerieren das: unbekannte Freigaben erscheinen als „Unbekannt“ (`describePrincipals`),
   bereits gespeicherte Gruppen-IDs werden beim Speichern akzeptiert (`validateGroupIds(…, keep)`).
 - Benutzerkonten: `onUserDeleted` (`user-deleted.ts`) bzw. `resetUsers` bereinigen `user:`-Freigaben und Eigentum.
+
+
+## Raumbuchung am Termin (v1.6.0, optional Modul `rooms`)
+- `rooms` (Raumplanung) liegt im Repo `atrium-gemeinde-modules`; `optionalDependencies.rooms` mit `source`-Link, Vertrag lokal
+  gespiegelt in `peer-contracts.ts` (`RoomsService`), Zugriff nur über `rooms-link.ts` (`core.modules.useOptional`). Ohne aktives
+  `rooms` liefert `GET /room-options` `null` und das Formular zeigt keinen Raum-Abschnitt.
+- `eventInput.room`: Objekt (`mode` fixed|flexible, `roomId`, `persons`, `featureIds`) = buchen/ändern, `null` = Buchung entfernen,
+  **fehlt** = unverändert (bestehende Buchung folgt aber geänderten Zeiten/Serien automatisch).
+- Ablauf: **vor** dem Speichern Probelauf (`checkEventBooking`) → 409 (kein Raum frei, `details.code = ROOMS_NO_ROOM`),
+  422 (ganztägig, mehrtägig, nicht wöchentliche Serie, Raumplanung aus), 403 (fester Raum ohne `rooms.booking.fix`); danach
+  speichern und `syncEventBooking`. Scheitert die Synchronisierung trotzdem (gleichzeitige Buchung): beim Anlegen wird der
+  Termin wieder gelöscht (409), beim Ändern bleibt er gespeichert und `roomWarning` erscheint als Toast.
+- Löschen entfernt die Buchung; Absagen/Wiederansetzen eines Vorkommens gleicht die abgesagten Daten ab. Einzeln verschobene
+  Vorkommen (Override) behalten den Raum des ursprünglichen Datums – Raumplanung kennt nur Serie + Absagen.
+- Anzeige: `EventItem.room` (Raum des Vorkommens), `EventDetail.roomRequest` (nur mit Bearbeiten-Zugriff); ohne eigenen Ort
+  erscheint der Raum als Ort in Liste, PDF-Export und Kalender-Abo.
+- Test: `tests/integration/events-rooms.test.ts` (läuft nur, wenn `rooms` im Modulverzeichnis liegt, sonst übersprungen).

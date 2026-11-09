@@ -234,6 +234,24 @@ export function checkRecurrence(
 	}
 }
 
+/**
+ * Raum-Anforderung am Termin (Modul `rooms`, optional): fester Raum oder nach Personen/Merkmalen. Geprüft und
+ * gebucht wird im Modul `rooms` (`RoomsService`); hier nur die Form.
+ */
+export const eventRoomInput = z
+	.object({
+		mode: z.enum(['fixed', 'flexible']),
+		roomId: z.string().min(1).max(100).nullable().default(null),
+		persons: z.number().int().min(1, 'Mindestens 1 Person').max(5000),
+		featureIds: z.array(z.string().min(1).max(100)).max(50).default([])
+	})
+	.strict()
+	.refine((r) => r.mode !== 'fixed' || !!r.roomId, {
+		message: 'Bitte einen Raum wählen',
+		path: ['roomId']
+	});
+export type EventRoomInput = z.infer<typeof eventRoomInput>;
+
 export const eventInput = z
 	.object({
 		title: text(200),
@@ -259,7 +277,12 @@ export const eventInput = z
 		shares: z.array(shareInput).max(MAX_SHARES).default([]),
 		onWebsite: z.boolean().default(false),
 		/** Wiederholung; `null` = einmaliger Termin */
-		recurrence: recurrenceRule.nullable().default(null)
+		recurrence: recurrenceRule.nullable().default(null),
+		/**
+		 * Raum buchen (Modul `rooms`): Objekt = buchen bzw. ändern, `null` = Raumbuchung entfernen,
+		 * fehlt = unverändert lassen.
+		 */
+		room: eventRoomInput.nullable().optional()
 	})
 	.strict()
 	.superRefine((v, ctx) => {
@@ -401,6 +424,8 @@ export interface EventItem extends EventDates {
 	recurrence: RecurrenceRule | null;
 	/** Vorkommen weicht von der Serie ab */
 	isException: boolean;
+	/** Gebuchter Raum dieses Vorkommens (Modul `rooms`), sonst `null` */
+	room: { name: string | null } | null;
 }
 
 /** Einzelner Termin; `shares` nur bei Bearbeiten-Zugriff, sonst leer */
@@ -415,6 +440,10 @@ export interface EventDetail extends EventItem {
 	cancelledDates: string[];
 	/** Serie, nur bei Bearbeiten-Zugriff: einzeln geänderte Vorkommen (ursprüngliche Daten) */
 	exceptionDates: string[];
+	/** Raum-Anforderung (Modul `rooms`), nur bei Bearbeiten-Zugriff */
+	roomRequest: EventRoomInput | null;
+	/** Nur nach dem Speichern: Raumbuchung konnte nicht angepasst werden (Termin ist gespeichert) */
+	roomWarning?: string | null;
 }
 
 export interface EventList {
