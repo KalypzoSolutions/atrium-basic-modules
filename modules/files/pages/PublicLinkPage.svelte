@@ -982,7 +982,7 @@
 											</span>
 										{/if}
 									{:else if node.kind === 'folder'}
-										<FolderGlyph icon={node.icon} color={node.color} />
+										<FolderGlyph icon={node.icon} color={node.color} iconColor={node.iconColor} />
 									{:else}
 										<FileTypeGlyph contentType={node.contentType} name={node.name} />
 									{/if}

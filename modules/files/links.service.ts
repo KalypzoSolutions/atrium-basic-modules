@@ -248,6 +248,7 @@ function toPublicNode(n: NodeRow): PublicNode {
 		name: n.name,
 		icon: n.kind === 'folder' ? n.icon : null,
 		color: n.kind === 'folder' ? n.color : null,
+		iconColor: n.kind === 'folder' ? n.iconColor : null,
 		contentType: n.kind === 'file' ? n.contentType : null,
 		sizeBytes: n.kind === 'file' ? n.sizeBytes : null,
 		hasThumb: n.kind === 'file' && n.thumbPath !== null,

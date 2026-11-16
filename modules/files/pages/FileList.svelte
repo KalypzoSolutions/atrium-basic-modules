@@ -802,7 +802,7 @@
 												</span>
 											{/if}
 										{:else if node.kind === 'folder'}
-											<FolderGlyph icon={node.icon} color={node.color} />
+											<FolderGlyph icon={node.icon} color={node.color} iconColor={node.iconColor} />
 										{:else}
 											<FileTypeGlyph contentType={node.contentType} name={node.name} />
 										{/if}
@@ -944,7 +944,12 @@
 														use:watchThumb
 													/>
 												{:else if node.kind === 'folder'}
-													<FolderGlyph icon={node.icon} color={node.color} size="sm" />
+													<FolderGlyph
+														icon={node.icon}
+														color={node.color}
+														iconColor={node.iconColor}
+														size="sm"
+													/>
 												{:else}
 													<FileTypeGlyph
 														contentType={node.contentType}

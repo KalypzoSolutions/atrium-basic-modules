@@ -15,7 +15,10 @@ const allowed = (ctx: RequestContext) =>
 	ctx.actor.type === 'system' || core.permissions.has(ctx, PERMISSIONS.view);
 
 function toRef(
-	n: Pick<NodeRow, 'id' | 'kind' | 'name' | 'contentType' | 'sizeBytes' | 'icon' | 'color'> & {
+	n: Pick<
+		NodeRow,
+		'id' | 'kind' | 'name' | 'contentType' | 'sizeBytes' | 'icon' | 'color' | 'iconColor'
+	> & {
 		hasThumb: boolean;
 		/** sichtbarer Elternordner (sonst Wurzel) */
 		folderId: string | null;
@@ -32,6 +35,7 @@ function toRef(
 		hasThumb: isFile && n.hasThumb,
 		icon: isFile ? null : n.icon,
 		color: isFile ? null : n.color,
+		iconColor: isFile ? null : n.iconColor,
 		href: isFile
 			? n.folderId
 				? `${BASE_PATH}?folder=${encodeURIComponent(n.folderId)}`

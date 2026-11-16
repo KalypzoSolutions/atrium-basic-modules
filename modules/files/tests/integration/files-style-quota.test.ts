@@ -155,6 +155,26 @@ describe('Ordner-Aussehen', () => {
 		expect(node).toMatchObject({ icon: null, color: '#2563eb' });
 	});
 
+	it('setzt eine eigene Icon-Farbe und setzt sie auf automatisch zurück', async () => {
+		const f = await folder('u1', null, 'Fahrten');
+		expect(f.iconColor).toBeNull();
+
+		await style('u1', { ids: [f.id], icon: 'tent', iconColor: '#FACC15' });
+		let node = (await api('u1', 'GET', `/nodes/${f.id}`)).body.data as FileNode;
+		expect(node).toMatchObject({ icon: 'tent', color: null, iconColor: '#facc15' });
+
+		// andere Felder unverändert lassen
+		await style('u1', { ids: [f.id], color: '#2563eb' });
+		node = (await api('u1', 'GET', `/nodes/${f.id}`)).body.data as FileNode;
+		expect(node.iconColor).toBe('#facc15');
+
+		await style('u1', { ids: [f.id], iconColor: null });
+		node = (await api('u1', 'GET', `/nodes/${f.id}`)).body.data as FileNode;
+		expect(node).toMatchObject({ icon: 'tent', color: '#2563eb', iconColor: null });
+
+		expect((await style('u1', { ids: [f.id], iconColor: 'gelb' })).status).toBe(422);
+	});
+
 	it('Farbe für mehrere Ordner auf einmal', async () => {
 		const a = await folder('u1', null, 'A');
 		const b = await folder('u1', null, 'B');

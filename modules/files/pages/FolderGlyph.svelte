@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Ordnersymbol mit Aussehen: gefüllter Ordner in der gewählten Farbe (ohne Farbe neutral grau), ab Größe
-	// `md` das gewählte Icon darauf (Kontrastfarbe automatisch hell/dunkel).
+	// `md` das gewählte Icon darauf (eigene Icon-Farbe, sonst Kontrastfarbe automatisch hell/dunkel).
 	import { DynamicIcon } from '$lib/components/ui/icon-picker';
 	import { contrastTextColor } from '$lib/components/ui/color-picker';
 	import { cn } from '$lib/utils';
@@ -8,11 +8,14 @@
 	let {
 		icon = null,
 		color = null,
+		iconColor = null,
 		size = 'md',
 		class: className
 	}: {
 		icon?: string | null;
 		color?: string | null;
+		/** Farbe des Icons (`null` = automatisch passend zur Ordnerfarbe) */
+		iconColor?: string | null;
 		/** `sm` = 20 px (Liste, ohne Icon), `md` = 56 px (Raster), `lg` = 72 px (Vorschau) */
 		size?: 'sm' | 'md' | 'lg';
 		class?: string;
@@ -20,7 +23,7 @@
 
 	const px = $derived(size === 'sm' ? 20 : size === 'md' ? 56 : 72);
 	const emblem = $derived(Math.round(px * 0.4));
-	const emblemColor = $derived(color ? contrastTextColor(color) : null);
+	const emblemColor = $derived(iconColor ?? (color ? contrastTextColor(color) : null));
 </script>
 
 <span

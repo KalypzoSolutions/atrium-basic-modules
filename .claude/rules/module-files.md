@@ -8,7 +8,7 @@ Cloud-Ablage des Stammes mit **einer Ansicht „Dateien“**: In der Wurzel steh
 was mir andere freigegeben haben (auch an den ganzen Stamm). Ordner und Dateien lassen sich hochladen (auch ganze Ordner per Drag & Drop),
 umbenennen, verschieben, in den Papierkorb legen, an **Principals** freigeben (Lesen/Bearbeiten, vererbt) und über **öffentliche Links** an
 Personen ohne Konto weitergeben – zum Ansehen, zum Hochladen oder beides. Aktionen per „…“-Menü **und Rechtsklick**. Vorschau für Bilder, PDFs
-und Text. Ordner mit **Icon und Farbe**, **Speicherkontingent je Person**. Schema `mod_files`, Version 1.3.0, keine harten Abhängigkeiten, optional `members` (Gruppen/Mitglieder als Freigabe-Ziele).
+und Text. Ordner mit **Icon und Farbe**, **Speicherkontingent je Person**. Schema `mod_files`, Version 1.4.0, keine harten Abhängigkeiten, optional `members` (Gruppen/Mitglieder als Freigabe-Ziele).
 Navigation „Dateien“ (Icon `cloud`). Inhalte liegen im Core-Storage (S3, Modul `files`), Zugriff per Systemkontext `files-storage` **nach**
 der Objektprüfung (Benutzer brauchen keine `files.storage.*`-Rechte).
 
@@ -30,7 +30,7 @@ der Objektprüfung (Benutzer brauchen keine `files.storage.*`-Rechte).
 ## Dateien (`modules/files/`)
 | Datei | Inhalt |
 |---|---|
-| `module.ts` | Manifest (4 Rechte + Beschreibungen, `defaultRoleGrants` „Mitglied“ → `files.file.view`, Navigation), Einstellungen, Migrationen 0001–0005, `resetAreas`/`resetUsers`, `onUserDeleted`, `subjectExport`, `search`, `backup` (`filesBackup`), Jobs `purge-trash` (täglich) und `thumbs-backfill` (stündlich), Endpoint-Reihenfolge links → meta → recent → trash → shares → upload → quota → nodes (öffentliche/feste Pfade vor `:id`) |
+| `module.ts` | Manifest (4 Rechte + Beschreibungen, `defaultRoleGrants` „Mitglied“ → `files.file.view`, Navigation), Einstellungen, Migrationen 0001–0006, `resetAreas`/`resetUsers`, `onUserDeleted`, `subjectExport`, `search`, `backup` (`filesBackup`), Jobs `purge-trash` (täglich) und `thumbs-backfill` (stündlich), Endpoint-Reihenfolge links → meta → recent → trash → shares → upload → quota → nodes (öffentliche/feste Pfade vor `:id`) |
 | `ui.ts` | Route `''` → `FilesPage`; `publicRoutes` `link/:token` → `PublicLinkPage`; `userAdminSections` `quota` → `UserQuotaSection` |
 | `schemas.ts` | API-Vertrag (Server + UI): `PERMISSIONS`, `SETTING_KEYS`, `ROOT_LABEL` („Dateien“), `SPACES` (nur noch `personal`, intern), `LINK_MODES`/`LINK_MODE_LABELS`/`LINK_MODE_DESCRIPTIONS`, `linkCanView`/`linkCanUpload`, Grenzen (`MAX_NAME` 200, `MAX_DEPTH` 20, `MAX_BULK` 500, `MAX_SHARES` 200, `MAX_LINKS_PER_NODE` 20, `MAX_SEARCH_RESULTS` 100, `MIN_PASSWORD` 8, `MAX_UNLOCK_FAILURES` 10, `LINK_ACCESS_TTL_SEC` 900, `MAX_TEXT_PREVIEW_BYTES` 1 MB, `UPLOAD_CONCURRENCY` 3, `MAX_PUBLIC_UPLOAD_FILES` 10, `MAX_PUBLIC_UPLOAD_BYTES` 30 MB, `MAX_UPLOADER_NAME` 100), Vorschau-Typen, `NEVER_INLINE_TYPES`, `INVISIBLE_CHARS`, Zod (`nodeName`, `listQuery`, `folderCreateInput`, `moveInput`, `uploadFields`, `sharesInput`, `linkCreateInput` mit `mode`, `publicUploadFields`, …), DTOs `FileNode` (`owner`, `own`, `stamm`, `uploadedByName`, `viaLink`), `FolderListing`, `Breadcrumb`, `SearchResult`, `TrashItem`, `NodeShares`, `ShareLink` (`mode`, `url`), `PublicLinkInfo` (`mode`, `upload`), `PublicListing`, `PublicUploadResult`, `FilesMeta` |
 | `db.ts` | `mdb()`, `filesCtx()` (Systemkontext für Storage), `NodeRow`/`nodeRowOf`/`NODE_COLUMNS`, `loadNode(s)`, `ancestorsOf`/`descendantIds` (rekursive CTEs, Zyklenschutz 64), `userRefs` (nach der Tx), `filesSettings()` |
@@ -65,7 +65,7 @@ der Objektprüfung (Benutzer brauchen keine `files.storage.*`-Rechte).
 | `pages/FolderStyleDialog.svelte` | Dialog „Ordner gestalten“: Vorschau, Vorschlagsfarben + `ColorPicker`, `IconPicker` (alle Icons), „Kein Icon“, „Auf Standard zurücksetzen“ |
 | `pages/UserQuotaSection.svelte` | `userAdminSections`-Abschnitt im Benutzer-Dialog: `QuotaBar`, Auswahl Standard/Eigenes Limit (Zahl + MB/GB)/Unbegrenzt, Warnung unter der Belegung, eigener Speichern-Knopf |
 | `pages/PublicLinkPage.svelte` | Öffentliche Seite `/p/files/link/<token>` je `mode`: Passwortabfrage, Ordner blättern (`?folder=`), Vorschau, Download; bei Upload-Arten **Upload-Bereich** (Drag & Drop + Auswahl, mehrere Dateien, Fortschritt per XHR, Feld „Dein Name (optional)“, Grenzen, „Danke! N Dateien hochgeladen“); „Hochladen“ zeigt keinen Inhalt; Zugriffstoken in `sessionStorage` |
-| `migrations/0001_init.sql`, `0002_link_lockout.sql`, `0003_single_view_upload_links.sql`, `0004_folder_style_user_quota.sql`, `0005_thumb_state.sql` | Schema; Fehlversuchs-Zähler für Link-Passwörter; eine Ansicht + Link-Arten + `token_enc` + Upload-Herkunft; `nodes.icon`/`color` + Tabelle `user_quotas`; `nodes.thumb_attempted_at` (+ Teilindex offener Vorschauen) |
+| `migrations/0001_init.sql`, `0002_link_lockout.sql`, `0003_single_view_upload_links.sql`, `0004_folder_style_user_quota.sql`, `0005_thumb_state.sql`, `0006_folder_icon_color.sql` | Schema; Fehlversuchs-Zähler für Link-Passwörter; eine Ansicht + Link-Arten + `token_enc` + Upload-Herkunft; `nodes.icon`/`color` + Tabelle `user_quotas`; `nodes.thumb_attempted_at` (+ Teilindex offener Vorschauen); `nodes.icon_color` |
 
 Core-Baustein dazu: `src/lib/components/ui/context-menu/` (bits-ui `ContextMenu`, gleiche API wie `ui/dropdown-menu`, siehe `ui-design.md`).
 
@@ -87,6 +87,8 @@ Core-Baustein dazu: `src/lib/components/ui/context-menu/` (bits-ui `ContextMenu`
   last_access_at, access_count)`; 0002: `failed_count`, `failed_window_start`; 0003: `mode text NOT NULL DEFAULT 'view' CHECK (view|upload|view-upload)`,
   `token_enc text` (Token per `core.crypto.forModule('files').encrypt`, damit die URL wieder anzeigbar ist; gesucht wird weiter über `token_hash`).
   Alte Links (vor 0003) haben kein `token_enc` → `url = null`.
+- 0006 (2026-11-16, v1.4.0): `nodes.icon_color text` (CHECK `#rrggbb` klein, `NULL` = automatisch hell/dunkel zur Ordnerfarbe), `nodes_style_check`
+  um `icon_color` erweitert. DTOs `FileNode`/`PublicNode`/`FileRef` mit `iconColor`; Dialog „Ordner gestalten“ mit „Farbe des Icons“ (nur mit Icon, Vorschläge + eigene Farbe + „Automatisch“).
 - 0005: `nodes.thumb_attempted_at timestamptz` – Zeitpunkt des Vorschau-Versuchs; Uploads setzen ihn immer, `NULL` = Bestand vor 0005 → Job `thumbs-backfill`.
 - 0004: `nodes.icon text` (CHECK Format `[a-z0-9-]`, ≤ 64), `nodes.color text` (CHECK `#rrggbb` klein), CHECK nur Ordner tragen ein Aussehen
   (`nodes_style_check`). `user_quotas(user_id PK, quota_mb integer NULL = unbegrenzt, CHECK 1–10 000 000, updated_by, updated_at)` – keine Zeile = Standard
@@ -190,7 +192,7 @@ Alle internen Endpunkte: Recht `files.file.view`, die Objektprüfung macht der H
 | POST `/nodes/move` | `{ ids ≤ 500, targetId }` (`null` = eigene Wurzel) → `{ affected }`; Regeln siehe oben |
 | GET `/nodes/:id` | `FileNode` (404 ohne Zugriff) |
 | PATCH `/nodes/:id` | `{ name }` umbenennen (Konflikt 409 mit Vorschlag) |
-| POST `/nodes/style` | `{ ids ≤ 500, icon?, color? }` (fehlend = unverändert, `null` = zurücksetzen) → `{ affected }`; edit an jedem Ordner (fremd 404, nur Lesen 403), Dateien 422, unbekanntes Icon 422 (Prüfung gegen `$lib/sdk/icons`); `updated_at` bleibt; Audit `files.node.styled` nur mit Anzahl und `set`/`reset`/`unchanged` |
+| POST `/nodes/style` | `{ ids ≤ 500, icon?, color?, iconColor? }` (fehlend = unverändert, `null` = zurücksetzen) → `{ affected }`; edit an jedem Ordner (fremd 404, nur Lesen 403), Dateien 422, unbekanntes Icon 422 (Prüfung gegen `$lib/sdk/icons`); `updated_at` bleibt; Audit `files.node.styled` nur mit Anzahl und `set`/`reset`/`unchanged` |
 | GET / PUT `/quotas/:userId` | Recht `files.quota.manage`; PUT `{ mode: default|custom|unlimited, mb? }` (custom: ganze MB 1–10 000 000) → `UserQuota`; kein Existenz-Check der ID (deaktivierte Konten bleiben bearbeitbar) |
 | POST `/nodes/:parent/upload` | multipart `file` + `relativePath?`, `conflict?`; `parent` = Ordner-ID oder `root` (eigene Wurzel); ein Request je Datei |
 | GET `/nodes/:id/content?download=1` | Inhalt mit Sicherheits-Headern (`private, max-age=60`) |

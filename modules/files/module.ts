@@ -31,6 +31,7 @@ import m0002 from './migrations/0002_link_lockout.sql?raw';
 import m0003 from './migrations/0003_single_view_upload_links.sql?raw';
 import m0004 from './migrations/0004_folder_style_user_quota.sql?raw';
 import m0005 from './migrations/0005_thumb_state.sql?raw';
+import m0006 from './migrations/0006_folder_icon_color.sql?raw';
 
 /** Dateien: eine Ansicht (eigene + freigegebene), Freigaben an Principals, öffentliche Ansicht-/Upload-Links, Papierkorb */
 export default defineModule({
@@ -92,7 +93,8 @@ export default defineModule({
 		{ name: '0002_link_lockout', sql: m0002 },
 		{ name: '0003_single_view_upload_links', sql: m0003 },
 		{ name: '0004_folder_style_user_quota', sql: m0004 },
-		{ name: '0005_thumb_state', sql: m0005 }
+		{ name: '0005_thumb_state', sql: m0005 },
+		{ name: '0006_folder_icon_color', sql: m0006 }
 	],
 	resetAreas,
 	backup: filesBackup,

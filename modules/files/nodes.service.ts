@@ -322,6 +322,7 @@ export function toFileNode(
 		folderBytes: isFile ? null : (extras.folderBytes ?? 0),
 		icon: isFile ? null : row.icon,
 		color: isFile ? null : row.color,
+		iconColor: isFile ? null : row.iconColor,
 		createdBy: row.createdBy
 			? (users.get(row.createdBy) ?? { id: row.createdBy, name: 'Unbekannt' })
 			: null,
@@ -582,6 +583,9 @@ export async function setNodeStyle(ctx: RequestContext, input: StyleInput): Prom
 		const sets: SQL[] = [];
 		if (input.icon !== undefined) sets.push(sql`icon = ${input.icon}`);
 		if (input.color !== undefined) sets.push(sql`color = ${input.color?.toLowerCase() ?? null}`);
+		if (input.iconColor !== undefined) {
+			sets.push(sql`icon_color = ${input.iconColor?.toLowerCase() ?? null}`);
+		}
 		await tx.execute(sql`UPDATE nodes SET ${sql.join(sets, sql`, `)} WHERE id IN (${inList(ids)})`);
 	});
 	await core.audit.logFromContext(ctx, 'files.node.styled', {
@@ -589,7 +593,9 @@ export async function setNodeStyle(ctx: RequestContext, input: StyleInput): Prom
 		metadata: {
 			count: ids.length,
 			icon: input.icon === undefined ? 'unchanged' : input.icon === null ? 'reset' : 'set',
-			color: input.color === undefined ? 'unchanged' : input.color === null ? 'reset' : 'set'
+			color: input.color === undefined ? 'unchanged' : input.color === null ? 'reset' : 'set',
+			iconColor:
+				input.iconColor === undefined ? 'unchanged' : input.iconColor === null ? 'reset' : 'set'
 		}
 	});
 	return { affected: ids.length };

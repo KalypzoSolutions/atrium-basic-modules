@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Dialog „Ordner gestalten“: Icon aus der Icon-Bibliothek und Farbe (Vorschläge + ColorPicker) mit Vorschau.
+	// Dialog „Ordner gestalten“: Icon aus der Icon-Bibliothek, Ordnerfarbe und Icon-Farbe (Vorschläge + ColorPicker) mit Vorschau.
 	// Gilt für alle mit Zugriff auf den Ordner; der Server prüft Bearbeiten-Zugriff und das Icon.
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -28,6 +28,8 @@
 
 	let icon = $state<string | null>(null);
 	let color = $state<string | null>(null);
+	/** Farbe des Icons (`null` = automatisch hell/dunkel) */
+	let iconColor = $state<string | null>(null);
 	let busy = $state(false);
 
 	// Beim Öffnen den aktuellen Stand übernehmen
@@ -36,15 +38,20 @@
 		untrack(() => {
 			icon = node?.icon ?? null;
 			color = node?.color ?? null;
+			iconColor = node?.iconColor ?? null;
 		});
 	});
 
 	const presetValues = FOLDER_COLORS.map((c) => c.value);
-	const colorLabel = $derived(
-		color ? (FOLDER_COLORS.find((c) => c.value === color)?.label ?? color.toUpperCase()) : 'Keine'
-	);
+	const labelOf = (c: string | null, none: string) =>
+		c ? (FOLDER_COLORS.find((p) => p.value === c)?.label ?? c.toUpperCase()) : none;
+	const colorLabel = $derived(labelOf(color, 'Keine'));
+	const iconColorLabel = $derived(labelOf(iconColor, 'automatisch'));
 	const changed = $derived(
-		!!node && (icon !== (node.icon ?? null) || color !== (node.color ?? null))
+		!!node &&
+			(icon !== (node.icon ?? null) ||
+				color !== (node.color ?? null) ||
+				iconColor !== (node.iconColor ?? null))
 	);
 
 	async function save() {
@@ -53,7 +60,7 @@
 		try {
 			await apiFetch<BulkResult>(`${API}/nodes/style`, {
 				method: 'POST',
-				body: JSON.stringify({ ids: [node.id], icon, color })
+				body: JSON.stringify({ ids: [node.id], icon, color, iconColor })
 			});
 			toast.success('Aussehen gespeichert');
 			open = false;
@@ -65,6 +72,54 @@
 		}
 	}
 </script>
+
+{#snippet palette(p: {
+	value: string | null;
+	label: string;
+	pickerLabel: string;
+	noneLabel: string;
+	set: (v: string | null) => void;
+})}
+	<div class="flex flex-wrap items-center gap-2" role="radiogroup" aria-label={p.label}>
+		{#each FOLDER_COLORS as c (c.value)}
+			{@const active = p.value === c.value}
+			<button
+				type="button"
+				role="radio"
+				aria-checked={active}
+				aria-label={c.label}
+				title={c.label}
+				class={cn(
+					'flex size-8 items-center justify-center rounded-full border-2 border-background ring-1 ring-border transition-shadow outline-none focus-visible:ring-2 focus-visible:ring-ring',
+					active && 'ring-2 ring-foreground'
+				)}
+				style:background-color={c.value}
+				onclick={() => p.set(c.value)}
+			>
+				{#if active}
+					<Check class="size-4" style="color: {contrastTextColor(c.value)}" aria-hidden="true" />
+				{/if}
+			</button>
+		{/each}
+		<span class="mx-1 h-6 w-px bg-border" aria-hidden="true"></span>
+		<ColorPicker
+			label={p.pickerLabel}
+			value={p.value}
+			onchange={(v) => p.set(v ? v.toLowerCase() : null)}
+			presets={presetValues}
+			class="w-40"
+		/>
+		<Button
+			type="button"
+			variant="ghost"
+			size="sm"
+			aria-pressed={p.value === null}
+			onclick={() => p.set(null)}
+		>
+			{p.noneLabel}
+		</Button>
+	</div>
+{/snippet}
 
 <Dialog.Root bind:open>
 	<Dialog.Content class="sm:max-w-2xl">
@@ -84,7 +139,7 @@
 						? `color-mix(in srgb, ${color} 12%, transparent)`
 						: undefined}
 				>
-					<FolderGlyph {icon} {color} size="lg" />
+					<FolderGlyph {icon} {color} {iconColor} size="lg" />
 				</span>
 				<div class="grid min-w-0 gap-1.5">
 					<span class="text-xs font-medium text-muted-foreground">Vorschau</span>
@@ -94,6 +149,7 @@
 					</span>
 					<span class="text-xs text-muted-foreground">
 						Icon: {icon ? iconLabel(icon) : 'keins'} · Farbe: {colorLabel}
+						{#if icon}· Icon-Farbe: {iconColorLabel}{/if}
 					</span>
 				</div>
 			</div>
@@ -101,56 +157,13 @@
 			<!-- Farbe -->
 			<fieldset class="grid gap-2">
 				<legend class="mb-1 text-sm font-medium">Farbe</legend>
-				<div
-					class="flex flex-wrap items-center gap-2"
-					role="radiogroup"
-					aria-label="Vorschlagsfarben"
-				>
-					{#each FOLDER_COLORS as c (c.value)}
-						{@const active = color === c.value}
-						<button
-							type="button"
-							role="radio"
-							aria-checked={active}
-							aria-label={c.label}
-							title={c.label}
-							class={cn(
-								'flex size-8 items-center justify-center rounded-full border-2 border-background ring-1 ring-border transition-shadow outline-none focus-visible:ring-2 focus-visible:ring-ring',
-								active && 'ring-2 ring-foreground'
-							)}
-							style:background-color={c.value}
-							onclick={() => (color = c.value)}
-						>
-							{#if active}
-								<Check
-									class="size-4"
-									style="color: {contrastTextColor(c.value)}"
-									aria-hidden="true"
-								/>
-							{/if}
-						</button>
-					{/each}
-					<span class="mx-1 h-6 w-px bg-border" aria-hidden="true"></span>
-					<ColorPicker
-						label="Eigene Farbe"
-						value={color}
-						onchange={(v) => (color = v ? v.toLowerCase() : null)}
-						presets={presetValues}
-						class="w-40"
-					/>
-					<Button
-						type="button"
-						variant="ghost"
-						size="sm"
-						aria-pressed={color === null}
-						onclick={() => (color = null)}
-					>
-						Keine
-					</Button>
-				</div>
-				<p class="text-xs text-muted-foreground">
-					Die Farbe des Icons auf dem Ordner wird automatisch hell oder dunkel gewählt.
-				</p>
+				{@render palette({
+					value: color,
+					label: 'Vorschlagsfarben Ordner',
+					pickerLabel: 'Eigene Farbe',
+					noneLabel: 'Keine',
+					set: (v) => (color = v)
+				})}
 			</fieldset>
 
 			<!-- Icon -->
@@ -171,16 +184,34 @@
 					<IconPicker bind:value={icon} />
 				</div>
 			</fieldset>
+
+			<!-- Icon-Farbe -->
+			{#if icon}
+				<fieldset class="grid gap-2">
+					<legend class="mb-1 text-sm font-medium">Farbe des Icons</legend>
+					{@render palette({
+						value: iconColor,
+						label: 'Vorschlagsfarben Icon',
+						pickerLabel: 'Eigene Icon-Farbe',
+						noneLabel: 'Automatisch',
+						set: (v) => (iconColor = v)
+					})}
+					<p class="text-xs text-muted-foreground">
+						„Automatisch“ wählt hell oder dunkel passend zur Ordnerfarbe.
+					</p>
+				</fieldset>
+			{/if}
 		</div>
 
 		<Dialog.Footer sticky class="sm:justify-between">
 			<Button
 				type="button"
 				variant="ghost"
-				disabled={icon === null && color === null}
+				disabled={icon === null && color === null && iconColor === null}
 				onclick={() => {
 					icon = null;
 					color = null;
+					iconColor = null;
 				}}
 			>
 				Auf Standard zurücksetzen

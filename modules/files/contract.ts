@@ -16,9 +16,10 @@ export interface FileRefInfo {
 	sizeBytes: number | null;
 	/** Vorschaubild über `GET /api/v1/modules/files/nodes/:id/thumb` vorhanden */
 	hasThumb: boolean;
-	/** Ordner: Icon/Farbe */
+	/** Ordner: Icon/Farbe (`iconColor` = Farbe des Icons, `null` = automatisch) */
 	icon: string | null;
 	color: string | null;
+	iconColor: string | null;
 	/** Pfad in der App (Ordner bzw. Ordner der Datei) */
 	href: string;
 	/** Dateien: Inhalt über die API (inline bei Bild/PDF/Text) */

@@ -208,10 +208,12 @@ export const styleInput = z
 	.object({
 		ids: z.array(nodeId).min(1).max(MAX_BULK),
 		icon: folderIcon.nullable().optional(),
-		color: folderColor.nullable().optional()
+		color: folderColor.nullable().optional(),
+		/** Farbe des Icons auf dem Ordner (`null` = automatisch hell/dunkel) */
+		iconColor: folderColor.nullable().optional()
 	})
 	.strict()
-	.refine((v) => v.icon !== undefined || v.color !== undefined, {
+	.refine((v) => v.icon !== undefined || v.color !== undefined || v.iconColor !== undefined, {
 		message: 'Icon oder Farbe angeben',
 		path: ['icon']
 	});
@@ -384,6 +386,8 @@ export interface FileNode {
 	icon: string | null;
 	/** Ordner: Farbe `#rrggbb` (`null` = Standard) */
 	color: string | null;
+	/** Ordner: Farbe des Icons `#rrggbb` (`null` = automatisch hell/dunkel) */
+	iconColor: string | null;
 	createdBy: UserRef | null;
 	/** Über einen Upload-Link hochgeladen: angegebener Name (oder leer = ohne Namen) */
 	uploadedByName: string | null;
@@ -460,6 +464,7 @@ export interface PublicNode {
 	/** Ordner: Icon und Farbe (sonst `null`) */
 	icon: string | null;
 	color: string | null;
+	iconColor: string | null;
 	contentType: string | null;
 	sizeBytes: number | null;
 	hasThumb: boolean;
