@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 // Termine: Monat ist Standard; anlegen über den Dialog, Ansicht/Bearbeiten im selben Dialog,
-// Liste über den Tab „Liste“ (`?view=list`); Serien (wöchentlich, 4 Vorkommen) und Absage eines Vorkommens.
+// Liste über den Tab „Liste“ (`?view=list`), Woche/Tag als Zeitraster (`?view=week|day`); Serien (wöchentlich, 4 Vorkommen) und Absage eines Vorkommens.
 
 const ADMIN = { email: 'admin@example.test', password: 'e2e-admin-password-1' };
 const ORIGIN = 'http://localhost:4173';
@@ -190,4 +190,47 @@ test('Serie anzeigen und ein Vorkommen absagen', async ({ page }) => {
 	}
 
 	await expect(rows).toHaveCount(3);
+});
+
+test('Woche und Tag: Termin mit Uhrzeit im Zeitraster öffnen', async ({ page }) => {
+	await login(page);
+	await ensureModules(page, ['events']);
+	const title = `Werkstatt ${run}`;
+	const today = localToday();
+	await api(page, 'POST', '/modules/events/events', {
+		title,
+		startsOn: today,
+		startsTime: '10:00',
+		endsOn: today,
+		endsTime: '11:30',
+		groupIds: ['stamm'],
+		tags: [],
+		shares: []
+	});
+
+	await page.goto('/modules/events');
+	await page.getByRole('tab', { name: 'Woche' }).click();
+	await expect(page).toHaveURL(/view=week/);
+	const week = page.getByRole('region', { name: /^Wochenansicht/ });
+	const block = week.getByRole('button', { name: new RegExp(`^${escapeRe(title)},`) });
+	await expect(block).toBeVisible();
+	await expect(block).toContainText('10:00–11:30');
+
+	// Tageskopf öffnet die Tagesansicht dieses Tages
+	await week.getByRole('button', { name: /\(heute\) – Tagesansicht öffnen$/ }).click();
+	await expect(page).toHaveURL(/view=day/);
+	const day = page.getByRole('region', { name: /^Tagesansicht/ });
+	await day.getByRole('button', { name: new RegExp(`^${escapeRe(title)},`) }).click();
+	const view = page.getByRole('dialog', { name: new RegExp(escapeRe(title)) });
+	await expect(view).toBeVisible();
+	await expect(view).toContainText('10:00 – 11:30');
+	await expect(view.getByLabel('Startdatum')).toBeDisabled();
+	await view.getByRole('button', { name: 'Schließen' }).last().click();
+
+	// Zurück zum Monat behält den Monat des Tages
+	await page.getByRole('tab', { name: 'Monat' }).click();
+	await expect(page).not.toHaveURL(/view=/);
+	await expect(
+		page.getByRole('button', { name: new RegExp(`^${escapeRe(title)},`) }).first()
+	).toBeVisible();
 });

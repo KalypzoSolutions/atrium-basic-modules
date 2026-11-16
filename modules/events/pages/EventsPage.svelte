@@ -24,10 +24,13 @@
 	} from '$lib/components/layout';
 	import {
 		buildMonthGrid,
+		isValidDate,
 		isValidMonth,
 		localToday,
 		monthOf
 	} from '$lib/components/layout/month-calendar';
+	import { weekDays, type CalendarView } from '../time-grid';
+	import TimeGridCalendar from './TimeGridCalendar.svelte';
 	import type { EventGroupRef, EventItem, EventList } from '../schemas';
 	import { formatEventRange } from '../format';
 	import EventDialog from './EventDialog.svelte';
@@ -48,8 +51,17 @@
 
 	// --- Zustand aus der URL ---------------------------------------------------------------
 	const params = $derived(page.url.searchParams);
-	/** Standard: Monat; `view=list` zeigt die Liste */
-	const view = $derived<'list' | 'month'>(params.get('view') === 'list' ? 'list' : 'month');
+	/** Standard: Monat; `view=day|week|list` zeigt Tag, Woche bzw. Liste */
+	const VIEWS: CalendarView[] = ['day', 'week', 'month', 'list'];
+	const view = $derived.by<CalendarView>(() => {
+		const v = params.get('view') as CalendarView | null;
+		return v && VIEWS.includes(v) ? v : 'month';
+	});
+	/** Tag für Tages-/Wochenansicht (`date`, Standard heute) */
+	const date = $derived.by(() => {
+		const d = params.get('date');
+		return isValidDate(d) ? d : today;
+	});
 	const month = $derived.by(() => {
 		const m = params.get('month');
 		return isValidMonth(m) ? m : monthOf(today);
@@ -71,10 +83,28 @@
 		void goto(url, { keepFocus: true, noScroll: true, replaceState: true });
 	}
 
-	function setView(v: string) {
+	/** Wechselt die Ansicht und nimmt den Zeitraum mit (Monat ↔ Tag/Woche) */
+	function setView(v: string, day?: string) {
 		const url = new URL(page.url);
-		if (v === 'list') url.searchParams.set('view', 'list');
-		else url.searchParams.delete('view');
+		const next = VIEWS.includes(v as CalendarView) ? (v as CalendarView) : 'month';
+		if (next === 'month') url.searchParams.delete('view');
+		else url.searchParams.set('view', next);
+		if (next === 'day' || next === 'week') {
+			const target =
+				day ??
+				(view === 'month' && month !== monthOf(today)
+					? `${month}-01`
+					: view === 'day' || view === 'week'
+						? date
+						: today);
+			if (target === today) url.searchParams.delete('date');
+			else url.searchParams.set('date', target);
+			url.searchParams.delete('month');
+		} else if (next === 'month' && (view === 'day' || view === 'week')) {
+			if (monthOf(date) === monthOf(today)) url.searchParams.delete('month');
+			else url.searchParams.set('month', monthOf(date));
+			url.searchParams.delete('date');
+		}
 		url.searchParams.delete('offset');
 		void goto(url, { keepFocus: true, noScroll: true });
 	}
@@ -119,6 +149,12 @@
 			const grid = buildMonthGrid(month);
 			q.set('from', grid[0]![0]!);
 			q.set('to', grid[grid.length - 1]![6]!);
+			q.set('limit', String(MONTH_LIMIT));
+			q.set('offset', '0');
+		} else if (view === 'week' || view === 'day') {
+			const days = view === 'week' ? weekDays(date) : [date];
+			q.set('from', days[0]!);
+			q.set('to', days[days.length - 1]!);
 			q.set('limit', String(MONTH_LIMIT));
 			q.set('offset', '0');
 		} else {
@@ -296,6 +332,8 @@
 
 <Tabs.Root value={view} onValueChange={setView}>
 	<Tabs.List variant="line" class="mb-4" aria-label="Ansicht">
+		<Tabs.Trigger value="day">Tag</Tabs.Trigger>
+		<Tabs.Trigger value="week">Woche</Tabs.Trigger>
 		<Tabs.Trigger value="month">Monat</Tabs.Trigger>
 		<Tabs.Trigger value="list">Liste</Tabs.Trigger>
 	</Tabs.List>
@@ -416,14 +454,27 @@
 				den Filtern ein.
 			</p>
 		{/if}
-		<MonthCalendar
-			items={calendarItems}
-			bind:month={() => month, (v) => setParams({ month: v ?? null })}
-			{today}
-			{loading}
-			onselect={(item) => openViewByKey(item.key ?? item.id)}
-			onday={canCreate ? (date) => openCreate(date) : undefined}
-		/>
+		{#if view === 'month'}
+			<MonthCalendar
+				items={calendarItems}
+				bind:month={() => month, (v) => setParams({ month: v ?? null })}
+				{today}
+				{loading}
+				onselect={(item) => openViewByKey(item.key ?? item.id)}
+				onday={canCreate ? (d) => openCreate(d) : undefined}
+			/>
+		{:else}
+			<TimeGridCalendar
+				items={calendarItems}
+				{view}
+				bind:date={() => date, (v) => setParams({ date: v && v !== today ? v : null })}
+				{today}
+				{loading}
+				onselect={(item) => openViewByKey(item.key ?? item.id)}
+				onday={canCreate ? (d) => openCreate(d) : undefined}
+				onopenday={(d) => setView('day', d)}
+			/>
+		{/if}
 	</div>
 {/if}
 
@@ -437,7 +488,14 @@
 	{ondeleted}
 />
 
-<ExportDialog bind:open={exportOpen} {month} {search} {groupId} {groupName} {tag} />
+<ExportDialog
+	bind:open={exportOpen}
+	month={view === 'day' || view === 'week' ? monthOf(date) : month}
+	{search}
+	{groupId}
+	{groupName}
+	{tag}
+/>
 
 <Dialog.Root bind:open={feedsOpen}>
 	<Dialog.Content class="sm:max-w-2xl">

@@ -5,7 +5,7 @@ paths: ["modules/events/**", "tests/**/events*", "src/lib/sdk/**/sharing.ts", "t
 # Modul `events` (Termine)
 
 Interne Termine des Stammes und Termine für die **Stammeswebsite**, auch als **Serien** (Wiederholungstermine).
-Schema `mod_events`, Version 1.5.0, keine harten
+Schema `mod_events`, Version 1.6.0, keine harten
 Abhängigkeiten; `optionalDependencies: ['members', 'actions']` (`actions` nur fürs Kalender-Abo) (Gruppen für Zuordnung, Gruppen/Mitglieder als Freigabe-Ziele –
 ohne `members` nur Stamm, Rollen, Benutzer*innen). Erstes Modul mit der generischen **Freigabe an Principals**
 (`$lib/sdk/server/sharing.ts`, siehe `architecture.md` → „Freigabe an Principals“). Navigation „Termine“ (Icon `calendar`)
@@ -187,6 +187,13 @@ Audit: `events.event.created|updated|deleted` (`target` = ID; metadata nur `onWe
   (`/termine/[id]?am=`); Übersicht aller vier Website-APIs in `docs/api.md` → „Stammeswebsite“. Demo: `scripts/seed-demo-website.mjs`.
 
 ## UI
+- **Tag und Woche** (2026-11-09, v1.6.0): Tabs „Tag“ · „Woche“ · „Monat“ (Standard) · „Liste“ (`?view=day|week|list`, Tag über `?date=YYYY-MM-DD`,
+  Standard heute; Wechsel nimmt den Zeitraum mit: Monat → erster Tag bzw. heute, Tag/Woche → dessen Monat). `pages/TimeGridCalendar.svelte`:
+  Zeitraster (8–20 Uhr, erweitert auf frühere/spätere Termine, 3 rem je Stunde), oben Leiste „ganztags“ für Termine ohne Uhrzeit und mehrtägige
+  (Spuren über `layoutWeek` aus dem Core-Monatskalender), Überlappungen nebeneinander (`layoutDay`), Jetzt-Linie (Europe/Berlin), Klick in die freie
+  Fläche bzw. „+“ im Tageskopf legt an, Tageskopf der Woche öffnet den Tag. Woche unter 640 px als Liste je Tag. Reine Logik `time-grid.ts`
+  (`weekDays`, `isoWeek`, `isTimed`, `blockTimes` – ohne Ende 60 min, `layoutDay`, `hourRange`), Test `tests/unit/events-time-grid.test.ts`,
+  E2E „Woche und Tag“. Abfrage `/events` mit `from`/`to` der Woche bzw. des Tages, `limit` 500.
 - `EventsPage`: Tabs „Monat“ (**Standard**; `MonthCalendar`, lädt das ganze Raster inkl. Randwochen, `limit` 500, `onday` → Dialog
   mit Datum bei `create`-Recht; Serien mit `recurring`-Symbol, `key` je Vorkommen) und „Liste“ (`?view=list`; `DataTable mobile="cards"`,
   ab heute, „Auch vergangene“, Serien-Hinweis). Klick → `EventDialog` im Modus `view` (mit `occurrenceDate`); „Neuer Termin“ nur mit
