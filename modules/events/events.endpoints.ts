@@ -48,6 +48,7 @@ import {
 	MODULE_ID,
 	PUBLISH_PERMISSION,
 	OPEN_WINDOW_DAYS,
+	deleteQuery,
 	detailQuery,
 	eventInput,
 	idParams,
@@ -239,13 +240,15 @@ export const eventEndpoints = [
 				target: params.id,
 				metadata: {
 					cancelled: body.cancelled,
-					fields: Object.keys(body.override ?? {}).length
+					fields: Object.keys(body.override ?? {}).length,
+					notify: body.notify
 				}
 			});
-			await notifyOccurrence(ctx, params.id, params.date, {
-				cancelled: body.cancelled,
-				override: (body.override ?? null) as Record<string, unknown> | null
-			});
+			if (body.notify)
+				await notifyOccurrence(ctx, params.id, params.date, {
+					cancelled: body.cancelled,
+					override: (body.override ?? null) as Record<string, unknown> | null
+				});
 			return detail;
 		}
 	}),
@@ -402,7 +405,8 @@ export const eventEndpoints = [
 		tags,
 		permission: 'events.event.view',
 		params: idParams,
-		handler: async ({ ctx, params }) => {
+		query: deleteQuery,
+		handler: async ({ ctx, params, query }) => {
 			const keys = await principalKeysFor(ctx, MODULE_ID);
 			// Empfänger der Absage vor dem Löschen ermitteln (nur mit Bearbeiten-Zugriff)
 			await moduleDb(MODULE_ID).transaction((tx) =>
@@ -413,8 +417,11 @@ export const eventEndpoints = [
 				await requireAccess(tx, ctx, params.id, keys, 'edit');
 				await tx.execute(sql`DELETE FROM events WHERE id = ${params.id}`);
 			});
-			await core.audit.logFromContext(ctx, 'events.event.deleted', { target: params.id });
-			await notifyEventDeleted(ctx, before);
+			await core.audit.logFromContext(ctx, 'events.event.deleted', {
+				target: params.id,
+				metadata: { notify: query.notify }
+			});
+			if (query.notify) await notifyEventDeleted(ctx, before);
 			return { id: params.id, deleted: true };
 		}
 	})

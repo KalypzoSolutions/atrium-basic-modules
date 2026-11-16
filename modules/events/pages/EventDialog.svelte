@@ -13,6 +13,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { ColorPicker } from '$lib/components/ui/color-picker';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
@@ -22,7 +23,6 @@
 	import {
 		AssistTextarea,
 		ColorBadge,
-		ConfirmDialog,
 		FormField,
 		SharePanel,
 		toastWithUndo
@@ -122,6 +122,8 @@
 	let error = $state('');
 	let fieldErrors = $state<Record<string, string>>({});
 	let confirmOpen = $state(false);
+	/** Beim Löschen/Absagen alle benachrichtigen, die den Termin sehen (abwählbar) */
+	let notifyOnDelete = $state(true);
 	let deleting = $state(false);
 	let seq = 0;
 
@@ -532,11 +534,12 @@
 		id: string,
 		date: string,
 		cancelled: boolean,
-		override: OccurrenceOverride | null
+		override: OccurrenceOverride | null,
+		notify = true
 	): Promise<EventDetail> {
 		return apiFetch<EventDetail>(occurrenceUrl(id, date), {
 			method: 'PUT',
-			body: JSON.stringify({ cancelled, override })
+			body: JSON.stringify({ cancelled, override, notify })
 		});
 	}
 
@@ -589,6 +592,7 @@
 
 	function startDelete() {
 		if (!loaded || !canEdit) return;
+		notifyOnDelete = true;
 		if (isSeries && occDate && !isCancelled) {
 			choice = 'delete';
 			choiceOpen = true;
@@ -615,10 +619,11 @@
 		const date = e?.occurrenceDate;
 		if (!e || !date || actionBusy) return;
 		actionBusy = true;
+		const notify = notifyOnDelete;
 		try {
 			// Gespeicherten Override beibehalten
 			const prev = e.override ?? null;
-			const saved = await putOccurrence(e.id, date, true, prev);
+			const saved = await putOccurrence(e.id, date, true, prev, notify);
 			open = false;
 			onsaved(saved);
 			toastWithUndo({
@@ -626,7 +631,7 @@
 				undone: 'Termin wieder angesetzt',
 				undo: async () => {
 					const restored = prev
-						? await putOccurrence(e.id, date, false, prev)
+						? await putOccurrence(e.id, date, false, prev, notify)
 						: await resetOccurrence(e.id, date);
 					onsaved(restored);
 				}
@@ -866,9 +871,12 @@
 		if (!loaded) return;
 		const id = loaded.id;
 		const series = isSeries;
+		const notify = notifyOnDelete;
 		deleting = true;
 		try {
-			await apiFetch(`${BASE}/events/${encodeURIComponent(id)}`, { method: 'DELETE' });
+			await apiFetch(`${BASE}/events/${encodeURIComponent(id)}${notify ? '' : '?notify=false'}`, {
+				method: 'DELETE'
+			});
 			toast.success(series ? 'Serie gelöscht' : 'Termin gelöscht');
 			open = false;
 			ondeleted?.(id);
@@ -1451,18 +1459,52 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-<ConfirmDialog
-	bind:open={confirmOpen}
-	title={isSeries ? 'Ganze Serie löschen?' : 'Termin löschen?'}
-	description={loaded
-		? isSeries
-			? `Alle Termine der Serie „${loaded.title}“ werden endgültig gelöscht – auch abgesagte und einzeln geänderte. Das lässt sich nicht rückgängig machen.`
-			: `„${loaded.title}“ wird endgültig gelöscht. Das lässt sich nicht rückgängig machen.`
-		: undefined}
-	confirmLabel="Löschen"
-	destructive
-	onconfirm={remove}
-/>
+{#snippet notifyField()}
+	<div class="flex items-start gap-2">
+		<Checkbox
+			id="ev-notify-delete"
+			checked={notifyOnDelete}
+			onCheckedChange={(v) => (notifyOnDelete = v === true)}
+			aria-describedby="ev-notify-delete-hint"
+			class="mt-0.5"
+		/>
+		<div class="grid gap-0.5">
+			<Label for="ev-notify-delete">Alle benachrichtigen</Label>
+			<p id="ev-notify-delete-hint" class="text-xs text-muted-foreground">
+				Wer den Termin sehen darf und Benachrichtigungen zu Absagen eingeschaltet hat, bekommt eine
+				E-Mail bzw. Push-Nachricht.
+			</p>
+		</div>
+	</div>
+{/snippet}
+
+<AlertDialog.Root bind:open={confirmOpen}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>{isSeries ? 'Ganze Serie löschen?' : 'Termin löschen?'}</AlertDialog.Title>
+			{#if loaded}
+				<AlertDialog.Description>
+					{isSeries
+						? `Alle Termine der Serie „${loaded.title}“ werden endgültig gelöscht – auch abgesagte und einzeln geänderte. Das lässt sich nicht rückgängig machen.`
+						: `„${loaded.title}“ wird endgültig gelöscht. Das lässt sich nicht rückgängig machen.`}
+				</AlertDialog.Description>
+			{/if}
+		</AlertDialog.Header>
+		{@render notifyField()}
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>Abbrechen</AlertDialog.Cancel>
+			<AlertDialog.Action
+				variant="destructive-solid"
+				onclick={() => {
+					confirmOpen = false;
+					void remove();
+				}}
+			>
+				Löschen
+			</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
 
 <SeriesChoiceDialog
 	bind:open={choiceOpen}
@@ -1472,4 +1514,8 @@
 		: 'Was möchtest du bearbeiten?'}
 	options={choiceOptions}
 	onchoose={onChoose}
-/>
+>
+	{#if choice === 'delete'}
+		{@render notifyField()}
+	{/if}
+</SeriesChoiceDialog>

@@ -284,6 +284,13 @@ export const idParams = z.object({ id: z.uuid('Ungültige ID') });
 /** Ein Vorkommen einer Serie (ursprüngliches Datum) */
 export const occurrenceParams = z.object({ id: z.uuid('Ungültige ID'), date: dateSchema });
 export const detailQuery = z.object({ occurrence: dateSchema.optional() });
+/** Löschen: `?notify=false` → keine Absage-Benachrichtigung */
+export const deleteQuery = z.object({
+	notify: z
+		.enum(['true', 'false', '1', '0'])
+		.default('true')
+		.transform((v) => v === 'true' || v === '1')
+});
 
 /** Abweichende Felder eines einzelnen Vorkommens (alles optional; fehlend = wie Serie) */
 export const occurrenceOverride = z
@@ -303,7 +310,9 @@ export type OccurrenceOverride = z.infer<typeof occurrenceOverride>;
 export const occurrenceInput = z
 	.object({
 		cancelled: z.boolean().default(false),
-		override: occurrenceOverride.nullable().default(null)
+		override: occurrenceOverride.nullable().default(null),
+		/** `false`: niemanden über Absage/Verschiebung benachrichtigen */
+		notify: z.boolean().default(true)
 	})
 	.strict();
 export type OccurrenceInput = z.infer<typeof occurrenceInput>;

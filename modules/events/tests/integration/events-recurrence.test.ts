@@ -480,7 +480,7 @@ describe('Serien: Audit', () => {
 		expect(reset.length).toBe(1);
 		expect(updated.every((r) => r.target === series)).toBe(true);
 		const withOverride = updated.find((r) => (r.metadata as { fields?: number }).fields === 3);
-		expect(withOverride?.metadata).toEqual({ cancelled: false, fields: 3 });
+		expect(withOverride?.metadata).toEqual({ cancelled: false, fields: 3, notify: true });
 		const raw = JSON.stringify(rows.map((r) => r.metadata));
 		expect(raw).not.toContain('Sondertreffen');
 		expect(raw).not.toContain('15:00');

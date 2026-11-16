@@ -139,8 +139,8 @@ Bearbeiten bei `PUT`/`DELETE` → **403**.
 | GET `/events/:id` | event.view | `EventDetail`; Query `occurrence` (Vorkommen einer Serie, siehe „Serien“); 404 ohne Zugriff; `shares` nur bei `edit` |
 | POST `/events` | event.create (+ view) | `eventInput` strikt (inkl. `recurrence`); Eigentümer*in = Aufrufer; Gruppen-IDs geprüft (422 `groupIds[i]`), Principals geprüft |
 | PUT `/events/:id` | event.view + Objekt-`edit` | ersetzt alles (gleiches Schema wie POST), bei Serien die **ganze Serie**; verwaiste Ausnahmen werden gelöscht |
-| DELETE `/events/:id` | event.view + Objekt-`edit` | hartes Löschen (CASCADE, ganze Serie samt Ausnahmen) → `{ id, deleted: true }` |
-| PUT `/events/:id/occurrences/:date` | event.view + Objekt-`edit` | Vorkommen (ursprüngliches Datum) absagen/ändern, Body `{ cancelled = false, override = null }`; beides leer → Ausnahme gelöscht; → `EventDetail` des Vorkommens. 400 kein Serientermin, 404 kein Vorkommen, 422 Override |
+| DELETE `/events/:id` | event.view + Objekt-`edit` | hartes Löschen (CASCADE, ganze Serie samt Ausnahmen) → `{ id, deleted: true }`; Query `notify` (`deleteQuery`, Standard `true`; `false`/`0` → keine Absage-Benachrichtigung) |
+| PUT `/events/:id/occurrences/:date` | event.view + Objekt-`edit` | Vorkommen (ursprüngliches Datum) absagen/ändern, Body `{ cancelled = false, override = null, notify = true }` (`notify: false` → keine Benachrichtigung); beides leer → Ausnahme gelöscht; → `EventDetail` des Vorkommens. 400 kein Serientermin, 404 kein Vorkommen, 422 Override |
 | DELETE `/events/:id/occurrences/:date` | event.view + Objekt-`edit` | Vorkommen auf die Serie zurücksetzen (Absage/Override entfernen) → `EventDetail` |
 | GET `/groups` | event.view | `[{ id, name, color, meetingWeekday, meetingTime, meetingEndTime, meetingPlace }]` (Gruppenstunde aus `members`, beim Stamm `null`), `stamm` zuerst, danach `members`-Gruppen nach Name |
 | GET `/tags` | event.view | verwendete Tags über **alle** Termine (häufigste zuerst, case-insensitiv zusammengefasst, ≤ 50), optional `search` (Teilstring) |
@@ -150,7 +150,7 @@ Bearbeiten bei `PUT`/`DELETE` → **403**.
 | GET `/website/events/:id` | **website.read** | ein `WebsiteEvent`, Query `occurrence`; siehe unten; Rate-Limit 120/60 s |
 
 Audit: `events.event.created|updated|deleted` (`target` = ID; metadata nur `onWebsite` und Zähler `tags`, `groups`, `shares`),
-`events.event.occurrence_updated` (metadata `cancelled`, Zähler `fields`) und `events.event.occurrence_reset` – ohne Inhalte.
+`events.event.occurrence_updated` (metadata `cancelled`, Zähler `fields`, `notify`; `deleted` zusätzlich `notify`) und `events.event.occurrence_reset` – ohne Inhalte.
 
 ## Website-Anbindung
 - Termine mit „auf der Website“ (`onWebsite: true`) liefert `GET /website/events` – **unabhängig von Freigaben**
@@ -219,6 +219,9 @@ Audit: `events.event.created|updated|deleted` (`target` = ID; metadata nur `onWe
   `event-cancelled` (Termin gelöscht oder Vorkommen abgesagt) – alle **Standard „Aus“** (sonst Mail an alle Eltern bei jedem Termin), neu/geändert mit „Täglich“.
 - Empfänger = wer den Termin sehen darf: Eigentümer*in + Freigaben über `principalUserIds` (`everyone` = alle mit `events.event.view`), nie die handelnde Person,
   nur kommende Termine. `eventSnapshot` vor PUT/DELETE, Vergleich der Zielgruppen (neu sichtbar → „Neuer Termin“).
+- **Abwählbar beim Löschen/Absagen** (2026-11-16): Checkbox „Alle benachrichtigen“ (Standard an) in der Lösch-Bestätigung und in der
+  Serien-Auswahl „Serientermin löschen“ (`SeriesChoiceDialog` mit `children`-Snippet) → `DELETE /events/:id?notify=false` bzw. PUT-Vorkommen
+  mit `notify: false`; gilt auch für „Rückgängig“ im Toast.
 
 ## Tests
 - Unit: `tests/unit/events-schemas.test.ts` (Daten, Tags, Freigaben, Query-Grenzen), `events-format.test.ts`,

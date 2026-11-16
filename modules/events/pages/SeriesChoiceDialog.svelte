@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 
@@ -16,13 +17,16 @@
 		title,
 		description,
 		options,
-		onchoose
+		onchoose,
+		children
 	}: {
 		open?: boolean;
 		title: string;
 		description?: string;
 		options: SeriesChoice[];
 		onchoose: (value: string) => void;
+		/** Zusätzlicher Inhalt unter den Optionen (z. B. „Benachrichtigen“) */
+		children?: Snippet;
 	} = $props();
 
 	function choose(value: string) {
@@ -60,6 +64,7 @@
 				</button>
 			{/each}
 		</div>
+		{@render children?.()}
 		<Dialog.Footer>
 			<Button type="button" variant="outline" onclick={() => (open = false)}>Abbrechen</Button>
 		</Dialog.Footer>
