@@ -7,7 +7,7 @@ paths: ["modules/tasks/**", "tests/**/tasks*"]
 Kanban-Boards mit frei benennbaren Spalten, Aufgaben (Titel, Beschreibung, Priorität, Fälligkeit, **mehrere Zuständige**) und
 **Unteraufgaben als Checkliste** (je Titel, abgehakt, optional eine zuständige Person und Fälligkeit). Boards sind freigebbar an
 Principals (Stamm, Gruppe, Rolle, Mitglied, Benutzer*in) und können an **eine Aktion** gehängt werden – dann vererbt sich der Zugriff
-der Aktion. Schema `mod_tasks`, Version 1.1.0 (2026-10-29, „Aufgaben 2.0“), keine harten Abhängigkeiten, `optionalDependencies: ['members', 'actions']`.
+der Aktion. Schema `mod_tasks`, Version 1.3.0 (Export 2026-11-18; „Aufgaben 2.0“ 1.1.0 am 2026-10-29), keine harten Abhängigkeiten, `optionalDependencies: ['members', 'actions']`.
 Navigation „Aufgaben“ (Icon `kanban`, `order` 75).
 
 Nutzerentscheidungen (2026-10-25): eigenes Modul **plus** Verknüpfung mit Aktionen; Spalten **frei je Board** (Start Offen · In Arbeit ·
@@ -50,6 +50,28 @@ Standard aus); verschobene Aktion → **Nachfrage** „Daten mitverschieben?“ 
 - **Offen**: Zeitleiste ohne Zoom über Monate hinaus und ohne Ziehen auf Touch (bewusst); Vorlagen nur persönlich (nicht teilbar); Abhängigkeiten
   ohne Pfeil-Bearbeitung in der Zeitleiste; Phasen-Farben im Kalender nur, wenn gesetzt.
 
+## Export (2026-11-18, v1.3.0, keine Migration)
+Nutzerentscheidung: Export für **ganzes Board**, **einzelne Aufgabe** und **Meine Aufgaben**; Formate **PDF, PNG, HTML, CSV, Markdown**;
+PNG = **die PDF-Seiten als Bild** (keine Browser-Bibliothek; eine Seite → `.png`, mehrere → ZIP mit `…-seite-01.png`, > 30 Seiten → 422).
+- **Reine Logik** `export.ts` (Server + UI): Modell `ExportDoc` (Abschnitte mit `ExportTask`), `groupTasks`, `docFragment` (HTML nur mit dem, was
+  `sanitizeDocumentHtml` stehen lässt – Inhalt des PDF über den Core-Block `richText`), `htmlDocument` (eigenständig, ohne Skripte/externe Quellen),
+  `markdownDocument` (Checklisten `- [ ]`, Texte entschärft), `csvExport` (`$lib/sdk/csv`: BOM, `;`, Formelschutz), `exportFileName`, Zod-Eingaben
+  `boardExportInput`/`taskExportInput`/`myExportInput` (strikt). Ausführung „kompakt“ = Tabelle je Abschnitt, `detailed` = je Aufgabe Metazeile,
+  Beschreibung, Unteraufgaben als Checkliste; einzelne Aufgabe immer ausführlich und ohne doppelte Überschrift (`single`).
+- **API** (`export.endpoints.ts`, POST, weil gefilterte IDs mitkommen; Recht `tasks.board.view`, 20/60 s, Antwort immer `attachment`, `no-store`):
+  POST `/boards/:id/export { format, groupBy: column|phase|none, detailed, includeDone, letterhead, taskIds?, filterLabel? }` (Sichtbarkeit wie
+  `GET /boards/:id`, Zuweisung reicht; `taskIds` = Filter der Seite; „Nach Phasen“ ohne Phasen → eine Liste), POST `/tasks/:id/export { format, letterhead }`
+  (wie `GET /tasks/:id`), POST `/my/tasks/export { format, detailed, includeDone, letterhead }` (wie `GET /my/tasks`, nach Board gruppiert, ≤ 500).
+  HTML/Markdown/CSV mit `charset=utf-8` und CSP `default-src 'none'; style-src 'unsafe-inline'; sandbox`; PDF Vorlage `default` bzw. `briefkopf`;
+  PNG über `core.pdf.renderPage` (lange Kante 2200 px). Audit `tasks.export.created` (`scope` board|task|my, `format`, `count`, `detailed`, `letterhead` – keine Titel).
+- **UI** `pages/ExportDialog.svelte` (Ziel `ExportTarget`): Format-Kacheln, Gruppierung (Board), „Mit Beschreibung und Unteraufgaben“, „Erledigte
+  einbeziehen“, „Nur gefilterte Aufgaben (n)“ bei aktiven Filtern (`filterSummary` in `filter.ts` → Kopfzeile), „Mit Briefkopf“ (PDF/PNG); Download über
+  `downloadPdf` (allgemeiner Blob-Download). Einstiege: ⋯-Menü des Boards „Exportieren …“, ⋯-Menü im Aufgaben-Blatt (jetzt für alle mit Lesezugriff,
+  „Aufgabe löschen“ weiter nur mit Bearbeiten), Knopf „Meine Aufgaben exportieren“ auf der Board-Übersicht.
+- **Tests** `tests/integration/tasks-export.test.ts` (alle Formate, PNG/ZIP/422 mit echtem Ersatz-PDF aus `pdf-lib`, Gruppierung, Filter, Zugriff, Audit).
+- **Offen**: Kanban-Ansicht als Bild (Spalten nebeneinander) bewusst nicht; „Meine Aufgaben“ nur auf der Board-Übersicht (nicht in der Dashboard-Kachel);
+  im Browser/Produktions-Container ungeprüft (PDF-Layout, PNG-Rendering echter Chromium-PDFs).
+
 ## Dateien (`modules/tasks/`)
 | Datei | Inhalt |
 |---|---|
@@ -64,6 +86,7 @@ Standard aus); verschobene Aktion → **Nachfrage** „Daten mitverschieben?“ 
 | `search.ts` | Globale Suche: Boards und Aufgaben (sichtbar wie `GET /boards`), Link `?task=` |
 | `contract.ts`, `refs.service.ts` | Dienst `TaskRefsService` (`provides`, 2026-10-26): `searchBoardRefs`/`describeBoardRefs`/`searchTaskRefs`/`describeTaskRefs` – sichtbar wie `GET /boards`, prüft `tasks.board.view` selbst; Nutzer: Karten im `whiteboard` |
 | `ui.ts`, `pages/` | `''` → `BoardsPage` (Karten mit Phase, Meilenstein, Fortschritt), `:id` → `BoardPage` (siehe „Aufgaben 2.0“); `task/`, `views/`, `board/`, `TaskCardView`, `BoardDialog`, `filter.ts`, `helpers.ts`; Kachel `widgets/MyTasksWidget` („Meine Aufgaben“) |
+| `export.ts`, `export.endpoints.ts`, `pages/ExportDialog.svelte` | Export PDF/PNG/HTML/CSV/Markdown (siehe „Export“) |
 | `planning.endpoints.ts`, `templates.service.ts` | Phasen, Verschieben, Vorlagen (siehe „Aufgaben 2.0“) |
 | `phases.ts`, `timeline.ts`, `templates.ts`, `dependencies.ts` | reine Logik (Server + UI) |
 | `migrations/0001_init.sql` | `boards` (UNIQUE `action_id`), `board_shares`, `board_columns`, `tasks` (`column_id` RESTRICT, `completed_at`, `reminded_on`), `task_assignees`, `task_checklist` |

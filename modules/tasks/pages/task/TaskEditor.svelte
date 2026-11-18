@@ -4,6 +4,7 @@
 	import CalendarClock from '@lucide/svelte/icons/calendar-clock';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
+	import Download from '@lucide/svelte/icons/download';
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
@@ -41,6 +42,7 @@
 		type UserRef
 	} from '../../schemas';
 	import { BASE, dueClass, dueLabel, errMsg } from '../helpers';
+	import ExportDialog from '../ExportDialog.svelte';
 
 	/**
 	 * Inhalt des Aufgaben-Blatts: Anlegen (nur Titel) bzw. Ansehen/Bearbeiten mit Autosave.
@@ -85,6 +87,7 @@
 	const phaseOptions = $derived(phases.map((p) => ({ value: p.id, label: p.name })));
 
 	let detail = $state<TaskDetail | null>(null);
+	let exportOpen = $state(false);
 	let loading = $state(false);
 	let loadError = $state('');
 	let people = $state<UserRef[]>([]);
@@ -407,7 +410,7 @@
 				<ChevronDown />
 			</Button>
 		{/if}
-		{#if detail && canEdit}
+		{#if detail}
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
@@ -417,9 +420,20 @@
 					{/snippet}
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content align="end" class="w-48">
-					<DropdownMenu.Item class="text-destructive" onclick={() => (deleteOpen = true)}>
-						<Trash2 /> Aufgabe löschen
+					<DropdownMenu.Item
+						onclick={() => {
+							flush();
+							exportOpen = true;
+						}}
+					>
+						<Download /> Exportieren …
 					</DropdownMenu.Item>
+					{#if canEdit}
+						<DropdownMenu.Separator />
+						<DropdownMenu.Item class="text-destructive" onclick={() => (deleteOpen = true)}>
+							<Trash2 /> Aufgabe löschen
+						</DropdownMenu.Item>
+					{/if}
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 		{/if}
@@ -752,6 +766,11 @@
 		{/if}
 	</div>
 </div>
+
+<ExportDialog
+	bind:open={exportOpen}
+	target={detail ? { kind: 'task', taskId: detail.id, title: detail.title } : null}
+/>
 
 <ConfirmDialog
 	bind:open={deleteOpen}

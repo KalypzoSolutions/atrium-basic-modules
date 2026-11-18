@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import Download from '@lucide/svelte/icons/download';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Tent from '@lucide/svelte/icons/tent';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
@@ -17,6 +18,7 @@
 	} from '$lib/components/layout';
 	import { PERM, type BoardDetail, type BoardList } from '../schemas';
 	import BoardDialog from './BoardDialog.svelte';
+	import ExportDialog from './ExportDialog.svelte';
 	import { BASE, errMsg, shortDate } from './helpers';
 
 	const permissions = $derived((page.data.permissions ?? []) as string[]);
@@ -60,10 +62,14 @@
 	function created(board: BoardDetail) {
 		void goto(`${BASE}/${board.id}`);
 	}
+	let exportOpen = $state(false);
 </script>
 
 <PageHeader title="Aufgaben" description="Boards für Vorbereitung, Aktionen und Ämter">
 	{#snippet actions()}
+		<Button variant="outline" onclick={() => (exportOpen = true)}>
+			<Download /> Meine Aufgaben exportieren
+		</Button>
 		{#if canCreate}
 			<Button onclick={() => (createOpen = true)}><Plus /> Board anlegen</Button>
 		{/if}
@@ -188,3 +194,4 @@
 {/if}
 
 <BoardDialog bind:open={createOpen} onsaved={created} />
+<ExportDialog bind:open={exportOpen} target={{ kind: 'my' }} />

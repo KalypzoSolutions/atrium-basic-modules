@@ -6,6 +6,7 @@
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import CalendarRange from '@lucide/svelte/icons/calendar-range';
 	import CopyPlus from '@lucide/svelte/icons/copy-plus';
+	import Download from '@lucide/svelte/icons/download';
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
 	import Flag from '@lucide/svelte/icons/flag';
 	import MoveHorizontal from '@lucide/svelte/icons/move-horizontal';
@@ -65,7 +66,14 @@
 	import MobileBoard from './board/MobileBoard.svelte';
 	import PhaseStrip from './board/PhaseStrip.svelte';
 	import PhasesDialog from './board/PhasesDialog.svelte';
-	import { emptyFilter, matchesFilter, activeFilterCount, type TaskFilter } from './filter';
+	import {
+		emptyFilter,
+		matchesFilter,
+		activeFilterCount,
+		filterSummary,
+		type TaskFilter
+	} from './filter';
+	import ExportDialog, { type ExportTarget } from './ExportDialog.svelte';
 	import { BASE, errMsg } from './helpers';
 	import TaskSheet from './task/TaskSheet.svelte';
 	import CalendarView from './views/CalendarView.svelte';
@@ -177,11 +185,27 @@
 		(board?.tasks ?? []).filter((t) => matchesFilter(t, filter, { myId, canEdit, today, isDone }))
 	);
 	const filtering = $derived(activeFilterCount(filter) > 0);
+
 	const people = $derived.by(() => {
 		const map = new Map<string, UserRef>();
 		for (const t of board?.tasks ?? []) for (const a of t.assignees) map.set(a.id, a);
 		return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'de'));
 	});
+	// --- Export ---
+	let exportOpen = $state(false);
+	const exportTarget = $derived<ExportTarget | null>(
+		board
+			? {
+					kind: 'board',
+					boardId: board.id,
+					hasPhases: board.phases.length > 0,
+					filteredIds: filtering ? visible.map((t) => t.id) : null,
+					filterLabel: filtering
+						? filterSummary(filter, { phases: board.phases, people })
+						: undefined
+				}
+			: null
+	);
 	/** Reihenfolge für Vor/Zurück im Blatt: wie im Board (Spalte, Position) */
 	const order = $derived(
 		[...visible]
@@ -649,6 +673,9 @@
 							<CopyPlus /> Als Vorlage speichern
 						</DropdownMenu.Item>
 					{/if}
+					<DropdownMenu.Item onclick={() => (exportOpen = true)}>
+						<Download /> Exportieren …
+					</DropdownMenu.Item>
 					{#if board?.access.canShare}
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item class="text-destructive" onclick={() => (deleteOpen = true)}>
@@ -770,6 +797,7 @@
 		{/if}
 	</div>
 
+	<ExportDialog bind:open={exportOpen} target={exportTarget} />
 	<TaskSheet
 		bind:open={sheetOpen}
 		bind:taskId={sheetTask}

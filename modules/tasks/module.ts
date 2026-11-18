@@ -4,6 +4,7 @@ import { tasksAssist, PERM_AI } from './assist';
 import { withTaskContext } from './access';
 import { boardEndpoints } from './boards.endpoints';
 import { taskEndpoints } from './tasks.endpoints';
+import { exportEndpoints } from './export.endpoints';
 import { planningEndpoints } from './planning.endpoints';
 import { sendDueReminders } from './notify';
 import { onUserDeleted, resetAreas, resetUsers, subjectExport } from './privacy';
@@ -91,5 +92,10 @@ export default defineModule({
 	onUserDeleted,
 	subjectExport,
 	// Reihenfolge: erster Treffer gewinnt (`/boards/by-action/…` vor `/boards/:id/…`)
-	endpoints: withTaskContext([...taskEndpoints, ...planningEndpoints, ...boardEndpoints])
+	endpoints: withTaskContext([
+		...exportEndpoints,
+		...taskEndpoints,
+		...planningEndpoints,
+		...boardEndpoints
+	])
 });

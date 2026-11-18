@@ -3,7 +3,7 @@
 	"id": "tasks",
 	"name": "Aufgaben",
 	"description": "Kanban-Boards mit Phasen, Zeitleiste, Aufgaben, Unteraufgaben, Zuständigen und Vorlagen – auch für Aktionen",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"core": ">=2.0.0-0 <3.0.0",
 	"dependencies": {},
 	"optionalDependencies": {

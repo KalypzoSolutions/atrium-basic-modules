@@ -1,6 +1,6 @@
 /** Filter der Board-Ansichten (rein, lokal im Browser). */
 import { addDays } from '$lib/sdk/dates';
-import { dueState, type Priority, type TaskCard } from '../schemas';
+import { dueState, PRIORITY_LABELS, type Priority, type TaskCard } from '../schemas';
 
 export type DueFilter = 'all' | 'overdue' | 'week' | 'none';
 
@@ -75,4 +75,31 @@ export function matchesFilter(t: TaskCard, f: TaskFilter, c: FilterContext): boo
 	}
 	const q = f.search.trim().toLowerCase();
 	return !q || t.title.toLowerCase().includes(q);
+}
+
+/** Aktive Filter als Text, z. B. für die Kopfzeile eines Exports („Filter: Nur meine · Priorität: Hoch“) */
+export function filterSummary(
+	f: TaskFilter,
+	names: {
+		phases: readonly { id: string; name: string }[];
+		people: readonly { id: string; name: string }[];
+	}
+): string {
+	const parts: string[] = [];
+	if (f.search.trim()) parts.push(`„${f.search.trim()}“`);
+	if (f.onlyMine) parts.push('Nur meine');
+	if (f.phaseId) {
+		parts.push(
+			`Phase: ${f.phaseId === 'none' ? 'Ohne Phase' : (names.phases.find((p) => p.id === f.phaseId)?.name ?? 'Phase')}`
+		);
+	}
+	if (f.assignees.length) {
+		parts.push(
+			`Zuständig: ${f.assignees.map((id) => names.people.find((p) => p.id === id)?.name ?? 'Unbekannt').join(', ')}`
+		);
+	}
+	if (f.priorities.length)
+		parts.push(`Priorität: ${f.priorities.map((p) => PRIORITY_LABELS[p]).join(', ')}`);
+	if (f.due !== 'all') parts.push(DUE_FILTER_LABELS[f.due]);
+	return parts.length ? `Filter: ${parts.join(' · ')}` : '';
 }
