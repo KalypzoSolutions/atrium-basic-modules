@@ -8,7 +8,7 @@ Cloud-Ablage des Stammes mit **einer Ansicht „Dateien“**: In der Wurzel steh
 was mir andere freigegeben haben (auch an den ganzen Stamm). Ordner und Dateien lassen sich hochladen (auch ganze Ordner per Drag & Drop),
 umbenennen, verschieben, in den Papierkorb legen, an **Principals** freigeben (Lesen/Bearbeiten, vererbt) und über **öffentliche Links** an
 Personen ohne Konto weitergeben – zum Ansehen, zum Hochladen oder beides. Aktionen per „…“-Menü **und Rechtsklick**. Vorschau für Bilder, PDFs
-und Text. Ordner mit **Icon und Farbe**, **Speicherkontingent je Person**. Schema `mod_files`, Version 1.4.0, keine harten Abhängigkeiten, optional `members` (Gruppen/Mitglieder als Freigabe-Ziele).
+und Text. Ordner mit **Icon und Farbe**, **Speicherkontingent je Person**. Schema `mod_files`, Version 1.4.1, keine harten Abhängigkeiten, optional `members` (Gruppen/Mitglieder als Freigabe-Ziele).
 Navigation „Dateien“ (Icon `cloud`). Inhalte liegen im Core-Storage (S3, Modul `files`), Zugriff per Systemkontext `files-storage` **nach**
 der Objektprüfung (Benutzer brauchen keine `files.storage.*`-Rechte).
 
@@ -88,7 +88,7 @@ Core-Baustein dazu: `src/lib/components/ui/context-menu/` (bits-ui `ContextMenu`
   `token_enc text` (Token per `core.crypto.forModule('files').encrypt`, damit die URL wieder anzeigbar ist; gesucht wird weiter über `token_hash`).
   Alte Links (vor 0003) haben kein `token_enc` → `url = null`.
 - 0006 (2026-11-16, v1.4.0): `nodes.icon_color text` (CHECK `#rrggbb` klein, `NULL` = automatisch hell/dunkel zur Ordnerfarbe), `nodes_style_check`
-  um `icon_color` erweitert. DTOs `FileNode`/`PublicNode`/`FileRef` mit `iconColor`; Dialog „Ordner gestalten“ mit „Farbe des Icons“ (nur mit Icon, Vorschläge + eigene Farbe + „Automatisch“).
+  um `icon_color` erweitert. DTOs `FileNode`/`PublicNode`/`FileRef` mit `iconColor`; Dialog „Ordner gestalten“ mit „Farbe des Icons“ (Vorschläge + eigene Farbe + „Automatisch“; direkt unter „Farbe“, vor der Icon-Liste, immer sichtbar, ohne Icon ausgegraut – Nutzerwunsch 2026-11-18).
 - 0005: `nodes.thumb_attempted_at timestamptz` – Zeitpunkt des Vorschau-Versuchs; Uploads setzen ihn immer, `NULL` = Bestand vor 0005 → Job `thumbs-backfill`.
 - 0004: `nodes.icon text` (CHECK Format `[a-z0-9-]`, ≤ 64), `nodes.color text` (CHECK `#rrggbb` klein), CHECK nur Ordner tragen ein Aussehen
   (`nodes_style_check`). `user_quotas(user_id PK, quota_mb integer NULL = unbegrenzt, CHECK 1–10 000 000, updated_by, updated_at)` – keine Zeile = Standard

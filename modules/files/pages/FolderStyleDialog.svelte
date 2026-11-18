@@ -166,6 +166,25 @@
 				})}
 			</fieldset>
 
+			<!-- Icon-Farbe: vor der langen Icon-Liste, damit man sie nicht übersieht; ohne Icon ausgegraut -->
+			<fieldset class={cn('grid gap-2', !icon && 'opacity-50')} disabled={!icon}>
+				<legend class="mb-1 text-sm font-medium">Farbe des Icons</legend>
+				{@render palette({
+					value: iconColor,
+					label: 'Vorschlagsfarben Icon',
+					pickerLabel: 'Eigene Icon-Farbe',
+					noneLabel: 'Automatisch',
+					set: (v) => (iconColor = v)
+				})}
+				<p class="text-xs text-muted-foreground">
+					{#if icon}
+						„Automatisch“ wählt hell oder dunkel passend zur Ordnerfarbe.
+					{:else}
+						Erst unten ein Icon wählen.
+					{/if}
+				</p>
+			</fieldset>
+
 			<!-- Icon -->
 			<fieldset class="grid gap-2">
 				<div class="flex items-center justify-between gap-2">
@@ -184,23 +203,6 @@
 					<IconPicker bind:value={icon} />
 				</div>
 			</fieldset>
-
-			<!-- Icon-Farbe -->
-			{#if icon}
-				<fieldset class="grid gap-2">
-					<legend class="mb-1 text-sm font-medium">Farbe des Icons</legend>
-					{@render palette({
-						value: iconColor,
-						label: 'Vorschlagsfarben Icon',
-						pickerLabel: 'Eigene Icon-Farbe',
-						noneLabel: 'Automatisch',
-						set: (v) => (iconColor = v)
-					})}
-					<p class="text-xs text-muted-foreground">
-						„Automatisch“ wählt hell oder dunkel passend zur Ordnerfarbe.
-					</p>
-				</fieldset>
-			{/if}
 		</div>
 
 		<Dialog.Footer sticky class="sm:justify-between">
