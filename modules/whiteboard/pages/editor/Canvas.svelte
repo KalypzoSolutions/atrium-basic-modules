@@ -427,7 +427,7 @@
 							fill={rc.palette.card}
 							stroke={SELECTION}
 							stroke-width={1.5 / view.zoom}
-							style="cursor:grab"
+							style="cursor: grab;"
 						>
 							<title>Drehen</title>
 						</circle>
@@ -449,9 +449,13 @@
 						{/each}
 						{#if canLink}
 							<!-- oben sitzt der Drehgriff, daher nur rechts/unten/links -->
-							{#each [['link-right', b.x + b.w + 18 / view.zoom + hs, c.y], ['link-bottom', c.x, b.y + b.h + 18 / view.zoom + hs], ['link-left', b.x - 18 / view.zoom - hs, c.y]] as const as [h, x, y] (h)}
+							{#each [
+								['link-right', b.x + b.w + 18 / view.zoom + hs, c.y],
+								['link-bottom', c.x, b.y + b.h + 18 / view.zoom + hs],
+								['link-left', b.x - 18 / view.zoom - hs, c.y]
+							] as const as [h, x, y] (h)}
 								{@const r = Math.max(hs * 0.7, 9 / view.zoom)}
-								<g data-handle={h} data-for={single.id} style="cursor:pointer">
+								<g data-handle={h} data-for={single.id} style="cursor: pointer;">
 									<circle cx={x} cy={y} r={r * 1.35} fill={SELECTION} fill-opacity="0.1" />
 									<circle cx={x} cy={y} {r} fill={SELECTION} />
 									<path
@@ -467,7 +471,10 @@
 					</g>
 				{:else}
 					{@const geo = resolveConnector(single.data, lookup)}
-					{#each [['from', geo.a], ['to', geo.b]] as const as [h, p] (h)}
+					{#each [
+						['from', geo.a],
+						['to', geo.b]
+					] as const as [h, p] (h)}
 						<circle
 							data-handle={h}
 							data-for={single.id}
@@ -477,7 +484,7 @@
 							fill={rc.palette.card}
 							stroke={SELECTION}
 							stroke-width={2 / view.zoom}
-							style="cursor:move"
+							style="cursor: move;"
 						/>
 					{/each}
 					{#if single.data.route !== 'straight'}
@@ -490,7 +497,7 @@
 							height={hs}
 							transform={`rotate(45 ${geo.mid.x} ${geo.mid.y})`}
 							fill={SELECTION}
-							style="cursor:move"
+							style="cursor: move;"
 						>
 							<title>Biegung ändern</title>
 						</rect>
@@ -575,7 +582,8 @@
 							font-family={FONT_FAMILY}
 							font-size="12"
 							font-weight="600"
-							fill="#ffffff">{p.name}</text
+							fill="#ffffff"
+							>{p.name}</text
 						>
 					</g>
 				{/if}

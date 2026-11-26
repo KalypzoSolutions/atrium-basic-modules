@@ -7,12 +7,12 @@
  * Core-Dienste (Storage, Embeds) und `snapshotJson` laufen NACH der Transaktion.
  */
 import { sql } from 'drizzle-orm';
-import { core, errors, inList, num, rowsOf, type RequestContext } from '$lib/sdk/server';
+import { core, errors, inList, num, type RequestContext, rowsOf } from '$lib/sdk/server';
 import type { EmbedInfo, EmbedRef } from '$lib/sdk/types/embeds';
 import { requireNoteAccess, subtreeIds } from '../access';
 import { filesCtx, mdb } from '../db';
-import { snapshotJson } from '../doc.service';
 import { assetIdsOf, embedsOf } from '../doc/text';
+import { snapshotJson } from '../doc.service';
 import { MODULE_ID } from '../schemas';
 import { embedKey, type ResolvedEmbed } from './embeds';
 

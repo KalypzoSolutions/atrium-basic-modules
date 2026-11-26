@@ -10,9 +10,10 @@
  * Wie der Live-Hub: nur EINE App-Instanz (Dokumente im Speicher). Alle Funktionen öffnen eigene Transaktionen –
  * nie aus einer offenen Modul-Transaktion aufrufen (PGlite).
  */
+
+import { prosemirrorToYXmlFragment, yXmlFragmentToProsemirrorJSON } from '@tiptap/y-tiptap';
 import { sql } from 'drizzle-orm';
 import * as Y from 'yjs';
-import { prosemirrorToYXmlFragment, yXmlFragmentToProsemirrorJSON } from '@tiptap/y-tiptap';
 import { errors, rowsOf, type Tx } from '$lib/sdk/server';
 import { noteSchema } from './doc/extensions';
 import { assetIdsOf, plainTextOf } from './doc/text';
@@ -20,13 +21,14 @@ import { hub } from './live';
 import {
 	COMPACT_AFTER_UPDATES,
 	DERIVE_DELAY_MS,
+	type LiveEvent,
 	MAX_DOC_BYTES,
 	MAX_UPDATE_BYTES,
-	YDOC_FIELD,
-	type LiveEvent
+	YDOC_FIELD
 } from './schemas';
 
 export { mdb } from './db';
+
 import { mdb } from './db';
 
 /** Ungenutzte Dokumente nach dieser Zeit aus dem Speicher nehmen */

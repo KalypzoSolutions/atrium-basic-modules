@@ -1,9 +1,9 @@
 <script lang="ts">
+	import Check from '@lucide/svelte/icons/check';
 	// Dialog „Ordner gestalten“: Icon aus der Icon-Bibliothek, Ordnerfarbe und Icon-Farbe (Vorschläge + ColorPicker) mit Vorschau.
 	// Gilt für alle mit Zugriff auf den Ordner; der Server prüft Bearbeiten-Zugriff und das Icon.
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import Check from '@lucide/svelte/icons/check';
 	import { BUSY_SAVE } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { ColorPicker, contrastTextColor } from '$lib/components/ui/color-picker';
@@ -12,7 +12,7 @@
 	import { apiFetch } from '$lib/sdk/client';
 	import { iconLabel } from '$lib/sdk/icons';
 	import { cn } from '$lib/utils';
-	import { FOLDER_COLORS, type BulkResult, type FileNode } from '../schemas';
+	import { type BulkResult, type FileNode, FOLDER_COLORS } from '../schemas';
 	import FolderGlyph from './FolderGlyph.svelte';
 	import { API, errorText } from './helpers';
 
@@ -149,7 +149,9 @@
 					</span>
 					<span class="text-xs text-muted-foreground">
 						Icon: {icon ? iconLabel(icon) : 'keins'} · Farbe: {colorLabel}
-						{#if icon}· Icon-Farbe: {iconColorLabel}{/if}
+						{#if icon}
+							· Icon-Farbe: {iconColorLabel}
+						{/if}
 					</span>
 				</div>
 			</div>

@@ -20,8 +20,8 @@ import { errors, isUniqueViolation, rowsOf, type Tx } from '$lib/sdk/server';
 import { mdb } from './db';
 import { normalizeName, uniqueName } from './names';
 import { ensureFolderPath, siblingNames } from './nodes.service';
-import { assertQuota, removeObjects, storeContent, type StoredContent } from './storage';
 import { INVISIBLE_CHARS, MAX_UPLOADER_NAME, nodeName } from './schemas';
+import { assertQuota, removeObjects, type StoredContent, storeContent } from './storage';
 
 export interface StoreIntoFolderInput {
 	/** Zielordner (`null` = Wurzel von `ownerId`), Zugriff vom Aufrufer bereits geprüft */
@@ -58,7 +58,7 @@ export interface StoredNode {
 
 /** Unsichtbare Zeichen (global) und Steuerzeichen zum Entfernen aus dem Namen der hochladenden Person */
 const INVISIBLE_ALL_RE = new RegExp(INVISIBLE_CHARS.source, 'gu');
-// eslint-disable-next-line no-control-regex
+// biome-ignore lint/suspicious/noControlCharactersInRegex: Steuerzeichen werden bewusst erkannt/entfernt
 const CONTROL_ALL_RE = /[\u0000-\u001f\u007f]/gu;
 
 /**

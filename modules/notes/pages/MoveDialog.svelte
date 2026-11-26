@@ -1,17 +1,17 @@
 <script lang="ts">
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import House from '@lucide/svelte/icons/house';
 	// Seite verschieben: Ziel im Baum wählen (oberste Ebene oder eine Seite mit Bearbeiten-Zugriff), am Ende einreihen
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import House from '@lucide/svelte/icons/house';
-	import { apiFetch } from '$lib/sdk/client';
 	import { BUSY_SAVE } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import { apiFetch } from '$lib/sdk/client';
 	import { cn } from '$lib/utils';
 	import { MAX_CHILDREN, type NoteDetail, type NoteNode } from '../schemas';
-	import NoteIcon from './NoteIcon.svelte';
 	import { API, errMsg, noteTitle } from './helpers';
+	import NoteIcon from './NoteIcon.svelte';
 	import { NoteTreeState } from './tree/tree-state.svelte';
 
 	let {

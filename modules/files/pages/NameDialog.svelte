@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import { FormField } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { FormField } from '$lib/components/layout';
-	import { MAX_NAME, nodeName, type FileNode } from '../schemas';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import { type FileNode, MAX_NAME, nodeName } from '../schemas';
 	import { API, errorText } from './helpers';
 
 	let {

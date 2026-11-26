@@ -170,9 +170,6 @@ export function shapePath(kind: ShapeKind, w: number, h: number): string {
 			const r = Math.min(24, w / 4, h / 4);
 			return `M${r},0 H${round(w - r)} Q${round(w)},0 ${round(w)},${r} V${round(h - r)} Q${round(w)},${round(h)} ${round(w - r)},${round(h)} H${r} Q0,${round(h)} 0,${round(h - r)} V${r} Q0,0 ${r},0 Z`;
 		}
-		case 'note':
-		case 'rect':
-		case 'text':
 		default:
 			return `M0,0 H${round(w)} V${round(h)} H0 Z`;
 	}

@@ -1,8 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import { onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
@@ -19,43 +15,47 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Upload from '@lucide/svelte/icons/upload';
 	import X from '@lucide/svelte/icons/x';
-	import { ApiClientError, apiFetch } from '$lib/sdk/client';
-	import { Button } from '$lib/components/ui/button';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { Input } from '$lib/components/ui/input';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import FileTypeGlyph from './FileTypeGlyph.svelte';
+	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
 		ConfirmDialog,
 		EmptyState,
 		MobileActionBar,
 		PageHeader,
-		toastWithUndo,
-		PageTitle
+		PageTitle,
+		toastWithUndo
 	} from '$lib/components/layout';
+	import { Button } from '$lib/components/ui/button';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { Input } from '$lib/components/ui/input';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
 	import {
-		ROOT_LABEL,
 		type BulkResult,
 		type FileNode,
 		type FilesMeta,
 		type FolderListing,
+		ROOT_LABEL,
 		type SearchResult
 	} from '../schemas';
+	import FileList from './FileList.svelte';
+	import FilePreview from './FilePreview.svelte';
+	import FileTypeGlyph from './FileTypeGlyph.svelte';
+	import FolderStyleDialog from './FolderStyleDialog.svelte';
 	import {
 		API,
-		DRAG_MIME,
-		VIEWS,
-		VIEW_LABELS,
 		contentUrl,
+		DRAG_MIME,
 		errorText,
 		iconFor,
 		type NodeAction,
 		type PreviewNode,
+		VIEW_LABELS,
+		VIEWS,
 		type View
 	} from './helpers';
-	import FileList from './FileList.svelte';
-	import FilePreview from './FilePreview.svelte';
-	import FolderStyleDialog from './FolderStyleDialog.svelte';
 	import LinkDialog from './LinkDialog.svelte';
 	import MoveDialog from './MoveDialog.svelte';
 	import NameDialog from './NameDialog.svelte';
@@ -685,7 +685,8 @@
 									<span
 										class="truncate rounded-md px-2 py-1 font-medium"
 										aria-current="page"
-										title={c.name}>{c.name}</span
+										title={c.name}
+										>{c.name}</span
 									>
 								{:else}
 									<button

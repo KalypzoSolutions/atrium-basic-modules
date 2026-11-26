@@ -23,7 +23,7 @@
  * Ablaufdatum: gültig bis einschließlich `expires_on`, verglichen mit „heute“ in Europe/Berlin
  * (`todayBerlin`, nicht `CURRENT_DATE` der Datenbank, die in UTC läuft; beim Anlegen und Abruf dieselbe Quelle).
  */
-import { notifyLinkUpload } from './notify';
+
 import { randomBytes, scrypt as scryptCb, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
 import { sql } from 'drizzle-orm';
@@ -36,46 +36,47 @@ import {
 	type RequestContext,
 	type Row,
 	rowsOf,
-	toIso,
-	type Tx
+	type Tx,
+	toIso
 } from '$lib/sdk/server';
 import { requireNode, resolveAccess } from './access';
-import { normalizeName } from './names';
-import { storeIntoFolder } from './upload.service';
 import {
-	NODE_COLUMNS,
 	ancestorsOf,
 	filesCtx,
-	mdb,
-	nodeRowOf,
 	filesSettings,
-	userRefs,
-	type NodeRow
+	mdb,
+	NODE_COLUMNS,
+	type NodeRow,
+	nodeRowOf,
+	userRefs
 } from './db';
-import { contentResponse, quotaLimitFor, quotaUsed, storageLimits, thumbResponse } from './storage';
+import { normalizeName } from './names';
+import { notifyLinkUpload } from './notify';
 import {
+	type Breadcrumb,
+	isRealDate,
 	LINK_ACCESS_TTL_SEC,
+	type LinkCreateInput,
+	type LinkMode,
+	linkCanUpload,
+	linkCanView,
 	MAX_LINKS_PER_NODE,
 	MAX_PUBLIC_UPLOAD_BYTES,
 	MAX_PUBLIC_UPLOAD_FILES,
 	MAX_UNLOCK_FAILURES,
 	MODULE_ID,
 	PERMISSIONS,
-	isRealDate,
-	linkCanUpload,
-	linkCanView,
-	type Breadcrumb,
-	type LinkCreateInput,
-	type LinkMode,
-	type PublicUploadFields,
-	type PublicUploadResult,
 	type PublicLinkInfo,
 	type PublicListing,
 	type PublicNode,
+	type PublicUploadFields,
+	type PublicUploadResult,
 	type ShareLink,
 	type UserRef
 } from './schemas';
 import { assertCanManageShares, keysFor } from './shares.service';
+import { contentResponse, quotaLimitFor, quotaUsed, storageLimits, thumbResponse } from './storage';
+import { storeIntoFolder } from './upload.service';
 
 const scrypt = promisify(scryptCb) as (
 	password: string,
@@ -448,7 +449,7 @@ export async function revokeLink(ctx: RequestContext, linkId: string): Promise<S
 		const link = await loadLinkById(tx, linkId);
 		if (!link) throw errors.notFound('Link nicht gefunden');
 		const access = await resolveAccess(tx, ctx, link.nodeId, keys);
-		if (!access || access.level !== 'edit') throw errors.notFound('Link nicht gefunden');
+		if (access?.level !== 'edit') throw errors.notFound('Link nicht gefunden');
 		assertCanManageShares(ctx, access);
 		const wasOpen = link.revokedAt === null;
 		if (wasOpen) {
@@ -627,7 +628,7 @@ export async function publicContent(
 		assertUnlocked(valid.link, input.accessToken);
 		const path = await nodeInLink(tx, valid.node, nodeId);
 		const target = path?.[path.length - 1];
-		if (!target || target.kind !== 'file' || !target.storagePath) {
+		if (target?.kind !== 'file' || !target.storagePath) {
 			throw errors.notFound('Datei nicht gefunden');
 		}
 		if (input.thumb && !target.thumbPath) throw errors.notFound('Keine Vorschau vorhanden');
@@ -766,7 +767,7 @@ export async function publicUpload(
 			);
 		}
 		const current = await loadLinkById(tx, link.id);
-		if (!current || !current.active) throw unavailable();
+		if (!current?.active) throw unavailable();
 		if (!linkCanUpload(current.mode)) throw uploadNotAllowed();
 		const chain = await ancestorsOf(tx, current.nodeId);
 		const folder = chain[chain.length - 1];

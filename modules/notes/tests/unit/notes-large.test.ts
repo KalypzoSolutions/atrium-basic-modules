@@ -2,7 +2,8 @@
  * Große Notizen: Markdown-Tokenizer ohne quadratische Laufzeit, Ableiten/Verdichten nach Größe, gzip für `/state`,
  * JSON → Yjs ohne `prosemirrorJSONToYXmlFragment`.
  */
-import { describe, expect, it } from 'vitest';
+
+import { describe, expect, it } from 'bun:test';
 import { gunzipSync } from 'node:zlib';
 import { embedStart, tableStart } from '$modules/notes/doc/extensions';
 import {
@@ -12,8 +13,8 @@ import {
 	stateFromJson
 } from '$modules/notes/doc.service';
 import { parseMarkdown } from '$modules/notes/export/markdown';
-import { acceptsGzip, stateResponse, STATE_GZIP_MIN_BYTES } from '$modules/notes/state-response';
 import { COMPACT_AFTER_UPDATES, DERIVE_DELAY_MS } from '$modules/notes/schemas';
+import { acceptsGzip, STATE_GZIP_MIN_BYTES, stateResponse } from '$modules/notes/state-response';
 
 function bigMarkdown(sections: number): string {
 	const parts: string[] = [];

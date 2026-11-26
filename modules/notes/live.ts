@@ -5,7 +5,7 @@
 import { createLiveHub, type LiveSubscriber } from '$lib/sdk/server';
 import { loadNoteContext, resolveNoteAccess } from './access';
 import { mdb } from './db';
-import { MAX_STREAMS_PER_USER, type LiveEvent, type Peer, type ShareLevel } from './schemas';
+import { type LiveEvent, MAX_STREAMS_PER_USER, type Peer, type ShareLevel } from './schemas';
 
 export const hub = createLiveHub<ShareLevel, Peer>({
 	name: 'notes',

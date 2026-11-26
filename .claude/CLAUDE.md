@@ -14,11 +14,11 @@ sind nur **optional**.
 ## Befehle
 | Befehl | Zweck |
 |---|---|
-| `npm run setup` | Core holen/installieren, `node_modules` → `.core/node_modules`, Modul-Pakete |
-| `npm run check` / `npm run lint` / `npm run format:check` | Typen / ESLint / Prettier |
-| `npm test` | Tests der Module |
-| `npm run build` / `npm run e2e` / `npm run demo` | Build / Playwright / Demo (:4300) |
-| `npm run check:catalog` / `npm run check:migrations` | Katalog vollständig / angewendete Migrationen unverändert |
+| `bun run setup` | Core holen/installieren (`bun install`), `node_modules` → `.core/node_modules`, Modul-Pakete |
+| `bun run check` / `bun run lint` / `bun run format` | Typen / Biome (Format + Lint) + Modulgrenzen / Biome-Korrekturen schreiben |
+| `bun run test` | Tests der Module (`bun test`; `from 'bun:test'`, Helfer wie `waitFor`/`encodeMultipart` aus `$testing`) |
+| `bun run build` / `bun run e2e` / `bun run demo` | Build / Playwright / Demo (:4300) |
+| `bun run check:catalog` / `bun run check:migrations` | Katalog vollständig / angewendete Migrationen unverändert |
 
 ## Regeln (zusätzlich zu den Core-Regeln)
 1. Nur Dateien unter `modules/`, `scripts/` und `.claude/` ändern – **nie** in `.core` (Core-Änderungen im Core-Repo, danach Tag + Submodul).

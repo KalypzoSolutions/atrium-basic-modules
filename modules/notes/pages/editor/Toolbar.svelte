@@ -1,7 +1,4 @@
 <script lang="ts">
-	// Werkzeugleiste des Notiz-Editors (sticky, mobil waagrecht scrollbar). Zustände über `tick` (gedrosselt aus
-	// `editor.on('transaction')`), nie aus einer Kopie des Inhalts.
-	import type { Editor } from '@tiptap/core';
 	import AlignCenter from '@lucide/svelte/icons/align-center';
 	import AlignJustify from '@lucide/svelte/icons/align-justify';
 	import AlignLeft from '@lucide/svelte/icons/align-left';
@@ -16,7 +13,6 @@
 	import Italic from '@lucide/svelte/icons/italic';
 	import LayoutTemplate from '@lucide/svelte/icons/layout-template';
 	import Link from '@lucide/svelte/icons/link';
-	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import List from '@lucide/svelte/icons/list';
 	import ListChecks from '@lucide/svelte/icons/list-checks';
 	import ListOrdered from '@lucide/svelte/icons/list-ordered';
@@ -24,15 +20,19 @@
 	import Quote from '@lucide/svelte/icons/quote';
 	import Redo2 from '@lucide/svelte/icons/redo-2';
 	import RemoveFormatting from '@lucide/svelte/icons/remove-formatting';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Strikethrough from '@lucide/svelte/icons/strikethrough';
 	import Table from '@lucide/svelte/icons/table';
 	import Underline from '@lucide/svelte/icons/underline';
 	import Undo2 from '@lucide/svelte/icons/undo-2';
+	// Werkzeugleiste des Notiz-Editors (sticky, mobil waagrecht scrollbar). Zustände über `tick` (gedrosselt aus
+	// `editor.on('transaction')`), nie aus einer Kopie des Inhalts.
+	import type { Editor } from '@tiptap/core';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { FONT_SIZES, HIGHLIGHT_COLORS, TEXT_COLORS } from '../../schemas';
 	import { LIST_STYLE_OPTIONS, ownListStyle } from '../../doc/list-style';
+	import { FONT_SIZES, HIGHLIGHT_COLORS, TEXT_COLORS } from '../../schemas';
 	import ColorMenu from './ColorMenu.svelte';
 	import { MOD } from './keys';
 	import ToolButton from './ToolButton.svelte';
@@ -185,7 +185,8 @@
 									? 'text-lg font-bold'
 									: level === 2
 										? 'text-base font-semibold'
-										: 'text-sm font-semibold'}>Überschrift {level}</span
+										: 'text-sm font-semibold'}
+								>Überschrift {level}</span
 							>
 							<DropdownMenu.Shortcut>{MOD}+Alt+{level}</DropdownMenu.Shortcut>
 						</DropdownMenu.Item>

@@ -3,7 +3,7 @@
  * Dünne Endpunkte – Zugriffsprüfung und Logik in `nodes.service.ts` / `access.ts`.
  * Pfade: `/nodes/move` (POST) vor `/nodes/:id` (GET/PATCH) – Methoden unterscheiden sich ohnehin.
  */
-import { defineEndpoint, type ApiEndpoint } from '$lib/sdk/server';
+import { type ApiEndpoint, defineEndpoint } from '$lib/sdk/server';
 import { requireNode } from './access';
 import { mdb } from './db';
 import {
@@ -15,21 +15,21 @@ import {
 	searchNodes,
 	setNodeStyle
 } from './nodes.service';
-import { keysFor } from './shares.service';
 import {
-	PERMISSIONS,
+	type BulkResult,
+	type FileNode,
+	type FolderListing,
 	folderCreateInput,
 	idParams,
 	listQuery,
 	moveInput,
+	PERMISSIONS,
 	renameInput,
+	type SearchResult,
 	searchQuery,
-	styleInput,
-	type BulkResult,
-	type FileNode,
-	type FolderListing,
-	type SearchResult
+	styleInput
 } from './schemas';
+import { keysFor } from './shares.service';
 
 const tags = ['Modul: files'];
 

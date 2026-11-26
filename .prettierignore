@@ -1,6 +1,0 @@
-node_modules
-.core
-modules/node_modules
-modules/package.json
-modules/package-lock.json
-*.md

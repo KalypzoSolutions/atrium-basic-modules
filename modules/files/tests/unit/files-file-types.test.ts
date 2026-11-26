@@ -2,7 +2,7 @@
  * Dateityp für die Anzeige (`files/pages/file-types.ts`): Art über Content-Type, Rückfall über die Endung,
  * Kürzel für das Abzeichen.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import {
 	FILE_KIND_CLASSES,
 	FILE_KIND_ICONS,

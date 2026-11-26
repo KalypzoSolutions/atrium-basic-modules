@@ -12,7 +12,7 @@
 import { MarkdownManager } from '@tiptap/markdown';
 import { safeFileName } from '$lib/sdk/file-names';
 import { assetUrl, isUuid, noteExtensions } from '../doc/extensions';
-import { walk, type PmNode } from '../doc/text';
+import { type PmNode, walk } from '../doc/text';
 import { embedKey, embedLabel, type ResolvedEmbed } from './embeds';
 
 let manager: MarkdownManager | null = null;

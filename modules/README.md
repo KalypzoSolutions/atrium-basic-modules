@@ -14,4 +14,4 @@ modules/<id>/
 
 Module dürfen `$lib/sdk/*`, die UI-Bausteine `$lib/components/{ui,layout,forms}` sowie `$lib/forms`, `$lib/pdf-lists`
 und `$lib/utils` importieren; fremde Module nur als `import type` aus `$modules/<id>/contract`, nichts aus
-`$lib/server/*` (ESLint, siehe `docs/module-development.md` → „Erlaubte Importe“).
+`$lib/server/*` (`bun run lint` mit dem Prüfer `.core/tools/module-boundaries.ts`, siehe `docs/module-development.md` → „Erlaubte Importe“).

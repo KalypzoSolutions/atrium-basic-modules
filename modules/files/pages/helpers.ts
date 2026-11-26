@@ -3,16 +3,16 @@
  */
 import Folder from '@lucide/svelte/icons/folder';
 import { ApiClientError } from '$lib/sdk/client';
-import { FILE_KIND_ICONS, fileTypeOf } from './file-types';
 import { formatDateTimeDe } from '$lib/sdk/dates';
 import {
 	BASE_PATH,
+	type FileNode,
+	type NodeKind,
 	PREVIEW_IMAGE_TYPES,
 	PREVIEW_PDF,
-	PREVIEW_TEXT_TYPES,
-	type FileNode,
-	type NodeKind
+	PREVIEW_TEXT_TYPES
 } from '../schemas';
+import { FILE_KIND_ICONS, fileTypeOf } from './file-types';
 
 /** Basis für `apiFetch` (`/modules/files`) */
 export const API = BASE_PATH;
@@ -85,7 +85,15 @@ export const DRAG_MIME = 'application/x-ep-files-nodes';
 
 /** Aktionen auf Einträgen (Menü, Tastatur, Mehrfachauswahl) */
 export type NodeAction =
-	'open' | 'download' | 'rename' | 'style' | 'move' | 'share' | 'link' | 'info' | 'trash';
+	| 'open'
+	| 'download'
+	| 'rename'
+	| 'style'
+	| 'move'
+	| 'share'
+	| 'link'
+	| 'info'
+	| 'trash';
 
 /**
  * Name in Stücke für weiche Umbrüche (`<wbr>` dazwischen): nach `_`, `-`, `.`, `/` und vor Ziffernfolgen nach

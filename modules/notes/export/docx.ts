@@ -15,26 +15,26 @@ import {
 	ExternalHyperlink,
 	HeadingLevel,
 	ImageRun,
+	type IParagraphOptions,
 	LevelFormat,
 	Packer,
 	Paragraph,
+	type ParagraphChild,
 	ShadingType,
 	Tab,
 	Table,
 	TableCell,
 	TableRow,
 	TextRun,
-	WidthType,
-	type IParagraphOptions,
-	type ParagraphChild
+	WidthType
 } from 'docx';
 import { isUuid } from '../doc/extensions';
 import {
 	childListContext,
+	type ListContext,
 	listMarker,
 	listStart,
-	ownListStyle,
-	type ListContext
+	ownListStyle
 } from '../doc/list-style';
 import type { PmNode } from '../doc/text';
 import { embedKey, embedLabel, type ResolvedEmbed } from './embeds';

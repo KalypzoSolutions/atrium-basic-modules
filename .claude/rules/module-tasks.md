@@ -91,6 +91,9 @@ PNG = **die PDF-Seiten als Bild** (keine Browser-Bibliothek; eine Seite → `.pn
 | `phases.ts`, `timeline.ts`, `templates.ts`, `dependencies.ts` | reine Logik (Server + UI) |
 | `migrations/0001_init.sql` | `boards` (UNIQUE `action_id`), `board_shares`, `board_columns`, `tasks` (`column_id` RESTRICT, `completed_at`, `reminded_on`), `task_assignees`, `task_checklist` |
 | `migrations/0002_planning.sql` | Phasen, Zeitraum/Meilenstein, Standardansicht, Kalender-Abo, Bezugsdatum, Vorlagen, Abhängigkeiten |
+| `assist.ts` | KI-Schreibhilfe (`PERM_AI` = `tasks.ai.use`): Beschreibung und Zerlegen in Unteraufgaben |
+| `dashboard.ts` | Übersicht: „Zu erledigen“ = eigene offene Aufgaben (direkt oder über eine offene Unteraufgabe), überfällig oder in `TASKS_DUE_SOON_DAYS` (7) Tagen fällig; „Diese Woche“ = dieselben mit Fälligkeit im Zeitraum (Art `deadline`) |
+| `peer-contracts.ts` | Lokale Spiegelung der genutzten Teile fremder Verträge (`actions`: `ActionsService`, `ActionRef`, `AccessibleAction`) – nur `optionalDependencies`; bei Änderungen am Original nachziehen |
 
 ## Rechte
 | Schlüssel | Bedeutung |

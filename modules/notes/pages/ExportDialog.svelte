@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Download from '@lucide/svelte/icons/download';
 	// Export einer Notiz: Format wählen, optional mit Unterseiten, PDF optional mit Stammes-Briefkopf
 	import { untrack } from 'svelte';
-	import Download from '@lucide/svelte/icons/download';
 	import { ChoiceChips } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';

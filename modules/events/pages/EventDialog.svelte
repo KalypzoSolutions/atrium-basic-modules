@@ -1,25 +1,13 @@
 <script lang="ts">
-	import { tick, untrack } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import Globe from '@lucide/svelte/icons/globe';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Repeat from '@lucide/svelte/icons/repeat';
 	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import { tick, untrack } from 'svelte';
+	import { toast } from 'svelte-sonner';
 	import { page } from '$app/state';
-	import { ApiClientError, apiFetch, can } from '$lib/sdk/client';
-	import type { PrincipalInfo } from '$lib/sdk/types/sharing';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { ColorPicker } from '$lib/components/ui/color-picker';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
-	import { MultiSelect } from '$lib/components/ui/multi-select';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { TagInput } from '$lib/components/ui/tag-input';
+	import type { ShareCandidate, ShareEntry, ShareOwner } from '$lib/components/layout';
 	import {
 		AssistTextarea,
 		ColorBadge,
@@ -27,29 +15,41 @@
 		SharePanel,
 		toastWithUndo
 	} from '$lib/components/layout';
-	import type { ShareCandidate, ShareEntry, ShareOwner } from '$lib/components/layout';
 	import { shareKey } from '$lib/components/layout/share-types';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { ColorPicker } from '$lib/components/ui/color-picker';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { MultiSelect } from '$lib/components/ui/multi-select';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { TagInput } from '$lib/components/ui/tag-input';
+	import { ApiClientError, apiFetch, can } from '$lib/sdk/client';
+	import { todayBerlin } from '$lib/sdk/dates';
+	import type { PrincipalInfo } from '$lib/sdk/types/sharing';
+	import { formatEventDate, formatEventRange, isAllDay } from '../format';
+	import { addDays, daysBetween, isoWeekday, nextWeekday } from '../recurrence';
 	import {
 		COLOR_PRESETS,
-		MAX_TAG_LENGTH,
-		MAX_TAGS,
-		PUBLISH_PERMISSION,
-		SHARE_LEVELS,
-		SHARE_LEVEL_LABELS,
-		STAMM_GROUP_ID,
 		checkEventDates,
-		eventInput,
-		isRealDate,
-		occurrenceInput,
 		type EventDates,
 		type EventDetail,
 		type EventGroupRef,
+		eventInput,
+		isRealDate,
+		MAX_TAG_LENGTH,
+		MAX_TAGS,
 		type OccurrenceOverride,
-		type RecurrenceRule
+		occurrenceInput,
+		PUBLISH_PERMISSION,
+		type RecurrenceRule,
+		SHARE_LEVEL_LABELS,
+		SHARE_LEVELS,
+		STAMM_GROUP_ID
 	} from '../schemas';
-	import { todayBerlin } from '$lib/sdk/dates';
-	import { formatEventDate, formatEventRange, isAllDay } from '../format';
-	import { addDays, daysBetween, isoWeekday, nextWeekday } from '../recurrence';
 	import RecurrenceField from './RecurrenceField.svelte';
 	import SeriesChoiceDialog from './SeriesChoiceDialog.svelte';
 
@@ -914,7 +914,9 @@
 					{/if}
 				</Dialog.Title>
 				<Dialog.Description class={[isCancelled && 'line-through']}>
-					{formatEventRange(loaded)}{#if isAllDay(loaded)}&nbsp;(ganztägig){/if}
+					{formatEventRange(loaded)}{#if isAllDay(loaded)}
+						&nbsp;(ganztägig)
+					{/if}
 				</Dialog.Description>
 			{:else if viewing}
 				<Dialog.Title>Termin</Dialog.Title>
@@ -934,7 +936,9 @@
 						: 'Termin anlegen'}
 				</Dialog.Title>
 				<Dialog.Description>
-					{#if editingSeries}Änderungen gelten für alle Termine der Serie.{/if}
+					{#if editingSeries}
+						Änderungen gelten für alle Termine der Serie.
+					{/if}
 					Pflichtfelder sind mit * markiert.
 				</Dialog.Description>
 			{/if}
@@ -1411,7 +1415,9 @@
 					</fieldset>
 				{/if}
 
-				{#if error}<p class="mt-4 text-sm text-destructive" role="alert">{error}</p>{/if}
+				{#if error}
+					<p class="mt-4 text-sm text-destructive" role="alert">{error}</p>
+				{/if}
 			</div>
 
 			<Dialog.Footer class="mx-0 mb-0">

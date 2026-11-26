@@ -1,17 +1,13 @@
 <script lang="ts">
-	// Übersicht: alle sichtbaren Whiteboards als Karten, Suche, Anlegen und Import (.epwhiteboard)
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import { toast } from 'svelte-sonner';
 	import Backpack from '@lucide/svelte/icons/backpack';
 	import FileUp from '@lucide/svelte/icons/file-up';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Presentation from '@lucide/svelte/icons/presentation';
 	import Shapes from '@lucide/svelte/icons/shapes';
-	import { apiFetch, can } from '$lib/sdk/client';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
+	import { toast } from 'svelte-sonner';
+	// Übersicht: alle sichtbaren Whiteboards als Karten, Suche, Anlegen und Import (.epwhiteboard)
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
 		EmptyState,
 		ErrorState,
@@ -19,12 +15,16 @@
 		PageHeader,
 		SearchInput
 	} from '$lib/components/layout';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
+	import { apiFetch, can } from '$lib/sdk/client';
 	import {
 		ARCHIVE_EXTENSION,
-		PERM,
 		type Board,
 		type BoardDetail,
-		type BoardList
+		type BoardList,
+		PERM
 	} from '../schemas';
 	import BoardDialog from './BoardDialog.svelte';
 	import { BASE, errMsg, relativeTime } from './helpers';
@@ -172,7 +172,8 @@
 						<Card.Content class="space-y-2">
 							<div class="flex flex-wrap gap-1.5">
 								{#if board.actionName}
-									<Badge variant="outline"><Backpack aria-hidden="true" /> {board.actionName}</Badge
+									<Badge variant="outline"
+										><Backpack aria-hidden="true" /> {board.actionName}</Badge
 									>
 								{/if}
 								{#if board.access.level === 'read'}

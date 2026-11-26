@@ -9,8 +9,8 @@ import { sql } from 'drizzle-orm';
 import {
 	type DataSubject,
 	inList,
-	moduleDb,
 	type ModuleSubjectExport,
+	moduleDb,
 	rowsOf,
 	toIsoOrNull
 } from '$lib/sdk/server';

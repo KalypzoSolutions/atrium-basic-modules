@@ -2,15 +2,16 @@
  * Modul `whiteboard` – Export-Archiv (`.epwhiteboard`): Rundlauf, Pfadprüfung (Zip-Slip, unerwartete Dateien),
  * Format/Version, ungültiges ZIP, Dateinamen.
  */
-import { describe, expect, it } from 'vitest';
+
+import { describe, expect, it } from 'bun:test';
 import { strToU8, zipSync } from 'fflate';
 import {
+	type ArchiveDocument,
 	ArchiveError,
 	assertSafeArchivePath,
 	buildArchive,
 	fileSlug,
-	parseArchive,
-	type ArchiveDocument
+	parseArchive
 } from '$modules/whiteboard/archive';
 
 const assetId = crypto.randomUUID();

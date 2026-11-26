@@ -1,5 +1,5 @@
 // Demo-Daten für das Modul `notes` (über die echte API, idempotent über den Titel).
-// Voraussetzung: demo-server läuft, `node scripts/seed-demo.mjs`.
+// Voraussetzung: demo-server läuft, `bun scripts/seed-demo.mjs`.
 // Aktiviert das Modul und legt die Notiz „Sommerlager 2027“ mit Unterseiten (Packliste mit Aufgaben, Programm mit
 // Tabelle, Protokoll) an; mit `--big` zusätzlich eine sehr große Notiz (~300 Seiten Text, 50 Tabellen) zum Lasttest.
 

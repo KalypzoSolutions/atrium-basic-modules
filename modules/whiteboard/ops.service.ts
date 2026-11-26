@@ -12,11 +12,11 @@ import { liveElementOf, mdb } from './boards.service';
 import { broadcast } from './live';
 import {
 	ELEMENT_SCHEMAS,
-	MAX_ELEMENT_BYTES,
-	MAX_ELEMENTS,
 	type ElementOp,
 	type ElementType,
 	type LiveElement,
+	MAX_ELEMENT_BYTES,
+	MAX_ELEMENTS,
 	type OpsResult
 } from './schemas';
 

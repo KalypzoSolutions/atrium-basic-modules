@@ -4,11 +4,6 @@
 </script>
 
 <script lang="ts">
-	// Dateiliste des Moduls `files`: Raster- oder Listenansicht mit Auswahl, Menü je Eintrag,
-	// Tastaturbedienung, Kontextmenü (Rechtsklick an der Mausposition, Long-Press auf Touch)
-	// und Drag & Drop zum Verschieben auf Ordner.
-	import { onMount, type Component, type Snippet } from 'svelte';
-	import { SvelteSet } from 'svelte/reactivity';
 	import Download from '@lucide/svelte/icons/download';
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
 	import FolderInput from '@lucide/svelte/icons/folder-input';
@@ -24,26 +19,31 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Upload from '@lucide/svelte/icons/upload';
 	import Users from '@lucide/svelte/icons/users';
+	// Dateiliste des Moduls `files`: Raster- oder Listenansicht mit Auswahl, Menü je Eintrag,
+	// Tastaturbedienung, Kontextmenü (Rechtsklick an der Mausposition, Long-Press auf Touch)
+	// und Drag & Drop zum Verschieben auf Ordner.
+	import { type Component, onMount, type Snippet } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
+	import { DataTable, EmptyState } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Table from '$lib/components/ui/table';
-	import { DataTable, EmptyState } from '$lib/components/layout';
-	import { FOLDER_COLORS, type FileNode } from '../schemas';
-	import FolderGlyph from './FolderGlyph.svelte';
+	import { type FileNode, FOLDER_COLORS } from '../schemas';
 	import FileTypeGlyph from './FileTypeGlyph.svelte';
+	import FolderGlyph from './FolderGlyph.svelte';
 	import { fileTint } from './file-types';
 	import {
-		DRAG_MIME,
 		breakableName,
+		DRAG_MIME,
 		folderMeta,
 		formatBytes,
 		formatDateTime,
+		type NodeAction,
 		previewKind,
-		thumbUrl,
-		type NodeAction
+		thumbUrl
 	} from './helpers';
 
 	let {
@@ -596,7 +596,9 @@
 {#snippet dropdownEntries(entries: MenuEntry[])}
 	{#each entries as entry (entry.key)}
 		{@const Icon = entry.icon}
-		{#if entry.separator}<DropdownMenu.Separator />{/if}
+		{#if entry.separator}
+			<DropdownMenu.Separator />
+		{/if}
 		{#if entry.colors}
 			{@const targets = entry.colors}
 			{@const current = targets.length === 1 ? targets[0]!.color : undefined}
@@ -610,7 +612,9 @@
 						<DropdownMenu.Item onclick={() => pickColor(targets, c.value)}>
 							{@render swatch(c.value)}
 							{c.label}
-							{#if current === c.value}<span class="sr-only">(aktuell)</span>{/if}
+							{#if current === c.value}
+								<span class="sr-only">(aktuell)</span>
+							{/if}
 						</DropdownMenu.Item>
 					{/each}
 					<DropdownMenu.Separator />
@@ -635,7 +639,9 @@
 {#snippet contextEntries(entries: MenuEntry[])}
 	{#each entries as entry (entry.key)}
 		{@const Icon = entry.icon}
-		{#if entry.separator}<ContextMenu.Separator />{/if}
+		{#if entry.separator}
+			<ContextMenu.Separator />
+		{/if}
 		{#if entry.colors}
 			{@const targets = entry.colors}
 			{@const current = targets.length === 1 ? targets[0]!.color : undefined}
@@ -649,7 +655,9 @@
 						<ContextMenu.Item onclick={() => pickColor(targets, c.value)}>
 							{@render swatch(c.value)}
 							{c.label}
-							{#if current === c.value}<span class="sr-only">(aktuell)</span>{/if}
+							{#if current === c.value}
+								<span class="sr-only">(aktuell)</span>
+							{/if}
 						</ContextMenu.Item>
 					{/each}
 					<ContextMenu.Separator />
@@ -730,7 +738,9 @@
 						</div>
 					{:else if items.length === 0}
 						<EmptyState title={emptyTitle} description={emptyDescription}>
-							{#if emptyAction}{@render emptyAction()}{/if}
+							{#if emptyAction}
+								{@render emptyAction()}
+							{/if}
 						</EmptyState>
 					{:else}
 						<div
@@ -834,7 +844,9 @@
 											class="line-clamp-2 h-10 text-sm leading-5 font-medium break-words"
 											title={node.name}
 										>
-											{#each breakableName(node.name) as part, i (i)}{part}<wbr />{/each}
+											{#each breakableName(node.name) as part, i (i)}
+												{part}<wbr />
+											{/each}
 										</span>
 										<span class="flex items-center gap-1.5 text-xs text-muted-foreground">
 											<span class="truncate tabular-nums">
@@ -847,7 +859,9 @@
 											>
 										</span>
 										{@render ownerBadge(node, 'mt-0.5 self-start')}
-										{#if isSel}<span class="sr-only">ausgewählt</span>{/if}
+										{#if isSel}
+											<span class="sr-only">ausgewählt</span>
+										{/if}
 									</div>
 								</div>
 							{/each}
@@ -921,9 +935,7 @@
 									ondragleave={(e: DragEvent) => onDragLeave(e, node)}
 									ondrop={(e: DragEvent) => onDrop(e, node)}
 								>
-									<Table.Cell class="w-10">
-										{@render selectBox(node, 'flex')}
-									</Table.Cell>
+									<Table.Cell class="w-10"> {@render selectBox(node, 'flex')} </Table.Cell>
 									<Table.Cell class="max-w-0 min-w-40 sm:w-full">
 										<span class="flex min-w-0 items-center gap-2">
 											<span

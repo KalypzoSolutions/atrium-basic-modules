@@ -2,9 +2,9 @@
 	// KI-Schreibhilfe im Notiz-Editor. Mit Auswahl: markierten Abschnitt überarbeiten und ersetzen.
 	// Ohne Auswahl: ganze Notiz als Grundlage (Klartext) – Entwurf, Zusammenfassung, Fortsetzung oder
 	// Aufgabenliste werden an der Cursorposition eingefügt. Nie die ganze Notiz ersetzen: andere bearbeiten live mit.
-	import { getHTMLFromFragment, type Editor } from '@tiptap/core';
+	import { type Editor, getHTMLFromFragment } from '@tiptap/core';
 	import { TextSelection } from '@tiptap/pm/state';
-	import { assistPurpose, WritingAssistant, type AssistConfig } from '$lib/components/layout';
+	import { type AssistConfig, assistPurpose, WritingAssistant } from '$lib/components/layout';
 
 	/** Höchstlänge des Textes, der an die KI geht (Server erlaubt 20 000 Zeichen) */
 	const NOTE_ASSIST_MAX = 18_000;
@@ -60,7 +60,7 @@
 		open = true;
 	}
 
-	function escape(s: string): string {
+	function escapeHtml(s: string): string {
 		return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
 
@@ -78,7 +78,7 @@
 	function applyItems(items: string[]) {
 		if (!editor || !items.length) return;
 		const list = `<ul data-type="taskList">${items
-			.map((i) => `<li data-type="taskItem" data-checked="false"><p>${escape(i)}</p></li>`)
+			.map((i) => `<li data-type="taskItem" data-checked="false"><p>${escapeHtml(i)}</p></li>`)
 			.join('')}</ul>`;
 		const at = editor.state.selection.to;
 		editor.chain().focus().setTextSelection(at).insertContent(list).run();

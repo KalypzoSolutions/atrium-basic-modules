@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 // Termine: Monat ist Standard; anlegen über den Dialog, Ansicht/Bearbeiten im selben Dialog,
 // Liste über den Tab „Liste“ (`?view=list`), Woche/Tag als Zeitraster (`?view=week|day`); Serien (wöchentlich, 4 Vorkommen) und Absage eines Vorkommens.

@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { contrastTextColor } from '$lib/components/ui/color-picker';
 	// Ordnersymbol mit Aussehen: gefüllter Ordner in der gewählten Farbe (ohne Farbe neutral grau), ab Größe
 	// `md` das gewählte Icon darauf (eigene Icon-Farbe, sonst Kontrastfarbe automatisch hell/dunkel).
 	import { DynamicIcon } from '$lib/components/ui/icon-picker';
-	import { contrastTextColor } from '$lib/components/ui/color-picker';
 	import { cn } from '$lib/utils';
 
 	let {

@@ -9,8 +9,8 @@
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
 
 	let {
 		open = $bindable(false),

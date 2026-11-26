@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as Sheet from '$lib/components/ui/sheet';
 	import { BottomSheet, deviceLayout } from '$lib/components/layout';
+	import * as Sheet from '$lib/components/ui/sheet';
 	import type { Column, Phase, TaskCard } from '../../schemas';
 	import TaskEditor from './TaskEditor.svelte';
 
@@ -76,7 +76,9 @@
 			<Sheet.Description class="sr-only">
 				Stand, Phase, Zeitraum, Zuständige, Beschreibung und Unteraufgaben
 			</Sheet.Description>
-			{#if open}{@render editor()}{/if}
+			{#if open}
+				{@render editor()}
+			{/if}
 		</Sheet.Content>
 	</Sheet.Root>
 {/if}

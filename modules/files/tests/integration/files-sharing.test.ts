@@ -3,36 +3,48 @@
  * Sicherheitsregeln, öffentliche Links (Ansehen), Reset. Upload-Links: `files-upload-link.test.ts`.
  * Storage über `tests/helpers/fake-storage.ts`; Testbild mit sharp (für Thumbnails).
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
 import sharp from 'sharp';
-import { useTestDatabase } from '$testing';
-import { installFakeStorage, uninstallFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser, systemContext } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import { core } from '$testing';
-import { RESET_CONFIRM_WORD, executeReset, exportResetData, previewReset } from '$testing';
-import filesModule from '$modules/files/module';
+import type { RequestContext } from '$lib/sdk/types';
 import { unlockLink } from '$modules/files/links.service';
+import filesModule from '$modules/files/module';
 import {
-	MAX_LINKS_PER_NODE,
-	MAX_UNLOCK_FAILURES,
-	ROOT_LABEL,
 	type FileNode,
 	type FolderListing,
+	MAX_LINKS_PER_NODE,
+	MAX_UNLOCK_FAILURES,
 	type NodeShares,
+	ROOT_LABEL,
 	type ShareLink
 } from '$modules/files/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	encodeMultipart,
+	executeReset,
+	exportResetData,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	listAudit,
+	previewReset,
+	RESET_CONFIRM_WORD,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	syncModules,
+	systemContext,
+	uninstallFakeStorage,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/files';
 const PW = 'a-long-enough-pw';
@@ -45,7 +57,7 @@ let teamRoleId: string;
 
 interface Res {
 	status: number;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: bewusst ungetypt
 	body: any;
 }
 
@@ -120,8 +132,8 @@ async function upload(
 	const fd = new FormData();
 	fd.set('file', new File([bytes as BlobPart], name, { type }));
 	// Upload verlangt `content-length` → Formular vorab serialisieren
-	const encoded = new Response(fd);
-	const bytesOut = new Uint8Array(await encoded.arrayBuffer());
+	const encoded = await encodeMultipart(fd);
+	const bytesOut = encoded.body;
 	resetAllForTests();
 	const url = new URL(`${ROOT}/nodes/${parentId}/upload`);
 	const res = await handleApiRequest({
@@ -129,7 +141,7 @@ async function upload(
 			method: 'POST',
 			headers: {
 				authorization: `Bearer ${keys[who]}`,
-				'content-type': encoded.headers.get('content-type')!,
+				'content-type': encoded.contentType,
 				'content-length': String(bytesOut.byteLength)
 			},
 			body: bytesOut
@@ -283,7 +295,7 @@ describe('Zugriffsmatrix', () => {
 			201
 		);
 		// Kinder gehören der Eigentümer*in des Ordners
-		expect(up.ownerId).toBe(ids.owner);
+		expect<unknown>(up.ownerId).toBe(ids.owner);
 		expect(
 			ok<FileNode>(await call('editor', 'PATCH', `/nodes/${up.id}`, { name: 'e2.txt' })).name
 		).toBe('e2.txt');
@@ -332,7 +344,7 @@ describe('Zugriffsmatrix', () => {
 		expect(names).not.toContain('Nur Team');
 		const p = root.items.find((n) => n.id === projekt)!;
 		expect(p).toMatchObject({ own: false, stamm: false, access: 'read', canShare: false });
-		expect(p.owner).toEqual({ id: ids.owner, name: 'Olivia Owner' });
+		expect<unknown>(p.owner).toEqual({ id: ids.owner, name: 'Olivia Owner' });
 		expect(root.items.find((n) => n.name === 'Für alle')!.stamm).toBe(true);
 		// Eigentümer*in sieht eigene Ordner genau einmal (als eigene)
 		const own = ok<FolderListing>(await call('owner', 'GET', '/nodes'));
@@ -439,7 +451,7 @@ describe('Sicherheitsregeln für edit-Freigaben', () => {
 		expect(inside.affected).toBe(1);
 		const after = ok<FileNode>(await call('owner', 'GET', `/nodes/${sub}`));
 		expect(after.parentId).toBe(sub2);
-		expect(after.ownerId).toBe(ids.owner);
+		expect<unknown>(after.ownerId).toBe(ids.owner);
 	});
 
 	it('keine Freigaben/Links durch edit-Freigabe (403), `canShare` im DTO', async () => {

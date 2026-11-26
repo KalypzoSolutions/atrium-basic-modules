@@ -11,17 +11,17 @@
 	import ZoomInIcon from '@lucide/svelte/icons/zoom-in';
 	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';
 	import type { Attachment } from 'svelte/attachments';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { MAX_TEXT_PREVIEW_BYTES } from '../schemas';
 	import { FILE_KIND_CLASSES, fileTypeOf } from './file-types';
 	import {
+		type ContentUrlFn,
 		formatBytes,
 		iconFor,
 		internalUrl,
-		previewKind,
-		type ContentUrlFn,
-		type PreviewNode
+		type PreviewNode,
+		previewKind
 	} from './helpers';
 
 	let {
@@ -455,7 +455,10 @@
 				{:else if kind === 'pdf'}
 					{#if fetched.status === 'pdf'}
 						{#if canEmbedPdf}
-							<iframe title={current.name} src={fetched.url} class="size-full border-0 bg-white"
+							<iframe
+								title={current.name}
+								src={fetched.url}
+								class="size-full border-0 bg-white"
 							></iframe>
 						{:else}
 							<div
@@ -491,7 +494,8 @@
 					{#if fetched.status === 'text'}
 						<div class="size-full overflow-auto">
 							<pre
-								class="bg-background mx-auto min-h-full max-w-5xl p-4 font-mono text-xs leading-relaxed break-words whitespace-pre-wrap sm:p-6 sm:text-sm">{fetched.text}</pre>
+								class="bg-background mx-auto min-h-full max-w-5xl p-4 font-mono text-xs leading-relaxed break-words whitespace-pre-wrap sm:p-6 sm:text-sm"
+							>{fetched.text}</pre>
 						</div>
 					{:else if fetched.status === 'error'}
 						{@render errorBox(fetched.message, false)}

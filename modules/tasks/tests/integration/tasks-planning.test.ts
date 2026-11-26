@@ -5,28 +5,34 @@
  * Vorlagen mit Aktionsbeginn/-ende und Mitverschieben nach geänderter Aktion prüft ep-intern-modules
  * `modules/_integration/tests/integration/tasks-planning-actions.test.ts`.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import { core } from '$testing';
 import { setTodayForTests } from '$lib/sdk/dates';
+import type { RequestContext } from '$lib/sdk/types';
 import eventsModule from '$modules/events/module';
+import type { CalendarFeed } from '$modules/events/schemas';
 import tasksModule from '$modules/tasks/module';
 import { resetAreas } from '$modules/tasks/privacy';
-import type { CalendarFeed } from '$modules/events/schemas';
 import type { BoardDetail, MyTask, TaskDetail, TemplateSummary } from '$modules/tasks/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules';
 const keys: Record<string, string> = {};

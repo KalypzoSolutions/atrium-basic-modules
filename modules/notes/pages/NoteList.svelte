@@ -2,8 +2,8 @@
 	// Kompakte Liste von Notizen (Übersicht): Icon, Titel, Textanfang, Stand
 	import Users from '@lucide/svelte/icons/users';
 	import type { NoteNode } from '../schemas';
+	import { notePath, noteTitle, relativeTime } from './helpers';
 	import NoteIcon from './NoteIcon.svelte';
-	import { noteTitle, notePath, relativeTime } from './helpers';
 
 	let {
 		notes,

@@ -14,19 +14,19 @@
  * Principal-Schlüssel und Aktions-Zugriffe rufen Core bzw. `actions` auf und stehen daher VOR der Transaktion fest
  * (`loadNoteContext`, für alle Endpoints über `withNoteContext`).
  */
-import { sql, type SQL } from 'drizzle-orm';
+import { type SQL, sql } from 'drizzle-orm';
 import {
+	type AnyApiEndpoint,
 	core,
 	errors,
 	inList,
 	principalKeysFor,
 	principalMatchSql,
-	rowsOf,
-	toIso,
-	type AnyApiEndpoint,
 	type RequestContext,
+	rowsOf,
 	type ShareTable,
-	type Tx
+	type Tx,
+	toIso
 } from '$lib/sdk/server';
 import type { ActionsService } from './peer-contracts';
 import { MODULE_ID, PERM, type ShareLevel } from './schemas';

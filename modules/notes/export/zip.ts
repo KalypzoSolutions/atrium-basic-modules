@@ -3,7 +3,7 @@
  * absoluten Pfade, kein `..`, keine Steuerzeichen, keine ZIP64-Archive, je Datei ≤ `maxFileBytes`, entpackt
  * ≤ 200 MB (vorab aus den Kopfdaten und nachträglich aus den echten Längen). Verstöße → `ZipError` (Endpunkt: 422).
  */
-import { unzipSync, zipSync, type Zippable } from 'fflate';
+import { unzipSync, type Zippable, zipSync } from 'fflate';
 
 export const MAX_ZIP_ENTRIES = 500;
 export const MAX_UNPACKED_BYTES = 200 * 1024 * 1024;
@@ -25,7 +25,7 @@ export function isSafeEntryName(name: string): boolean {
 	if (!name || name.length > 500) return false;
 	if (name.startsWith('/') || name.startsWith('\\') || /^[a-z]:/i.test(name)) return false;
 	if (name.includes('\\')) return false;
-	// eslint-disable-next-line no-control-regex
+	// biome-ignore lint/suspicious/noControlCharactersInRegex: Steuerzeichen werden bewusst erkannt/entfernt
 	if (/[\u0000-\u001f\u007f]/.test(name)) return false;
 	return !name.split('/').some((seg) => seg === '..' || seg === '.');
 }

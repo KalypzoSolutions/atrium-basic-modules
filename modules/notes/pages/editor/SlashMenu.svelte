@@ -39,7 +39,7 @@
 
 	const match = $derived.by(() => {
 		void tick;
-		if (!editor || !editor.isEditable || !editor.isFocused) return null;
+		if (!editor?.isEditable || !editor.isFocused) return null;
 		const sel = editor.state.selection;
 		if (!sel.empty) return null;
 		const head = sel.$from;

@@ -30,7 +30,9 @@ async function run() {
 			method: 'POST',
 			body: JSON.stringify({ items: items.map((i) => i.ref) })
 		});
-		items.forEach((item, i) => item.resolve(infos[i] ?? unavailable(item.ref)));
+		items.forEach((item, i) => {
+			item.resolve(infos[i] ?? unavailable(item.ref));
+		});
 	} catch (e) {
 		for (const item of items) {
 			cache.delete(embedKey(item.ref));

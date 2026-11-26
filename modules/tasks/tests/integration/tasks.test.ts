@@ -6,27 +6,34 @@
  * Gruppen-Freigabe (`members`) und Boards an Aktionen (`actions`) prüft ep-intern-modules
  * `modules/_integration/tests/integration/tasks-actions.test.ts`.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { disableModule, enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import { core } from '$testing';
 import { setTodayForTests } from '$lib/sdk/dates';
-import tasksModule from '$modules/tasks/module';
-import { onUserDeleted } from '$modules/tasks/privacy';
-import { sendDueReminders } from '$modules/tasks/notify';
-import type { BoardDetail, BoardList, MyTask, TaskDetail } from '$modules/tasks/schemas';
 import type { RequestContext } from '$lib/sdk/types';
+import tasksModule from '$modules/tasks/module';
+import { sendDueReminders } from '$modules/tasks/notify';
+import { onUserDeleted } from '$modules/tasks/privacy';
+import type { BoardDetail, BoardList, MyTask, TaskDetail } from '$modules/tasks/schemas';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	disableModule,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules';
 const keys: Record<string, string> = {};
@@ -192,8 +199,8 @@ describe('Aufgaben', () => {
 		);
 		taskId = task.id;
 		expect(task.columnId).toBe(cols[0]!.id);
-		expect(task.assignees.map((a) => a.id)).toEqual([userIds.owner]);
-		expect(task.items.map((i) => [i.title, i.assignee?.id ?? null])).toEqual([
+		expect<unknown>(task.assignees.map((a) => a.id)).toEqual([userIds.owner]);
+		expect<unknown>(task.items.map((i) => [i.title, i.assignee?.id ?? null])).toEqual([
 			['Angebote einholen', userIds.helper],
 			['Anzahlung', null]
 		]);
@@ -379,7 +386,7 @@ describe('Audit, Fälligkeit, Konto löschen, Modul aus', () => {
 				sql`SELECT count(*)::int AS n FROM task_assignees WHERE user_id = ${userIds.owner!}`
 			)) as unknown as { rows: { n: number }[] }
 		}));
-		expect(rows.owners.rows.map((r) => r.owner_id)).toEqual([userIds.helper]);
+		expect<unknown>(rows.owners.rows.map((r) => r.owner_id)).toEqual([userIds.helper]);
 		expect(Number(rows.assignees.rows[0]!.n)).toBe(0);
 	});
 

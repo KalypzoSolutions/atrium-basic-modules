@@ -1,26 +1,20 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import { untrack } from 'svelte';
+	import CalendarSync from '@lucide/svelte/icons/calendar-sync';
+	import FileDown from '@lucide/svelte/icons/file-down';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Repeat from '@lucide/svelte/icons/repeat';
-	import { ApiClientError, apiFetch, can } from '$lib/sdk/client';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { Label } from '$lib/components/ui/label';
-	import { SelectField } from '$lib/components/ui/select-field';
-	import * as Table from '$lib/components/ui/table';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import { untrack } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
+		type CalendarItem,
 		ColorBadge,
 		DataTable,
 		MonthCalendar,
 		PageHeader,
+		PageTitle,
 		Pagination,
-		SearchInput,
-		type CalendarItem,
-		PageTitle
+		SearchInput
 	} from '$lib/components/layout';
 	import {
 		buildMonthGrid,
@@ -29,16 +23,22 @@
 		localToday,
 		monthOf
 	} from '$lib/components/layout/month-calendar';
-	import { weekDays, type CalendarView } from '../time-grid';
-	import TimeGridCalendar from './TimeGridCalendar.svelte';
-	import type { EventGroupRef, EventItem, EventList } from '../schemas';
-	import { formatEventRange } from '../format';
-	import EventDialog from './EventDialog.svelte';
-	import CalendarFeedsPanel from './CalendarFeedsPanel.svelte';
-	import CalendarSync from '@lucide/svelte/icons/calendar-sync';
-	import FileDown from '@lucide/svelte/icons/file-down';
-	import ExportDialog from './ExportDialog.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import { Label } from '$lib/components/ui/label';
+	import { SelectField } from '$lib/components/ui/select-field';
+	import * as Table from '$lib/components/ui/table';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { ApiClientError, apiFetch, can } from '$lib/sdk/client';
+	import { formatEventRange } from '../format';
+	import type { EventGroupRef, EventItem, EventList } from '../schemas';
+	import { type CalendarView, weekDays } from '../time-grid';
+	import CalendarFeedsPanel from './CalendarFeedsPanel.svelte';
+	import EventDialog from './EventDialog.svelte';
+	import ExportDialog from './ExportDialog.svelte';
+	import TimeGridCalendar from './TimeGridCalendar.svelte';
 
 	const PAGE_SIZE = 50;
 	const MONTH_LIMIT = 500;
@@ -399,10 +399,16 @@
 							<Repeat class="text-muted-foreground size-3.5 shrink-0" aria-hidden="true" />
 						{/if}
 						<span
-							>{e.title}{#if e.recurrence}<span class="sr-only"> (Serie)</span>{/if}</span
+							>{e.title}{#if e.recurrence}
+								<span class="sr-only"> (Serie)</span>
+							{/if}</span
 						>
-						{#if e.isException}<Badge variant="outline" class="shrink-0">Geändert</Badge>{/if}
-						{#if e.onWebsite}<Badge variant="secondary" class="shrink-0">Website</Badge>{/if}
+						{#if e.isException}
+							<Badge variant="outline" class="shrink-0">Geändert</Badge>
+						{/if}
+						{#if e.onWebsite}
+							<Badge variant="secondary" class="shrink-0">Website</Badge>
+						{/if}
 					</div>
 				</Table.Cell>
 				<Table.Cell>{e.location ?? '–'}</Table.Cell>
@@ -431,14 +437,14 @@
 			</Table.Row>
 		{/each}
 		{#snippet footer()}
-			{#if items.length}<Pagination {total} limit={PAGE_SIZE} {offset} />{/if}
+			{#if items.length}
+				<Pagination {total} limit={PAGE_SIZE} {offset} />
+			{/if}
 		{/snippet}
 	</DataTable>
 {:else}
 	<div class="space-y-4">
-		<div class="flex flex-wrap items-center gap-2">
-			{@render filters()}
-		</div>
+		<div class="flex flex-wrap items-center gap-2"> {@render filters()} </div>
 		{#if loadError}
 			<div
 				class="flex flex-wrap items-center gap-3 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm"
@@ -450,8 +456,8 @@
 		{/if}
 		{#if !loading && !loadError && total > items.length}
 			<p class="text-xs text-muted-foreground" role="status">
-				Es werden nur die ersten {items.length} von {total} Terminen angezeigt. Grenze die Auswahl mit
-				den Filtern ein.
+				Es werden nur die ersten {items.length} von {total} Terminen angezeigt. Grenze die Auswahl
+				mit den Filtern ein.
 			</p>
 		{/if}
 		{#if view === 'month'}

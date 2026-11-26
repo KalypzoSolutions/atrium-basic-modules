@@ -7,9 +7,9 @@ import { rowsOf, type Tx } from '$lib/sdk/server';
 import { mdb } from './db';
 import { dropDoc } from './doc.service';
 import { closeNotes } from './live';
+import { TRASH_DAYS } from './schemas';
 import { removeFiles } from './storage';
 import { purgeSubtrees } from './tree.service';
-import { TRASH_DAYS } from './schemas';
 
 const PURGE_BATCH = 200;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { Editor, type JSONContent } from '@tiptap/core';
 	// Schreibgeschützte Vorschau einer Version (eigener Tiptap ohne Collaboration)
 	import { onMount } from 'svelte';
-	import { Editor, type JSONContent } from '@tiptap/core';
 	import { noteExtensions } from '../doc/extensions';
 	import ListStyles from './editor/ListStyles.svelte';
 
@@ -53,11 +53,11 @@
 		list-style: decimal;
 		padding-left: 1.5rem;
 	}
-	.note-preview :global(ul[data-type='taskList']) {
+	.note-preview :global(ul[data-type="taskList"]) {
 		list-style: none;
 		padding-left: 0.25rem;
 	}
-	.note-preview :global(ul[data-type='taskList'] li) {
+	.note-preview :global(ul[data-type="taskList"] li) {
 		display: flex;
 		gap: 0.5rem;
 	}
@@ -103,6 +103,6 @@
 		color: var(--muted-foreground);
 	}
 	.note-preview :global([data-embed])::before {
-		content: 'Eingebetteter Inhalt';
+		content: "Eingebetteter Inhalt";
 	}
 </style>

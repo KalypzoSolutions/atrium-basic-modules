@@ -1,18 +1,18 @@
 <script lang="ts">
+	import History from '@lucide/svelte/icons/history';
+	import Save from '@lucide/svelte/icons/save';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
 	// Versionsverlauf: Liste (automatisch + benannt), Vorschau, aktuelle Fassung als Version speichern,
 	// Wiederherstellen (der Server sichert vorher den aktuellen Stand) und Löschen
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import History from '@lucide/svelte/icons/history';
-	import Save from '@lucide/svelte/icons/save';
-	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import { apiFetch } from '$lib/sdk/client';
-	import { formatDateTimeDe } from '$lib/sdk/dates';
 	import { BUSY_SAVE, ConfirmDialog, ErrorState, LoadingState } from '$lib/components/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
+	import { apiFetch } from '$lib/sdk/client';
+	import { formatDateTimeDe } from '$lib/sdk/dates';
 	import { cn } from '$lib/utils';
 	import type { NoteVersion, NoteVersionDetail } from '../schemas';
 	import { API, errMsg } from './helpers';
@@ -169,7 +169,9 @@
 								>
 									<span class="flex w-full items-center gap-2">
 										<span class="min-w-0 flex-1 truncate font-medium">{versionName(v)}</span>
-										{#if v.auto}<Badge variant="secondary">auto</Badge>{/if}
+										{#if v.auto}
+											<Badge variant="secondary">auto</Badge>
+										{/if}
 									</span>
 									<span class="text-xs text-muted-foreground">
 										{formatDateTimeDe(v.createdAt)}{v.createdBy ? ` · ${v.createdBy.name}` : ''}

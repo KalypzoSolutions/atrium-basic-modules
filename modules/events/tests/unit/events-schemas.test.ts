@@ -1,10 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import {
-	MAX_TAGS,
-	MAX_TAG_LENGTH,
 	eventInput,
 	isRealDate,
 	listQuery,
+	MAX_TAG_LENGTH,
+	MAX_TAGS,
 	normalizeTag,
 	normalizeTags,
 	websiteQuery
@@ -166,7 +166,7 @@ describe('eventInput', () => {
 				{ type: 'user', id: 'u1', level: 'edit' },
 				{ type: 'group', id: 'u1', level: 'read' }
 			];
-			expect(ok({ ...base, shares }).shares).toEqual(shares);
+			expect<unknown>(ok({ ...base, shares }).shares).toEqual(shares);
 		});
 
 		it('lehnt doppelte Freigaben ab', () => {

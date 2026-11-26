@@ -5,11 +5,11 @@
  */
 import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 import {
-	parseElementData,
 	type Asset,
 	type BoardDetail,
 	type ElementOp,
 	type LiveElement,
+	parseElementData,
 	type ShareLevel,
 	type WbElement
 } from '../../schemas';

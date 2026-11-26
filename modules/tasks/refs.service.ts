@@ -3,9 +3,9 @@ import { sql } from 'drizzle-orm';
 import { core, inList, type RequestContext, type Row, rowsOf, toIso } from '$lib/sdk/server';
 import { boardAccessForMany, loadTaskContext, visibleBoardsFilter } from './access';
 import { mdb } from './boards.service';
+import type { TaskBoardRefInfo, TaskMilestoneRef, TaskRefInfo, TaskRefsService } from './contract';
 import { boardLink } from './notify';
 import { PERM, PRIORITIES, type Priority } from './schemas';
-import type { TaskBoardRefInfo, TaskMilestoneRef, TaskRefInfo, TaskRefsService } from './contract';
 
 const like = (q: string) => `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
 const clampLimit = (n: number | undefined) => Math.min(Math.max(n ?? 20, 1), 50);
@@ -137,15 +137,17 @@ export const taskRefsService: TaskRefsService = {
 					flag(r.mine) || (!flag(r.assigned) && access.get(String(r.board_id))?.level === 'edit')
 			);
 		});
-		return rows.map((r): TaskMilestoneRef => ({
-			id: String(r.id),
-			title: String(r.title),
-			boardId: String(r.board_id),
-			boardName: String(r.board_name),
-			dueOn: String(r.due_on),
-			done: r.completed_at != null,
-			updatedAt: toIso(r.updated_at),
-			href: boardLink(String(r.board_id), String(r.id))
-		}));
+		return rows.map(
+			(r): TaskMilestoneRef => ({
+				id: String(r.id),
+				title: String(r.title),
+				boardId: String(r.board_id),
+				boardName: String(r.board_name),
+				dueOn: String(r.due_on),
+				done: r.completed_at != null,
+				updatedAt: toIso(r.updated_at),
+				href: boardLink(String(r.board_id), String(r.id))
+			})
+		);
 	}
 };

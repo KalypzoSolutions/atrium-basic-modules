@@ -36,17 +36,15 @@ jobs:
       - name: Core auf main (nur Warnlauf)
         if: matrix.core == 'main'
         run: git -C .core fetch origin main && git -C .core checkout origin/main
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version-file: .core/.nvmrc
-      - run: npm run setup
-      - run: npm run check:catalog
-      - run: npm run check:migrations
-      - run: npm run format:check
+          bun-version-file: .core/.bun-version
+      - run: bun run setup
+      - run: bun run check:catalog
+      - run: bun run check:migrations
+      - name: Format, Lint und Modulgrenzen (Biome)
+        run: bun run lint
       - name: Typprüfung
-        env:
-          NODE_OPTIONS: --max-old-space-size=6144
-        run: npm run check
-      - run: npm run lint
-      - run: npm test
-      - run: npm run build
+        run: bun run check
+      - run: bun run test
+      - run: bun run build

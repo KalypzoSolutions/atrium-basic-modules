@@ -9,7 +9,7 @@
  */
 import { sql } from 'drizzle-orm';
 import { todayBerlin } from '$lib/sdk/dates';
-import { core, errors, inList, type RequestContext, rowsOf, toIso, type Tx } from '$lib/sdk/server';
+import { core, errors, inList, type RequestContext, rowsOf, type Tx, toIso } from '$lib/sdk/server';
 import { accessForMany, canManageAll, requireNode, resolveAccess, rootAccess } from './access';
 import {
 	ancestorsOf,
@@ -17,16 +17,16 @@ import {
 	loadNode,
 	loadNodes,
 	mdb,
-	nodeRowOf,
 	NODE_COLUMNS,
-	userRefs,
-	type NodeRow
+	type NodeRow,
+	nodeRowOf,
+	userRefs
 } from './db';
 import { displayPath, uniqueName } from './names';
 import { siblingNames } from './nodes.service';
+import { type BulkResult, ROOT_LABEL, type TrashItem } from './schemas';
 import { keysFor } from './shares.service';
 import { removeObjects } from './storage';
-import { ROOT_LABEL, type BulkResult, type TrashItem } from './schemas';
 
 /** Höchstzahl Papierkorb-Einträge je Job-Lauf (Rest beim nächsten Lauf) */
 const PURGE_BATCH = 500;
@@ -87,12 +87,7 @@ async function requireTrashRoots(
 	const result: NodeRow[] = [];
 	for (const id of unique) {
 		const node = byId.get(id);
-		if (
-			!node ||
-			!node.trashRoot ||
-			!node.deletedAt ||
-			!(await canSeeTrashRoot(tx, ctx, node, keys))
-		)
+		if (!node?.trashRoot || !node.deletedAt || !(await canSeeTrashRoot(tx, ctx, node, keys)))
 			throw errors.notFound('Eintrag im Papierkorb nicht gefunden');
 		result.push(node);
 	}

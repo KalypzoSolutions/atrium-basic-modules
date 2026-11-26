@@ -2,9 +2,9 @@
  * Freigaben an Principals je Knoten und Suche nach Freigabe-Zielen.
  * Zugriff (read/edit), Validierung der Principals und Audit erledigt `shares.service.ts`.
  */
-import { defineEndpoint, PRINCIPAL_SEARCH_RATE_LIMIT, type AnyApiEndpoint } from '$lib/sdk/server';
+import { type AnyApiEndpoint, defineEndpoint, PRINCIPAL_SEARCH_RATE_LIMIT } from '$lib/sdk/server';
+import { idParams, PERMISSIONS, principalSearchQuery, sharesInput } from './schemas';
 import { getShares, putShares, searchShareTargets } from './shares.service';
-import { PERMISSIONS, idParams, principalSearchQuery, sharesInput } from './schemas';
 
 const tags = ['Modul: files'];
 

@@ -2,14 +2,14 @@
  * iCalendar-Ausgabe des Kalender-Abos (`events/ical.ts`): Maskierung, Zeilenfaltung (UTF-8-sicher,
  * 75 Bytes), DTSTART/DTEND für ganztägige, mehrtägige und Termine ohne Ende, Kalenderrahmen.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import {
 	buildCalendar,
 	escapeText,
 	eventTimes,
 	foldLine,
-	utcStamp,
-	type IcsEvent
+	type IcsEvent,
+	utcStamp
 } from '$modules/events/ical';
 
 const ev = (over: Partial<IcsEvent> = {}): IcsEvent => ({

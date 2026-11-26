@@ -2,25 +2,25 @@
 	// Whiteboard anlegen bzw. Eigenschaften ändern (Name, Beschreibung, Farbe, Hintergrund, Aktion)
 	import { tick, untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { apiFetch } from '$lib/sdk/client';
+	import { BUSY_SAVE, FormField } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
+	import { ColorPicker } from '$lib/components/ui/color-picker';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { ColorPicker } from '$lib/components/ui/color-picker';
 	import { SegmentedSlider } from '$lib/components/ui/segmented-slider';
 	import { SelectField } from '$lib/components/ui/select-field';
-	import { BUSY_SAVE, FormField } from '$lib/components/layout';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import { apiFetch } from '$lib/sdk/client';
 	import {
-		BACKGROUNDS,
 		BACKGROUND_LABELS,
-		BOARD_COLORS,
-		MAX_BOARD_DESCRIPTION,
-		MAX_BOARD_NAME,
-		boardInput,
+		BACKGROUNDS,
 		type Background,
+		BOARD_COLORS,
 		type Board,
 		type BoardDetail,
+		boardInput,
+		MAX_BOARD_DESCRIPTION,
+		MAX_BOARD_NAME,
 		type RefCard
 	} from '../schemas';
 	import { BASE, errMsg, fieldErrors } from './helpers';

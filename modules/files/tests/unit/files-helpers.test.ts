@@ -1,5 +1,5 @@
 /** UI-Hilfen des Moduls `files` (`pages/helpers.ts`). */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import {
 	breakableName,
 	compareNodes,

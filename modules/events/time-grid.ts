@@ -6,10 +6,10 @@
 
 import {
 	addDays,
+	type CalendarItem,
 	compareItems,
 	itemRange,
-	weekdayIndex,
-	type CalendarItem
+	weekdayIndex
 } from '$lib/components/layout/month-calendar';
 
 export type CalendarView = 'day' | 'week' | 'month' | 'list';

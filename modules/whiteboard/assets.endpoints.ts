@@ -1,22 +1,22 @@
 /** Dateien und Bilder eines Whiteboards hochladen und ausliefern (`/api/v1/modules/whiteboard/…`). */
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
+import { DEFAULT_ALLOWED_CONTENT_TYPES, EXTENSION_CONTENT_TYPES } from '$lib/sdk/content-types';
 import {
 	type AnyApiEndpoint,
+	checkUploadBytes,
 	core,
 	defineEndpoint,
 	errors,
-	checkUploadBytes,
 	IMAGE_RATE_LIMIT,
 	readUpload,
 	rowsOf
 } from '$lib/sdk/server';
-import { DEFAULT_ALLOWED_CONTENT_TYPES, EXTENSION_CONTENT_TYPES } from '$lib/sdk/content-types';
 import { requireBoardAccess } from './access';
-import { mdb } from './boards.service';
 import { IMAGE_TYPES, uploadAsset } from './assets.service';
+import { mdb } from './boards.service';
+import { type Asset, idParams, MAX_ASSET_BYTES, PERM } from './schemas';
 import { fileResponse } from './storage';
-import { idParams, MAX_ASSET_BYTES, PERM, type Asset } from './schemas';
 
 const tags = ['Whiteboard'];
 

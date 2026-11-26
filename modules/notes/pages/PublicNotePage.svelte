@@ -1,13 +1,13 @@
 <script lang="ts">
+	import Link2Off from '@lucide/svelte/icons/link-2-off';
+	import Lock from '@lucide/svelte/icons/lock';
+	import Pencil from '@lucide/svelte/icons/pencil';
 	// Öffentliche Seite `/p/notes/link/<token>`: Passwort (falls gesetzt), bei Bearbeiten-Links einmal der Name
 	// („Wie heißt du?“, optional, im Browser gemerkt), dann Seitenbaum (Link-Seite + Unterseiten, `?seite=<id>`) und Editor.
 	// Zugriffstoken nach dem Passwort je Link in `sessionStorage`, Geheimnis je Tab für die Anwesenheit.
 	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import Link2Off from '@lucide/svelte/icons/link-2-off';
-	import Lock from '@lucide/svelte/icons/lock';
-	import Pencil from '@lucide/svelte/icons/pencil';
 	import {
 		BottomSheet,
 		deviceLayout,
@@ -354,8 +354,6 @@
 		</div>
 	</div>
 	{#if phone && showTree}
-		<BottomSheet bind:open={sheetOpen} title="Seiten" size="tall">
-			{@render tree()}
-		</BottomSheet>
+		<BottomSheet bind:open={sheetOpen} title="Seiten" size="tall"> {@render tree()} </BottomSheet>
 	{/if}
 {/if}

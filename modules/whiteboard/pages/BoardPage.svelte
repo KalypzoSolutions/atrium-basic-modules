@@ -1,10 +1,10 @@
 <script lang="ts">
 	// Ein Whiteboard (vollflächig): laden, dann den Editor zeigen
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-	import { apiFetch, ApiClientError } from '$lib/sdk/client';
-	import type { ModulePageProps } from '$lib/sdk/types/module-ui';
-	import { Button } from '$lib/components/ui/button';
 	import { EmptyState, ErrorState, LoadingState } from '$lib/components/layout';
+	import { Button } from '$lib/components/ui/button';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import type { ModulePageProps } from '$lib/sdk/types/module-ui';
 	import type { BoardDetail } from '../schemas';
 	import Editor from './editor/Editor.svelte';
 	import { BASE, errMsg } from './helpers';

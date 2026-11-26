@@ -1,7 +1,19 @@
 /** Reine Logik von Aufgaben 2.0: Phasen, Zeitleiste, Vorlagen, Abhängigkeiten, Filter, Schemas. */
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'bun:test';
 import { setTodayForTests } from '$lib/sdk/dates';
+import { createsCycle, startsBeforeBlocker } from '$modules/tasks/dependencies';
+import { activeFilterCount, emptyFilter, matchesFilter } from '$modules/tasks/pages/filter';
+import { dueText } from '$modules/tasks/pages/helpers';
 import { currentPhase, phaseState, taskRange } from '$modules/tasks/phases';
+import { phaseInput, type TaskCard, taskDateIssues, taskInput } from '$modules/tasks/schemas';
+import {
+	applyTemplate,
+	BUILTIN_TEMPLATES,
+	builtinTemplate,
+	earliestDate,
+	templateDataSchema,
+	templateFromBoard
+} from '$modules/tasks/templates';
 import {
 	isoWeek,
 	monthTicks,
@@ -11,18 +23,6 @@ import {
 	timelineRange,
 	weekTicks
 } from '$modules/tasks/timeline';
-import {
-	applyTemplate,
-	BUILTIN_TEMPLATES,
-	builtinTemplate,
-	earliestDate,
-	templateDataSchema,
-	templateFromBoard
-} from '$modules/tasks/templates';
-import { createsCycle, startsBeforeBlocker } from '$modules/tasks/dependencies';
-import { activeFilterCount, emptyFilter, matchesFilter } from '$modules/tasks/pages/filter';
-import { dueText } from '$modules/tasks/pages/helpers';
-import { phaseInput, taskDateIssues, taskInput, type TaskCard } from '$modules/tasks/schemas';
 
 afterEach(() => setTodayForTests(null));
 

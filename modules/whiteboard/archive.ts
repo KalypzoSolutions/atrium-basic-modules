@@ -7,7 +7,7 @@
  * Lesen mit festen Grenzen (Einträge, Größen, keine ZIP64, nur erwartete Pfade), Elemente werden beim Import
  * zusätzlich je Typ geprüft (`checkOps`).
  */
-import { strFromU8, strToU8, unzipSync, zipSync, type Zippable } from 'fflate';
+import { strFromU8, strToU8, unzipSync, type Zippable, zipSync } from 'fflate';
 import { z } from 'zod';
 import {
 	ARCHIVE_FORMAT,

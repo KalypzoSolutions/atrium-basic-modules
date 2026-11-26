@@ -1,37 +1,38 @@
 import { z } from 'zod';
-import { NOTIFY_FILE_SHARED, NOTIFY_LINK_UPLOAD } from './schemas';
 import { defineModule, manifestFromPackage } from '$lib/sdk/server';
 import pkg from './atrium-module.json';
+import { filesBackup } from './backup';
+import type { FileRefsService } from './contract';
 import { linksEndpoints } from './links.endpoints';
 import { metaEndpoints } from './meta.endpoints';
-import { nodesEndpoints } from './nodes.endpoints';
-import { quotaEndpoints } from './quota.endpoints';
-import { recentEndpoints } from './recent.endpoints';
-import { sharesEndpoints } from './shares.endpoints';
-import { trashEndpoints } from './trash.endpoints';
-import { uploadEndpoints } from './upload.endpoints';
-import { resetAreas, resetUsers } from './reset';
-import { onUserDeleted } from './user-deleted';
-import { subjectExport } from './subject-export';
-import { filesBackup } from './backup';
-import { filesSearch } from './search';
-import { fileRefsService } from './refs.service';
-import type { FileRefsService } from './contract';
-import { purgeExpired } from './trash.service';
-import { backfillThumbnails } from './thumbs.service';
-import {
-	DEFAULT_LINK_UPLOAD_MB,
-	DEFAULT_QUOTA_MB,
-	DEFAULT_TRASH_DAYS,
-	PERMISSIONS,
-	SETTING_KEYS
-} from './schemas';
 import m0001 from './migrations/0001_init.sql?raw';
 import m0002 from './migrations/0002_link_lockout.sql?raw';
 import m0003 from './migrations/0003_single_view_upload_links.sql?raw';
 import m0004 from './migrations/0004_folder_style_user_quota.sql?raw';
 import m0005 from './migrations/0005_thumb_state.sql?raw';
 import m0006 from './migrations/0006_folder_icon_color.sql?raw';
+import { nodesEndpoints } from './nodes.endpoints';
+import { quotaEndpoints } from './quota.endpoints';
+import { recentEndpoints } from './recent.endpoints';
+import { fileRefsService } from './refs.service';
+import { resetAreas, resetUsers } from './reset';
+import {
+	DEFAULT_LINK_UPLOAD_MB,
+	DEFAULT_QUOTA_MB,
+	DEFAULT_TRASH_DAYS,
+	NOTIFY_FILE_SHARED,
+	NOTIFY_LINK_UPLOAD,
+	PERMISSIONS,
+	SETTING_KEYS
+} from './schemas';
+import { filesSearch } from './search';
+import { sharesEndpoints } from './shares.endpoints';
+import { subjectExport } from './subject-export';
+import { backfillThumbnails } from './thumbs.service';
+import { trashEndpoints } from './trash.endpoints';
+import { purgeExpired } from './trash.service';
+import { uploadEndpoints } from './upload.endpoints';
+import { onUserDeleted } from './user-deleted';
 
 /** Dateien: eine Ansicht (eigene + freigegebene), Freigaben an Principals, öffentliche Ansicht-/Upload-Links, Papierkorb */
 export default defineModule({

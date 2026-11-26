@@ -41,6 +41,8 @@
 		{/snippet}
 	</Tooltip.Trigger>
 	<Tooltip.Content side="bottom">
-		{label}{#if shortcut}<span class="ml-1 opacity-70">{shortcut}</span>{/if}
+		{label}{#if shortcut}
+			<span class="ml-1 opacity-70">{shortcut}</span>
+		{/if}
 	</Tooltip.Content>
 </Tooltip.Root>

@@ -1,4 +1,4 @@
-import { expect, test, type Browser, type Page } from '@playwright/test';
+import { type Browser, expect, type Page, test } from '@playwright/test';
 
 // Notizen: anlegen, tippen, zweiter Browser sieht den Text live, Fett per Leiste, Tabelle einfügen,
 // Unterseite anlegen (Baum), Quelltext-Ansicht zeigt Markdown, Export-Download startet.

@@ -1,11 +1,4 @@
 <script lang="ts">
-	// Eine geöffnete Notiz: Live-Verbindung (Yjs über SSE), Kopf mit Brotkrumen/Anwesenheit/Status/Teilen/Menü,
-	// Titel direkt über dem Text, Editor und optional die Quelltext-Ansicht. Wird je Notiz neu aufgebaut ({#key}).
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import { onDestroy, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import type { Editor } from '@tiptap/core';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Download from '@lucide/svelte/icons/download';
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
@@ -18,44 +11,51 @@
 	import Palette from '@lucide/svelte/icons/palette';
 	import PanelLeft from '@lucide/svelte/icons/panel-left';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import { apiFetch, can } from '$lib/sdk/client';
-	import { ConfirmDialog, PageTitle, ShareMenu, type ShareCandidate } from '$lib/components/layout';
+	import type { Editor } from '@tiptap/core';
+	import { onDestroy, onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	// Eine geöffnete Notiz: Live-Verbindung (Yjs über SSE), Kopf mit Brotkrumen/Anwesenheit/Status/Teilen/Menü,
+	// Titel direkt über dem Text, Editor und optional die Quelltext-Ansicht. Wird je Notiz neu aufgebaut ({#key}).
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
+	import { ConfirmDialog, PageTitle, type ShareCandidate, ShareMenu } from '$lib/components/layout';
 	import { shareKey } from '$lib/components/layout/share-types';
 	import { Alert, AlertDescription } from '$lib/components/ui/alert';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { apiFetch, can } from '$lib/sdk/client';
 	import {
 		DEFAULT_USER_PREFS,
 		MAX_TITLE,
-		PERM,
-		presenceColor,
 		type NoteDetail,
 		type NoteShares,
+		PERM,
+		presenceColor,
 		type UserPrefs
 	} from '../schemas';
+	import ExportDialog from './ExportDialog.svelte';
 	import NoteEditor from './editor/NoteEditor.svelte';
 	import SourcePanel from './editor/SourcePanel.svelte';
 	import { NoteSync } from './editor/sync.svelte';
-	import ExportDialog from './ExportDialog.svelte';
 	import {
 		API,
 		BASE,
 		createNote,
 		errMsg,
 		loadShares,
-		noteTitle,
 		notePath,
+		noteTitle,
+		SHARE_LEVELS_UI,
 		saveShares,
 		searchPrincipals,
-		SHARE_LEVELS_UI,
 		shareCandidateEntry,
 		shareDescription,
 		shareEntries
 	} from './helpers';
 	import MoveDialog from './MoveDialog.svelte';
-	import NoteLinkDialog from './NoteLinkDialog.svelte';
 	import NoteIcon from './NoteIcon.svelte';
+	import NoteLinkDialog from './NoteLinkDialog.svelte';
 	import PeerAvatars from './PeerAvatars.svelte';
 	import StyleDialog from './StyleDialog.svelte';
 	import SurfaceMenu from './SurfaceMenu.svelte';

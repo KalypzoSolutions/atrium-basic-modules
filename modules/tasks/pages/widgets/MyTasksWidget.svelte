@@ -1,11 +1,11 @@
 <script lang="ts">
+	import SquareKanban from '@lucide/svelte/icons/square-kanban';
 	// Dashboard-Kachel „Meine Aufgaben“: offene Aufgaben und Unteraufgaben, die mir zugewiesen sind.
 	import { onMount } from 'svelte';
-	import SquareKanban from '@lucide/svelte/icons/square-kanban';
+	import { DashboardCard } from '$lib/components/layout';
+	import { Badge } from '$lib/components/ui/badge';
 	import { apiFetch } from '$lib/sdk/client';
 	import type { DashboardWidgetProps } from '$lib/sdk/types/module-ui';
-	import { Badge } from '$lib/components/ui/badge';
-	import { DashboardCard } from '$lib/components/layout';
 	import type { MyTask } from '../../schemas';
 	import { BASE, dueClass, dueLabel, errMsg, priorityLabel, priorityVariant } from '../helpers';
 
@@ -62,9 +62,15 @@
 							>{t.isMilestone ? '◆ ' : ''}{t.title}</span
 						>
 						<span class="block truncate text-xs text-muted-foreground">
-							{t.board.name}{#if t.phase}&nbsp;· {t.phase.name}{/if} · {t.columnName}{#if t.viaChecklist}&nbsp;·
-								Unteraufgabe{/if}
-							{#if t.checklist.total}&nbsp;· {t.checklist.done}/{t.checklist.total}{/if}
+							{t.board.name}{#if t.phase}
+								&nbsp;· {t.phase.name}
+							{/if}
+							· {t.columnName}{#if t.viaChecklist}
+								&nbsp;· Unteraufgabe
+							{/if}
+							{#if t.checklist.total}
+								&nbsp;· {t.checklist.done}/{t.checklist.total}
+							{/if}
 						</span>
 					</span>
 					<span class="flex shrink-0 flex-col items-end gap-1">

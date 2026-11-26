@@ -1,20 +1,20 @@
 import { z } from 'zod';
 import { defineModule, manifestFromPackage } from '$lib/sdk/server';
-import pkg from './atrium-module.json';
 import { withBoardContext } from './access';
 import { assetEndpoints } from './assets.endpoints';
+import pkg from './atrium-module.json';
 import { boardEndpoints } from './boards.endpoints';
 import { boardEmbed } from './embeds';
 import { liveEndpoints } from './live.endpoints';
+import m0001 from './migrations/0001_init.sql?raw';
+import m0002 from './migrations/0002_user_prefs.sql?raw';
 import { prefsEndpoints } from './prefs.endpoints';
 import { onMemberDeleted, onUserDeleted, resetAreas, resetUsers, subjectExport } from './privacy';
+import { DEFAULT_BOARD_MB, NOTIFY_BOARD_SHARED, PERM, SETTING_BOARD_MB } from './schemas';
 import { whiteboardSearch } from './search';
 import { snapshotEndpoints } from './snapshots.endpoints';
 import { runAutoSnapshots, runCleanup } from './snapshots.service';
 import { transferEndpoints } from './transfer.endpoints';
-import { DEFAULT_BOARD_MB, NOTIFY_BOARD_SHARED, PERM, SETTING_BOARD_MB } from './schemas';
-import m0001 from './migrations/0001_init.sql?raw';
-import m0002 from './migrations/0002_user_prefs.sql?raw';
 
 export default defineModule({
 	package: pkg,

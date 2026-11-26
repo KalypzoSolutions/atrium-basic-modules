@@ -15,29 +15,29 @@
 </script>
 
 <script lang="ts">
-	// Dialog „Exportieren“ für ein Board, eine Aufgabe oder „Meine Aufgaben“: Format (PDF, PNG, HTML, CSV,
-	// Markdown) und Ausführung wählen, Datei erzeugt der Server (`…/export`).
-	import { toast } from 'svelte-sonner';
 	import Check from '@lucide/svelte/icons/check';
 	import FileCode from '@lucide/svelte/icons/file-code';
 	import FileImage from '@lucide/svelte/icons/file-image';
 	import FileSpreadsheet from '@lucide/svelte/icons/file-spreadsheet';
 	import FileText from '@lucide/svelte/icons/file-text';
 	import FileType from '@lucide/svelte/icons/file-type';
+	// Dialog „Exportieren“ für ein Board, eine Aufgabe oder „Meine Aufgaben“: Format (PDF, PNG, HTML, CSV,
+	// Markdown) und Ausführung wählen, Datei erzeugt der Server (`…/export`).
+	import { toast } from 'svelte-sonner';
+	import { downloadPdf } from '$lib/components/layout/download';
 	import { Button } from '$lib/components/ui/button';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Label } from '$lib/components/ui/label';
 	import { SegmentedSlider } from '$lib/components/ui/segmented-slider';
-	import { downloadPdf } from '$lib/components/layout/download';
 	import { cn } from '$lib/utils';
 	import {
 		BOARD_GROUP_LABELS,
 		BOARD_GROUPS,
+		type BoardGroup,
 		EXPORT_FORMAT_DESCRIPTIONS,
 		EXPORT_FORMAT_LABELS,
 		EXPORT_FORMATS,
-		type BoardGroup,
 		type ExportFormat
 	} from '../export';
 
@@ -215,7 +215,8 @@
 							checked={includeDone}
 							onCheckedChange={(v) => (includeDone = v === true)}
 						/>
-						<Label for="tasks-export-done" class="font-normal">Erledigte Aufgaben einbeziehen</Label
+						<Label for="tasks-export-done" class="font-normal"
+							>Erledigte Aufgaben einbeziehen</Label
 						>
 					</div>
 				{/if}

@@ -1,23 +1,23 @@
 <script lang="ts">
-	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 4.3.
-	import { onDestroy, untrack } from 'svelte';
-	import { SvelteSet } from 'svelte/reactivity';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
 	import ArrowLeftIcon from '@lucide/svelte/icons/arrow-left';
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 	import CircleAlertIcon from '@lucide/svelte/icons/circle-alert';
 	import CircleCheckIcon from '@lucide/svelte/icons/circle-check';
 	import ClockIcon from '@lucide/svelte/icons/clock';
 	import DownloadIcon from '@lucide/svelte/icons/download';
-	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
-	import UploadIcon from '@lucide/svelte/icons/upload';
 	import EyeIcon from '@lucide/svelte/icons/eye';
 	import FolderOpenIcon from '@lucide/svelte/icons/folder-open';
 	import LinkIcon from '@lucide/svelte/icons/link-2-off';
 	import LoaderCircleIcon from '@lucide/svelte/icons/loader-circle';
 	import LockIcon from '@lucide/svelte/icons/lock';
 	import RefreshCwIcon from '@lucide/svelte/icons/refresh-cw';
+	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
+	import UploadIcon from '@lucide/svelte/icons/upload';
+	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 4.3.
+	import { onDestroy, untrack } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { PageTitle } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -26,36 +26,36 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { ApiClientError, apiFetch } from '$lib/sdk/client';
 	import {
-		MAX_UPLOADER_NAME,
 		linkCanUpload,
 		linkCanView,
-		publicUploadFields,
+		MAX_UPLOADER_NAME,
 		type PublicLinkInfo,
 		type PublicListing,
 		type PublicNode,
-		type PublicUploadResult
+		type PublicUploadResult,
+		publicUploadFields
 	} from '../schemas';
 	import FilePreview from './FilePreview.svelte';
+	import FileTypeGlyph from './FileTypeGlyph.svelte';
+	import FolderGlyph from './FolderGlyph.svelte';
+	import { fileTint } from './file-types';
+	import {
+		API,
+		breakableName,
+		type ContentUrlFn,
+		formatBytes,
+		type PreviewNode,
+		previewKind,
+		RAW_API
+	} from './helpers';
 	import {
 		planBatches,
 		precheck,
 		publicUploadError,
 		queueProgress,
-		xhrUpload,
-		type UploadStatus
+		type UploadStatus,
+		xhrUpload
 	} from './upload-queue';
-	import {
-		API,
-		RAW_API,
-		breakableName,
-		formatBytes,
-		previewKind,
-		type ContentUrlFn,
-		type PreviewNode
-	} from './helpers';
-	import FolderGlyph from './FolderGlyph.svelte';
-	import FileTypeGlyph from './FileTypeGlyph.svelte';
-	import { fileTint } from './file-types';
 
 	let { params }: { params: Record<string, string> } = $props();
 
@@ -708,7 +708,8 @@
 					<div class="min-w-0">
 						<Card.Title level={1} class="text-section break-words">{info.name}</Card.Title>
 						<Card.Description>
-							{info.kind === 'folder' ? 'Dieser Ordner' : 'Diese Datei'} ist mit einem Passwort geschützt.
+							{info.kind === 'folder' ? 'Dieser Ordner' : 'Diese Datei'} ist mit einem Passwort
+							geschützt.
 						</Card.Description>
 					</div>
 				</div>
@@ -993,7 +994,9 @@
 										class="line-clamp-2 h-10 text-sm leading-5 font-medium break-words"
 										title={node.name}
 									>
-										{#each breakableName(node.name) as part, i (i)}{part}<wbr />{/each}
+										{#each breakableName(node.name) as part, i (i)}
+											{part}<wbr />
+										{/each}
 									</span>
 									<span class="text-xs text-muted-foreground tabular-nums">
 										{node.kind === 'folder'
@@ -1159,9 +1162,9 @@
 				/>
 				<div id="upload-limits" class="flex flex-col gap-1 text-xs text-muted-foreground">
 					<p>
-						Bis zu {limits.maxFiles} Dateien je Vorgang, je Datei max. {formatBytes(
-							limits.maxFileBytes
-						)}. Größere Auswahlen werden automatisch nacheinander hochgeladen.
+						Bis zu {limits.maxFiles} Dateien je Vorgang, je Datei max.
+						{formatBytes(limits.maxFileBytes)}. Größere Auswahlen werden automatisch nacheinander
+						hochgeladen.
 					</p>
 					{#if acceptAttr}
 						<details>

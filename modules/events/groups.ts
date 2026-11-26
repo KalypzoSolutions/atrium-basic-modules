@@ -6,10 +6,10 @@ import { core, type PrincipalProvider } from '$lib/sdk/server';
 import type { RequestContext } from '$lib/sdk/types';
 import {
 	DEFAULT_STAMM_NAME,
+	type EventGroupRef,
 	MODULE_ID,
 	STAMM_GROUP_ID,
-	STAMM_NAME_SETTING,
-	type EventGroupRef
+	STAMM_NAME_SETTING
 } from './schemas';
 
 /** Anzeigename des Stamms aus den Modul-Einstellungen (Fallback: Standardname) */

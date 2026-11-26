@@ -4,7 +4,7 @@
  * Muster: `galleries` (`principalKeysFor`, `validatePrincipals`, `describePrincipals`, `searchPrincipals`
  * aus `$lib/sdk/server`, alle VOR bzw. NACH der Transaktion).
  */
-import { notifyNodeShared } from './notify';
+
 import { sql } from 'drizzle-orm';
 import {
 	core,
@@ -12,22 +12,23 @@ import {
 	errors,
 	loadObjectShares,
 	type PrincipalInfo,
-	principalKeysFor,
 	type PrincipalType,
-	replaceObjectShares,
+	principalKeysFor,
 	type RequestContext,
+	replaceObjectShares,
 	requireShareCapability,
 	searchPrincipals,
 	type Tx,
 	validatePrincipals
 } from '$lib/sdk/server';
-import { accessForMany, canManageAll, NODE_SHARES, requireNode, type NodeAccess } from './access';
+import { accessForMany, canManageAll, NODE_SHARES, type NodeAccess, requireNode } from './access';
 import { ancestorsOf, mdb, type NodeRow } from './db';
+import { notifyNodeShared } from './notify';
 import {
 	MODULE_ID,
-	PERMISSIONS,
 	type NodeShare,
 	type NodeShares,
+	PERMISSIONS,
 	type ShareInput,
 	type ShareLevel
 } from './schemas';

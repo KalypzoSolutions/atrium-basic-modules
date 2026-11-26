@@ -8,39 +8,23 @@
  * Gruppen-/Mitglieds-Freigaben und Aktionen dann sauber abgelehnt werden. Gruppenfreigaben und Notizen an
  * Aktionen testet ep-intern-modules in `modules/_integration/tests/integration/notes-groups-actions.test.ts`.
  */
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'bun:test';
+import { yXmlFragmentToProsemirrorJSON } from '@tiptap/y-tiptap';
 import { eq, sql } from 'drizzle-orm';
 import sharp from 'sharp';
 import * as Y from 'yjs';
-import { yXmlFragmentToProsemirrorJSON } from '@tiptap/y-tiptap';
-import { useTestDatabase } from '$testing';
-import { installFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser, setUserActive } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { disableModule, enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import { core } from '$testing';
-import notesModule from '$modules/notes/module';
-import { hub } from '$modules/notes/live';
-import { flushAllForTests, resetDocsForTests } from '$modules/notes/doc.service';
-import { onUserDeleted } from '$modules/notes/privacy';
-import { purgeExpiredTrash } from '$modules/notes/trash.service';
+import type { RequestContext } from '$lib/sdk/types';
 import { purgeUnusedAssets } from '$modules/notes/assets.service';
-import { runAutoVersions } from '$modules/notes/versions.service';
-import { notesSearch } from '$modules/notes/search';
+import { flushAllForTests, resetDocsForTests } from '$modules/notes/doc.service';
+import { hub } from '$modules/notes/live';
+import notesModule from '$modules/notes/module';
+import { onUserDeleted } from '$modules/notes/privacy';
 import { noteRefsService } from '$modules/notes/refs.service';
 import {
 	DEFAULT_USER_PREFS,
-	MAX_DEPTH,
-	YDOC_FIELD,
 	type LiveEvent,
+	MAX_DEPTH,
 	type NoteAsset,
 	type NoteDetail,
 	type NoteNode,
@@ -51,9 +35,34 @@ import {
 	type NoteVersionDetail,
 	type TrashItem,
 	type UpdateResult,
-	type UserPrefs
+	type UserPrefs,
+	YDOC_FIELD
 } from '$modules/notes/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import { notesSearch } from '$modules/notes/search';
+import { purgeExpiredTrash } from '$modules/notes/trash.service';
+import { runAutoVersions } from '$modules/notes/versions.service';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	disableModule,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	setUserActive,
+	syncModules,
+	useTestDatabase,
+	waitFor as waitUntil
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules';
 const keys: Record<string, string> = {};
@@ -159,7 +168,7 @@ async function openLive(who: string, noteId: string, client: string) {
 		type: T,
 		pred: (e: Extract<LiveEvent, { type: T }>) => boolean = () => true
 	) =>
-		vi.waitFor(
+		waitUntil(
 			() => {
 				const hit = events.find(
 					(e): e is Extract<LiveEvent, { type: T }> =>
@@ -585,7 +594,7 @@ describe('Live: Yjs und SSE', () => {
 			})
 		);
 		await live.waitFor('revoked');
-		await vi.waitFor(() => expect(live.isEnded()).toBe(true));
+		await waitUntil(() => expect(live.isEnded()).toBe(true));
 		fail(await call('helper', 'GET', `/notes/${grandId}`), 404, 'not_found');
 		expect((await openLive('stranger', rootId, 'client-stranger-x')).status).toBe(404);
 	});
@@ -596,7 +605,7 @@ describe('Live: Yjs und SSE', () => {
 		await setUserActive(admin, userIds.viewall!, false);
 		await hub.recheck(rootId);
 		await live.waitFor('revoked');
-		await vi.waitFor(() => expect(live.isEnded()).toBe(true));
+		await waitUntil(() => expect(live.isEnded()).toBe(true));
 		await setUserActive(admin, userIds.viewall!, true);
 	});
 
@@ -685,7 +694,7 @@ describe('Verschieben und Papierkorb', () => {
 			await call('owner', 'POST', `/notes/${grandId}/move`, { parentId: otherRoot, position: 0 }),
 			201
 		);
-		expect(moved.ownerId).toBe(userIds.other);
+		expect<unknown>(moved.ownerId).toBe(userIds.other);
 		expect(moved.isOwner).toBe(false);
 		fail(
 			await call('owner', 'POST', `/notes/${grandId}/move`, { parentId: null, position: 0 }),
@@ -696,7 +705,7 @@ describe('Verschieben und Papierkorb', () => {
 			await call('editall', 'POST', `/notes/${grandId}/move`, { parentId: rootId, position: 5 }),
 			201
 		);
-		expect(back.ownerId).toBe(userIds.owner);
+		expect<unknown>(back.ownerId).toBe(userIds.owner);
 		const top = ok<NoteDetail>(
 			await call('owner', 'POST', `/notes/${grandId}/move`, { parentId: null, position: 0 }),
 			201
@@ -865,7 +874,7 @@ describe('Versionen, Bilder, Suche', () => {
 		await flushAllForTests();
 		await notesModule.onDataReplaced!();
 		await live.waitFor('reset');
-		await vi.waitFor(() => expect(live.isEnded()).toBe(true));
+		await waitUntil(() => expect(live.isEnded()).toBe(true));
 		expect((await raw('owner', 'GET', `/notes/${rootId}/state`)).status).toBe(200);
 	});
 

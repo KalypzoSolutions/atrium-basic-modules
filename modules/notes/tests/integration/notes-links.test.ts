@@ -4,38 +4,46 @@
  * Fehlversuchssperre, Live als Gast (Name, Anwesenheit nur mit eigenem Geheimnis), Widerruf schließt Verbindungen,
  * deaktivierte Eigentümer*in, Audit ohne Passwort/Inhalt.
  */
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'bun:test';
+import { yXmlFragmentToProsemirrorJSON } from '@tiptap/y-tiptap';
 import { eq } from 'drizzle-orm';
 import sharp from 'sharp';
 import * as Y from 'yjs';
-import { yXmlFragmentToProsemirrorJSON } from '@tiptap/y-tiptap';
-import { useTestDatabase } from '$testing';
-import { installFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser, setUserActive } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import notesModule from '$modules/notes/module';
-import { hub } from '$modules/notes/live';
+import type { RequestContext } from '$lib/sdk/types';
 import { resetDocsForTests } from '$modules/notes/doc.service';
 import { clearGuestCache } from '$modules/notes/links.endpoints';
 import { ownerCacheClearForTests } from '$modules/notes/links.service';
+import { hub } from '$modules/notes/live';
+import notesModule from '$modules/notes/module';
 import {
-	YDOC_FIELD,
 	type LiveEvent,
 	type NoteAsset,
 	type NoteDetail,
 	type NoteLink,
-	type PublicLinkInfo
+	type PublicLinkInfo,
+	YDOC_FIELD
 } from '$modules/notes/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	setUserActive,
+	syncModules,
+	useTestDatabase,
+	waitFor as waitUntil
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/notes';
 const keys: Record<string, string> = {};
@@ -174,7 +182,7 @@ async function openLive(who: string | null, path: string) {
 		type: T,
 		pred: (e: Extract<LiveEvent, { type: T }>) => boolean = () => true
 	) =>
-		vi.waitFor(
+		waitUntil(
 			() => {
 				const hit = events.find(
 					(e): e is Extract<LiveEvent, { type: T }> =>

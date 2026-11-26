@@ -4,7 +4,7 @@
  * `/embed/whiteboard/<id>` (Browser: `ui.ts` `embedRoutes`) bzw. `/modules/whiteboard/<id>`.
  */
 import { sql } from 'drizzle-orm';
-import { inList, rowsOf, type ModuleEmbedProvider } from '$lib/sdk/server';
+import { inList, type ModuleEmbedProvider, rowsOf } from '$lib/sdk/server';
 import { loadBoardContext, resolveBoardAccess, visibleBoardsFilter } from './access';
 import { mdb } from './boards.service';
 import { PERM } from './schemas';

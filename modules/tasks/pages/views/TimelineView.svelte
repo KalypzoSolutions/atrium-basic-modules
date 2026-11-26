@@ -1,24 +1,24 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { todayBerlin } from '$lib/sdk/dates';
-	import * as Tabs from '$lib/components/ui/tabs';
 	import { deviceLayout } from '$lib/components/layout';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { todayBerlin } from '$lib/sdk/dates';
 	import { startsBeforeBlocker } from '../../dependencies';
 	import { taskRange } from '../../phases';
 	import type { BoardDetail, Phase, TaskCard } from '../../schemas';
 	import {
 		DAY_WIDTH,
+		type DateRange,
 		dayIndex,
 		monthTicks,
 		moveRange,
 		pxToDays,
 		rangeDays,
 		resizeRange,
-		timelineRange,
-		weekTicks,
-		type DateRange,
 		type TimelineScale,
-		type TimelineTarget
+		type TimelineTarget,
+		timelineRange,
+		weekTicks
 	} from '../../timeline';
 	import { shortDate } from '../helpers';
 
@@ -249,14 +249,16 @@
 							<span
 								class="absolute top-0 h-6 truncate border-l px-1.5 leading-6 font-medium text-foreground"
 								style:left={`${m.offset * dayW}px`}
-								style:width={`${m.days * dayW}px`}>{m.label}</span
+								style:width={`${m.days * dayW}px`}
+								>{m.label}</span
 							>
 						{/each}
 						{#each weeks as w (w.date)}
 							<span
 								class="absolute top-6 h-6 truncate border-l px-1 leading-6"
 								style:left={`${w.offset * dayW}px`}
-								style:width={`${7 * dayW}px`}>{w.label}</span
+								style:width={`${7 * dayW}px`}
+								>{w.label}</span
 							>
 						{/each}
 					</div>
@@ -443,7 +445,8 @@
 			<span
 				class="absolute z-30 rounded bg-popover px-1.5 py-0.5 text-xs shadow-md tabular-nums"
 				style:left={`${left(b.r.from)}px`}
-				style:top={`${b.top - 22}px`}>{label(b.r)}</span
+				style:top={`${b.top - 22}px`}
+				>{label(b.r)}</span
 			>
 		{/if}
 	{/if}

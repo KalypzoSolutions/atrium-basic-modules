@@ -1,8 +1,10 @@
 /** REST für Notizen: Seitenbaum, Anlegen/Ändern/Verschieben, Papierkorb, Suche, Freigaben (`/api/v1/modules/notes/…`). */
 import { sql } from 'drizzle-orm';
+import { addDays } from '$lib/sdk/dates';
+import { loadIconSet } from '$lib/sdk/icons';
 import {
-	addedPrincipals,
 	type AnyApiEndpoint,
+	addedPrincipals,
 	core,
 	defineEndpoint,
 	describePrincipals,
@@ -15,14 +17,12 @@ import {
 	replaceObjectShares,
 	requireShareCapability,
 	rowsOf,
-	searchPrincipals,
 	type StoredShare,
-	toIso,
+	searchPrincipals,
 	type Tx,
+	toIso,
 	validatePrincipals
 } from '$lib/sdk/server';
-import { addDays } from '$lib/sdk/dates';
-import { loadIconSet } from '$lib/sdk/icons';
 import {
 	accessForMany,
 	canEditAll,
@@ -36,18 +36,45 @@ import {
 	visibleNotesSql
 } from './access';
 import { mdb, refOf, userRefs } from './db';
+import { plainTextOf } from './doc/text';
 import { jsonFromState, stateFromJson } from './doc.service';
 import { parseMarkdown } from './export/markdown';
-import { plainTextOf } from './doc/text';
 import { closeNotes, hub, recheckNotes } from './live';
 import { notifyNoteShared } from './notify';
+import {
+	type ActionNotes,
+	actionParams,
+	idParams,
+	type LiveEvent,
+	MAX_CHILDREN,
+	MAX_DEPTH,
+	MAX_DOC_BYTES,
+	MODULE_ID,
+	moveInput,
+	type NoteDetail,
+	type NoteNode,
+	type NoteRoots,
+	type NoteSearchHit,
+	type NoteShareEntry,
+	type NoteShares,
+	noteCreateInput,
+	noteUpdateInput,
+	PERM,
+	principalQuery,
+	recentQuery,
+	searchQuery,
+	sharesInput,
+	TRASH_DAYS,
+	type TrashItem,
+	trashIdsInput
+} from './schemas';
 import { afterPurge, purgeInTx } from './trash.service';
 import {
 	assertActionEditable,
 	buildNodes,
+	type Container,
 	canCreate,
 	childCount,
-	type Container,
 	likePattern,
 	liveSubtree,
 	loadNodes,
@@ -58,33 +85,6 @@ import {
 	renumber,
 	visibleAncestors
 } from './tree.service';
-import {
-	actionParams,
-	idParams,
-	MAX_CHILDREN,
-	MAX_DEPTH,
-	MAX_DOC_BYTES,
-	MODULE_ID,
-	moveInput,
-	noteCreateInput,
-	noteUpdateInput,
-	PERM,
-	principalQuery,
-	recentQuery,
-	searchQuery,
-	sharesInput,
-	TRASH_DAYS,
-	trashIdsInput,
-	type ActionNotes,
-	type LiveEvent,
-	type NoteDetail,
-	type NoteNode,
-	type NoteRoots,
-	type NoteSearchHit,
-	type NoteShareEntry,
-	type NoteShares,
-	type TrashItem
-} from './schemas';
 
 const tags = ['Notizen'];
 const STAMM_NAME_SETTING = 'events.stamm.name';

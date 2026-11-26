@@ -1,27 +1,32 @@
 import { z } from 'zod';
-import { eventsAssist, PERM_AI } from './assist';
-import { NOTIFY_EVENT_CANCELLED, NOTIFY_EVENT_CHANGED, NOTIFY_EVENT_NEW } from './schemas';
 import { defineModule, manifestFromPackage } from '$lib/sdk/server';
+import { eventsAssist, PERM_AI } from './assist';
 import pkg from './atrium-module.json';
-import { eventsSearch } from './search';
+import { calendarEndpoints } from './calendar.endpoints';
+import { calendarFeedsBackup } from './calendar-feeds.service';
+import type { EventRefsService } from './contract';
 import { eventsDashboard } from './dashboard';
 import { eventEndpoints } from './events.endpoints';
 import { exportEndpoints } from './export.endpoints';
 import { metaEndpoints } from './meta.endpoints';
-import { websiteEndpoints } from './website.endpoints';
-import { resetAreas, resetUsers } from './reset';
-import { onUserDeleted } from './user-deleted';
-import { subjectExport } from './subject-export';
-import { eventRefsService } from './refs.service';
-import type { EventRefsService } from './contract';
-import { DEFAULT_STAMM_NAME, STAMM_NAME_SETTING } from './schemas';
 import m0001 from './migrations/0001_init.sql?raw';
 import m0002 from './migrations/0002_recurrence.sql?raw';
 import m0003 from './migrations/0003_checks.sql?raw';
 import m0004 from './migrations/0004_calendar_feeds.sql?raw';
 import m0005 from './migrations/0005_feed_tasks.sql?raw';
-import { calendarEndpoints } from './calendar.endpoints';
-import { calendarFeedsBackup } from './calendar-feeds.service';
+import { eventRefsService } from './refs.service';
+import { resetAreas, resetUsers } from './reset';
+import {
+	DEFAULT_STAMM_NAME,
+	NOTIFY_EVENT_CANCELLED,
+	NOTIFY_EVENT_CHANGED,
+	NOTIFY_EVENT_NEW,
+	STAMM_NAME_SETTING
+} from './schemas';
+import { eventsSearch } from './search';
+import { subjectExport } from './subject-export';
+import { onUserDeleted } from './user-deleted';
+import { websiteEndpoints } from './website.endpoints';
 
 export default defineModule({
 	package: pkg,

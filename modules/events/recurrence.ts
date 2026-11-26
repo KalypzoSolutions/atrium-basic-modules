@@ -107,7 +107,7 @@ export function nextWeekday(fromDate: string, weekday: number): string {
 // Kandidaten erzeugen
 
 function weekdaysOf(rule: RecurrenceRule, startsOn: string): number[] {
-	return rule.byWeekday && rule.byWeekday.length
+	return rule.byWeekday?.length
 		? [...rule.byWeekday].sort((a, b) => a - b)
 		: [isoWeekday(startsOn)];
 }

@@ -3,7 +3,7 @@
  * und werden NACH der Objektprüfung mit einem System-Kontext gelesen/geschrieben – Bearbeitende brauchen deshalb
  * keine Storage-Rechte. Alle Funktionen mit `core.*` nur AUSSERHALB offener Modul-Transaktionen aufrufen (PGlite).
  */
-import { core, secureFileResponse, type ImageVariantSpec } from '$lib/sdk/server';
+import { core, type ImageVariantSpec, secureFileResponse } from '$lib/sdk/server';
 import { MODULE_ID } from './schemas';
 
 export const filesCtx = () => core.auth.systemContext('whiteboard-files');

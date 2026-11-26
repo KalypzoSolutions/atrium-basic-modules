@@ -1,27 +1,27 @@
 import { defineModule, manifestFromPackage } from '$lib/sdk/server';
-import pkg from './atrium-module.json';
-import { notesAssist, PERM_AI } from './assist';
 import { withNoteContext } from './access';
 import { assetEndpoints } from './assets.endpoints';
 import { purgeUnusedAssets } from './assets.service';
+import { notesAssist, PERM_AI } from './assist';
+import pkg from './atrium-module.json';
+import { notesBackup } from './backup';
+import type { NoteRefsService } from './contract';
 import { discardAllDocs, flushAll } from './doc.service';
 import { linkEndpoints, publicLinkEndpoints } from './links.endpoints';
-import { notesBackup } from './backup';
 import { liveEndpoints } from './live.endpoints';
+import m0001 from './migrations/0001_init.sql?raw';
+import m0002 from './migrations/0002_user_prefs.sql?raw';
+import m0003 from './migrations/0003_public_links.sql?raw';
 import { noteEndpoints } from './notes.endpoints';
 import { prefsEndpoints } from './prefs.endpoints';
 import { onMemberDeleted, onUserDeleted, resetAreas, resetUsers, subjectExport } from './privacy';
 import { noteRefsService } from './refs.service';
+import { NOTIFY_NOTE_SHARED, PERM } from './schemas';
 import { notesSearch } from './search';
 import { transferEndpoints } from './transfer.endpoints';
 import { purgeExpiredTrash } from './trash.service';
-import { runAutoVersions } from './versions.service';
 import { versionEndpoints } from './versions.endpoints';
-import { NOTIFY_NOTE_SHARED, PERM } from './schemas';
-import type { NoteRefsService } from './contract';
-import m0001 from './migrations/0001_init.sql?raw';
-import m0002 from './migrations/0002_user_prefs.sql?raw';
-import m0003 from './migrations/0003_public_links.sql?raw';
+import { runAutoVersions } from './versions.service';
 
 export default defineModule({
 	package: pkg,

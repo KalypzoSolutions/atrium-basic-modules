@@ -1,13 +1,13 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	// Karte einfügen: Datensatz aus einem anderen Modul suchen (nur Typen, die die Person nutzen darf)
 	import { page } from '$app/state';
-	import { untrack } from 'svelte';
-	import { apiFetch, can } from '$lib/sdk/client';
+	import { EmptyState, ErrorState, FormField, LoadingState } from '$lib/components/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { SelectField } from '$lib/components/ui/select-field';
-	import { EmptyState, ErrorState, FormField, LoadingState } from '$lib/components/layout';
+	import { apiFetch, can } from '$lib/sdk/client';
 	import { REF_LABELS, type RefCard, type RefType } from '../../schemas';
 	import { BASE, errMsg } from '../helpers';
 
@@ -151,11 +151,14 @@
 								<span class="min-w-0 flex-1">
 									<span class="block truncate text-sm font-medium">{card.title}</span>
 									{#if card.subtitle}
-										<span class="block truncate text-xs text-muted-foreground">{card.subtitle}</span
+										<span class="block truncate text-xs text-muted-foreground"
+											>{card.subtitle}</span
 										>
 									{/if}
 								</span>
-								{#if card.badge}<Badge variant="secondary">{card.badge}</Badge>{/if}
+								{#if card.badge}
+									<Badge variant="secondary">{card.badge}</Badge>
+								{/if}
 							</button>
 						</li>
 					{/each}

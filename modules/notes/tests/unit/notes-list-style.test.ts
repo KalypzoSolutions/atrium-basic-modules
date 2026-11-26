@@ -1,18 +1,19 @@
 /**
  * Nummerierungsarten geordneter Listen: Marker, Vererbung an Unterlisten, Schema-Attribut, HTML- und Word-Export.
  */
-import { describe, expect, it } from 'vitest';
+
+import { describe, expect, it } from 'bun:test';
 import { strFromU8, unzipSync } from 'fflate';
+import { noteSchema } from '$modules/notes/doc/extensions';
 import {
 	childListContext,
 	listMarker,
 	ownListStyle,
 	ROOT_LIST_CONTEXT
 } from '$modules/notes/doc/list-style';
-import { noteSchema } from '$modules/notes/doc/extensions';
+import type { PmNode } from '$modules/notes/doc/text';
 import { exportDocx } from '$modules/notes/export/docx';
 import { nodeHtml } from '$modules/notes/export/html';
-import type { PmNode } from '$modules/notes/doc/text';
 
 const p = (text: string): PmNode => ({ type: 'paragraph', content: [{ type: 'text', text }] });
 const li = (text: string, ...nested: PmNode[]): PmNode => ({

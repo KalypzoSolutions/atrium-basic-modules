@@ -2,9 +2,9 @@
  * Papierkorb: in den Papierkorb verschieben, Liste, Wiederherstellen, endgültig Löschen.
  * Zugriffsprüfung, Transaktion und Audit liegen in `trash.service.ts`.
  */
-import { defineEndpoint, type ApiEndpoint } from '$lib/sdk/server';
-import { listTrash, purgeNodes, restoreNodes, trashNodes } from './trash.service';
+import { type ApiEndpoint, defineEndpoint } from '$lib/sdk/server';
 import { bulkInput, PERMISSIONS } from './schemas';
+import { listTrash, purgeNodes, restoreNodes, trashNodes } from './trash.service';
 
 const TAGS = ['Modul: files'];
 

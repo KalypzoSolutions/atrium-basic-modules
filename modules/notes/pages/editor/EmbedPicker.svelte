@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Search from '@lucide/svelte/icons/search';
 	// Auswahl „Einbetten“: Suche über alle Module, die Einbettungen anbieten (z. B. Whiteboards)
 	import { untrack } from 'svelte';
-	import Search from '@lucide/svelte/icons/search';
 	import { ErrorState, iconFor } from '$lib/components/layout';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';

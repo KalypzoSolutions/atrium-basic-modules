@@ -1,7 +1,4 @@
 <script lang="ts">
-	// Seitenbaum (links bzw. mobil im Blatt): Abschnitte Meine · Geteilt · Aktionen, Kinder lazy, Menüs, Ziehen
-	import { goto } from '$app/navigation';
-	import { toast } from 'svelte-sonner';
 	import FilePlus from '@lucide/svelte/icons/file-plus';
 	import FileUp from '@lucide/svelte/icons/file-up';
 	import FolderInput from '@lucide/svelte/icons/folder-input';
@@ -10,14 +7,13 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Share2 from '@lucide/svelte/icons/share-2';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import { apiFetch } from '$lib/sdk/client';
+	import { toast } from 'svelte-sonner';
+	// Seitenbaum (links bzw. mobil im Blatt): Abschnitte Meine · Geteilt · Aktionen, Kinder lazy, Menüs, Ziehen
+	import { goto } from '$app/navigation';
 	import { ConfirmDialog } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
+	import { apiFetch } from '$lib/sdk/client';
 	import { MAX_CHILDREN, type NoteDetail, type NoteNode } from '../../schemas';
-	import MoveDialog from '../MoveDialog.svelte';
-	import NoteShareDialog from '../NoteShareDialog.svelte';
-	import RenameDialog from '../RenameDialog.svelte';
-	import StyleDialog from '../StyleDialog.svelte';
 	import {
 		API,
 		BASE,
@@ -25,11 +21,15 @@
 		errMsg,
 		IMPORT_ACCEPT,
 		importNote,
-		noteTitle,
-		notePath
+		notePath,
+		noteTitle
 	} from '../helpers';
-	import type { NoteTreeState } from './tree-state.svelte';
+	import MoveDialog from '../MoveDialog.svelte';
+	import NoteShareDialog from '../NoteShareDialog.svelte';
+	import RenameDialog from '../RenameDialog.svelte';
+	import StyleDialog from '../StyleDialog.svelte';
 	import TreeItem, { type DropWhere, type TreeMenuEntry } from './TreeItem.svelte';
+	import type { NoteTreeState } from './tree-state.svelte';
 
 	let {
 		tree,

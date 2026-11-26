@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import type { CalendarItem } from '$lib/components/layout/month-calendar';
 import {
 	allDayItems,
 	blockTimes,
 	hourRange,
-	isTimed,
 	isoWeek,
+	isTimed,
 	layoutDay,
 	minutesOf,
 	startOfWeek,

@@ -12,11 +12,11 @@
 	import Strikethrough from '@lucide/svelte/icons/strikethrough';
 	import Type from '@lucide/svelte/icons/type';
 	import Underline from '@lucide/svelte/icons/underline';
+	import { NumberStepper } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import * as Popover from '$lib/components/ui/popover';
 	import { Switch } from '$lib/components/ui/switch';
-	import { NumberStepper } from '$lib/components/layout';
 	import {
 		FONT_FAMILIES,
 		FONT_FAMILY_LABELS,
@@ -87,7 +87,8 @@
 						variant={family === f ? 'secondary' : 'ghost'}
 						aria-pressed={family === f}
 						style={`font-family:${FONT_STACKS[f]}`}
-						onclick={() => onchange({ fontFamily: f })}>{FONT_FAMILY_LABELS[f]}</Button
+						onclick={() => onchange({ fontFamily: f })}
+						>{FONT_FAMILY_LABELS[f]}</Button
 					>
 				{/each}
 			</div>
@@ -110,7 +111,8 @@
 						size="sm"
 						variant={data.fontSize === s.value ? 'secondary' : 'ghost'}
 						aria-label={`Schriftgröße ${s.label} (${s.value} px)`}
-						onclick={() => onchange({ fontSize: s.value })}>{s.label}</Button
+						onclick={() => onchange({ fontSize: s.value })}
+						>{s.label}</Button
 					>
 				{/each}
 			</div>
@@ -126,7 +128,8 @@
 						aria-label={a.label}
 						aria-pressed={data.align === a.value}
 						title={a.label}
-						onclick={() => onchange({ align: a.value })}><a.icon /></Button
+						onclick={() => onchange({ align: a.value })}
+						><a.icon /></Button
 					>
 				{/each}
 				<div class="mx-1 h-6 w-px bg-border" aria-hidden="true"></div>
@@ -137,7 +140,8 @@
 						aria-label={`Senkrecht: ${a.label}`}
 						aria-pressed={data.valign === a.value}
 						title={`Senkrecht: ${a.label}`}
-						onclick={() => onchange({ valign: a.value })}><a.icon /></Button
+						onclick={() => onchange({ valign: a.value })}
+						><a.icon /></Button
 					>
 				{/each}
 			</div>
@@ -153,7 +157,8 @@
 						aria-label={st.label}
 						aria-pressed={!!data[st.key]}
 						title={st.label}
-						onclick={() => onchange({ [st.key]: !data[st.key] })}><st.icon /></Button
+						onclick={() => onchange({ [st.key]: !data[st.key] })}
+						><st.icon /></Button
 					>
 				{/each}
 			</div>

@@ -5,16 +5,16 @@
  * Alle Aufrufe außerhalb offener Transaktionen (die Dienste öffnen eigene).
  */
 import { sql } from 'drizzle-orm';
-import { core, inList, type RequestContext, rowsOf } from '$lib/sdk/server';
 import { formatDateDe } from '$lib/sdk/dates';
+import { core, inList, type RequestContext, rowsOf } from '$lib/sdk/server';
 import type { EventRefsService } from '$modules/events/contract';
 import type { FileRefsService } from '$modules/files/contract';
-import type { GalleryRefsService } from './peer-contracts';
 import type { NoteRefsService } from '$modules/notes/contract';
 import type { TaskRefsService } from '$modules/tasks/contract';
 import { actionsService, visibleBoardsFilter } from './access';
 import { mdb } from './boards.service';
 import { boardLink } from './notify';
+import type { GalleryRefsService } from './peer-contracts';
 import { MODULE_ID, REF_LABELS, type RefCard, type RefType } from './schemas';
 
 const DEFAULT_LIMIT = 20;

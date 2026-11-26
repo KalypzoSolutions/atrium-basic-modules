@@ -52,6 +52,7 @@ Nutzerentscheidungen (2026-10-29): eigenes Modul (nicht in „Dateien“); forma
 | `privacy.ts`, `search.ts`, `notify.ts`, `refs.service.ts`, `contract.ts` | Löschen/Reset/Auskunft, globale Suche, `note-shared`, `NoteRefsService` (Karte „Notiz“ im Whiteboard) |
 | `doc/extensions.ts`, `doc/text.ts` | Schema (`noteExtensions`, `noteSchema`, `noteImage`, `Embed`, `assetUrl`), Klartext/Assets/Einbettungen aus PM-JSON |
 | `ui.ts`, `pages/**` | Übersicht, Editor-Seite mit Seitenbaum, Editor (`pages/editor/`: `sync.svelte.ts` Yjs-Provider über SSE, `NoteEditor`, `Toolbar`, `SlashMenu`, `BubbleMenu`, `SourcePanel` + `source-diff.ts`, `EmbedView`/`EmbedPicker`, Node-Views), Dialoge, Dashboard-Kachel |
+| `peer-contracts.ts` | Lokale Spiegelung der genutzten Teile fremder Verträge (`actions`: `ActionsService`, `ActionRef`, `AccessibleAction`) – nur `optionalDependencies`; bei Änderungen am Original nachziehen |
 
 Außerhalb: `actions/pages/ActionNotesCard.svelte` (REST, in `ActionDetailPage` mit `notes.note.view`), Whiteboard-Karte `note` und Einbettung
 (`whiteboard/embeds.ts`, `pages/EmbedBoardPage.svelte`), Core `core.embeds` + `/api/v1/embeds*` + Route `/embed/<modul>/<pfad>` (`src/routes/embed/`,
@@ -80,7 +81,7 @@ IDs/Zähler/Formate, **keine** Inhalte oder Titel. Einzelne Text-Änderungen wer
 Integration `tests/integration/notes.test.ts` (Zugriffsmatrix inkl. Vererbung/Aktion, Yjs-Konvergenz zweier Clients, SSE, Verdichtung, Versionen,
 Bilder, Papierkorb, Suche, Audit), `notes-transfer.test.ts` (alle Exportformate, Import inkl. manipulierter ZIPs), `core-embeds.test.ts`; Unit
 `notes-doc`, `notes-text`, `notes-export`, `notes-source-diff`, `pdf-rich-text`; E2E `tests/e2e/notes.spec.ts`.
-Demo: `node scripts/seed-demo-notes.mjs` (Beispielnotiz mit Unterseiten; `--big` = große Notiz für den Lasttest).
+Demo: `bun scripts/seed-demo-notes.mjs` (Beispielnotiz mit Unterseiten; `--big` = große Notiz für den Lasttest).
 
 ## Fallen
 - **Zwei `prosemirror-model` im Produktions-Build**: `@tiptap/y-tiptap` ist Modul-Paket und wird samt eigener Kopie gebündelt. Nie

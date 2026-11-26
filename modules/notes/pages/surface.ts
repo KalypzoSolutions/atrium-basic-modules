@@ -28,7 +28,7 @@ export function isDarkSurface(hex: string): boolean {
  */
 export function surfaceVars(prefs: UserPrefs | null | undefined): Record<string, string> | null {
 	const s = prefs?.surface;
-	if (!s || s.mode !== 'fixed' || !HEX_RE.test(s.color)) return null;
+	if (s?.mode !== 'fixed' || !HEX_RE.test(s.color)) return null;
 	const bg = s.color.toLowerCase();
 	const dark = isDarkSurface(bg);
 	const ink = dark ? '#f3f4f6' : '#111827';

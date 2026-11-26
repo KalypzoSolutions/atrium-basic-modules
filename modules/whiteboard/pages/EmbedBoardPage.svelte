@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { EmptyState, ErrorState, LoadingState } from '$lib/components/layout';
 	// Whiteboard im iframe (`/embed/whiteboard/<id>`, z. B. in einer Notiz): kompakter Editor über die volle Höhe,
 	// Bearbeiten nur mit Bearbeiten-Zugriff (sonst „Nur Ansicht“), „Vollbild öffnen“ im obersten Fenster
-	import { apiFetch, ApiClientError } from '$lib/sdk/client';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
 	import type { ModulePageProps } from '$lib/sdk/types/module-ui';
-	import { EmptyState, ErrorState, LoadingState } from '$lib/components/layout';
 	import type { BoardDetail } from '../schemas';
 	import Editor from './editor/Editor.svelte';
 	import { BASE, errMsg } from './helpers';

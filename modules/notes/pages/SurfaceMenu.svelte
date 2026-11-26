@@ -59,7 +59,9 @@
 							aria-pressed={surface.color === p.value}
 							onclick={() => onchange({ mode: 'fixed', color: p.value })}
 						>
-							<span class="size-4 shrink-0 rounded-full border" style:background-color={p.value}
+							<span
+								class="size-4 shrink-0 rounded-full border"
+								style:background-color={p.value}
 							></span>
 							{p.label}
 						</button>

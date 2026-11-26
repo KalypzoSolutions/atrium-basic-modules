@@ -1,24 +1,24 @@
 <script lang="ts">
-	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 3.5.
-	import { onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import X from '@lucide/svelte/icons/x';
-	import { apiFetch } from '$lib/sdk/client';
+	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 3.5.
+	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { ConfirmDialog, DataTable, MobileActionBar } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Table from '$lib/components/ui/table';
-	import { ConfirmDialog, DataTable, MobileActionBar } from '$lib/components/layout';
+	import { apiFetch } from '$lib/sdk/client';
 	import {
-		DEFAULT_TRASH_DAYS,
-		MAX_BULK,
 		type BulkResult,
+		DEFAULT_TRASH_DAYS,
 		type FilesMeta,
+		MAX_BULK,
 		type TrashItem
 	} from '../schemas';
-	import { API, errorText, formatBytes, formatDateTime, iconFor } from './helpers';
 	import FileTypeGlyph from './FileTypeGlyph.svelte';
+	import { API, errorText, formatBytes, formatDateTime, iconFor } from './helpers';
 
 	let {
 		meta,

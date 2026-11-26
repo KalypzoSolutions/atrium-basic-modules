@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { isDarkSurface, luminance, surfaceStyle, surfaceVars } from '$modules/notes/pages/surface';
 import { DEFAULT_USER_PREFS } from '$modules/notes/schemas';
 

@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { tick, untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { apiFetch, ApiClientError } from '$lib/sdk/client';
+	import { BUSY_SAVE, FormField } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
+	import { ColorPicker } from '$lib/components/ui/color-picker';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { ColorPicker } from '$lib/components/ui/color-picker';
-	import { SelectField } from '$lib/components/ui/select-field';
 	import { Label } from '$lib/components/ui/label';
+	import { SelectField } from '$lib/components/ui/select-field';
 	import { Switch } from '$lib/components/ui/switch';
-	import { BUSY_SAVE, FormField } from '$lib/components/layout';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
 	import {
 		BOARD_COLORS,
-		MAX_BOARD_DESCRIPTION,
-		MAX_BOARD_NAME,
-		boardInput,
 		type Board,
 		type BoardDetail,
+		boardInput,
+		MAX_BOARD_DESCRIPTION,
+		MAX_BOARD_NAME,
 		type TemplateSummary
 	} from '../schemas';
 	import { BASE, errMsg } from './helpers';

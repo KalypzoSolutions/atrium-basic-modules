@@ -5,8 +5,13 @@
  * `actionsAvailable: false`. Aktionen im Export prüft
  * `ep-intern-modules/modules/_integration/tests/integration/events-export.test.ts`.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq } from 'drizzle-orm';
+import { setTodayForTests } from '$lib/sdk/dates';
+import type { RequestContext } from '$lib/sdk/types';
+import eventsModule from '$modules/events/module';
+import type { ExportOptions } from '$modules/events/schemas';
 import {
 	bootstrapAdmin,
 	contextForUser,
@@ -24,10 +29,6 @@ import {
 	syncModules,
 	useTestDatabase
 } from '$testing';
-import { setTodayForTests } from '$lib/sdk/dates';
-import eventsModule from '$modules/events/module';
-import type { ExportOptions } from '$modules/events/schemas';
-import type { RequestContext } from '$lib/sdk/types';
 
 let close: () => Promise<void>;
 let admin: RequestContext;

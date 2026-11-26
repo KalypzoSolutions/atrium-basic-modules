@@ -6,9 +6,9 @@
 import { sql } from 'drizzle-orm';
 import { type ApiEndpoint, type RequestContext, rowsOf } from '$lib/sdk/server';
 import { accessForMany, sharedOnChainSql } from './access';
-import { mdb, nodeRowOf, NODE_COLUMNS } from './db';
+import { mdb, NODE_COLUMNS, nodeRowOf } from './db';
+import { PERMISSIONS, type RecentFile, type RecentQuery, recentQuery } from './schemas';
 import { keysFor } from './shares.service';
-import { PERMISSIONS, recentQuery, type RecentFile, type RecentQuery } from './schemas';
 
 const tags = ['Modul: files'];
 

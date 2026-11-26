@@ -7,8 +7,8 @@ import { type ModuleSearchProvider, rowsOf, type SearchHit } from '$lib/sdk/serv
 import { loadNoteContext, notInTrashSql, visibleNotesSql } from './access';
 import { mdb } from './db';
 import { noteLink } from './notify';
-import { likePattern, pathText, visibleAncestors } from './tree.service';
 import { PERM } from './schemas';
+import { likePattern, pathText, visibleAncestors } from './tree.service';
 
 export const notesSearch: ModuleSearchProvider = {
 	permission: PERM.view,

@@ -1,17 +1,21 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { getDb, schema } from '$testing';
-import { getSetting } from '$testing';
 import { core } from '$lib/sdk/server';
+import type { RequestContext } from '$lib/sdk/types';
 import eventsModule from '$modules/events/module';
 import { DEFAULT_STAMM_NAME, STAMM_NAME_SETTING } from '$modules/events/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	enableModule,
+	getDb,
+	getSetting,
+	registerCoreApi,
+	registerModule,
+	schema,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 let close: () => Promise<void>;
 let admin: RequestContext;

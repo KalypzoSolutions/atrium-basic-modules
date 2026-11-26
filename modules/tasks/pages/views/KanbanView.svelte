@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import CircleCheck from '@lucide/svelte/icons/circle-check';
@@ -7,14 +6,15 @@
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import type { Component } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as ContextMenu from '$lib/components/ui/context-menu';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Input } from '$lib/components/ui/input';
 	import {
-		MAX_TASK_TITLE,
 		type BoardDetail,
 		type Column,
+		MAX_TASK_TITLE,
 		type Phase,
 		type TaskCard
 	} from '../../schemas';
@@ -235,7 +235,9 @@
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content align="end" class="w-60">
 							{#each columnActions(col, ci) as a (a.key)}
-								{#if a.danger}<DropdownMenu.Separator />{/if}
+								{#if a.danger}
+									<DropdownMenu.Separator />
+								{/if}
 								<DropdownMenu.Item
 									class={a.danger ? 'text-destructive' : ''}
 									disabled={a.disabled}
@@ -323,7 +325,9 @@
 				/>
 			</li>
 		{/each}
-		{#if target && list.some((t) => t.id !== dragId) && (dropTarget?.index ?? 0) >= list.filter((t) => t.id !== dragId).length}
+		{#if target &&
+			list.some((t) => t.id !== dragId) &&
+			(dropTarget?.index ?? 0) >= list.filter((t) => t.id !== dragId).length}
 			<li class="h-1 rounded-full bg-primary" aria-hidden="true"></li>
 		{/if}
 		{#if !list.length}
@@ -360,12 +364,12 @@
 					>
 						{#if canEdit && lane.key === lanes[0]?.key}
 							<ContextMenu.Root>
-								<ContextMenu.Trigger>
-									{@render columnHead(lane, col, ci)}
-								</ContextMenu.Trigger>
+								<ContextMenu.Trigger> {@render columnHead(lane, col, ci)} </ContextMenu.Trigger>
 								<ContextMenu.Content class="w-60">
 									{#each columnActions(col, ci) as a (a.key)}
-										{#if a.danger}<ContextMenu.Separator />{/if}
+										{#if a.danger}
+											<ContextMenu.Separator />
+										{/if}
 										<ContextMenu.Item
 											class={a.danger ? 'text-destructive' : ''}
 											disabled={a.disabled}

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onDestroy, tick, untrack } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import CalendarClock from '@lucide/svelte/icons/calendar-clock';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
@@ -10,15 +8,8 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	import X from '@lucide/svelte/icons/x';
-	import { apiFetch, ApiClientError } from '$lib/sdk/client';
-	import { Button } from '$lib/components/ui/button';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { MultiSelect } from '$lib/components/ui/multi-select';
-	import { SelectField } from '$lib/components/ui/select-field';
+	import { onDestroy, tick, untrack } from 'svelte';
+	import { toast } from 'svelte-sonner';
 	import {
 		AssistTextarea,
 		ConfirmDialog,
@@ -26,23 +17,32 @@
 		FormField,
 		LoadingState
 	} from '$lib/components/layout';
+	import { Button } from '$lib/components/ui/button';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { Input } from '$lib/components/ui/input';
+	import { MultiSelect } from '$lib/components/ui/multi-select';
+	import { SelectField } from '$lib/components/ui/select-field';
+	import { Switch } from '$lib/components/ui/switch';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
 	import { startsBeforeBlocker } from '../../dependencies';
 	import {
+		type ChecklistItem,
+		type Column,
 		MAX_CHECKLIST_TITLE,
 		MAX_TASK_DESCRIPTION,
 		MAX_TASK_TITLE,
 		MAX_TASKS_PER_BOARD,
+		type Phase,
 		PRIORITIES,
 		PRIORITY_LABELS,
-		type ChecklistItem,
-		type Column,
-		type Phase,
 		type TaskCard,
 		type TaskDetail,
 		type UserRef
 	} from '../../schemas';
-	import { BASE, dueClass, dueLabel, errMsg } from '../helpers';
 	import ExportDialog from '../ExportDialog.svelte';
+	import { BASE, dueClass, dueLabel, errMsg } from '../helpers';
 
 	/**
 	 * Inhalt des Aufgaben-Blatts: Anlegen (nur Titel) bzw. Ansehen/Bearbeiten mit Autosave.
@@ -373,7 +373,9 @@
 	<!-- Kopf: Pfad, Speicherstand, Vor/Zurück, Menü, Schließen -->
 	<div class="flex items-center gap-1 border-b px-4 py-2.5">
 		<p class="min-w-0 flex-1 truncate text-xs text-muted-foreground">
-			{boardName}{#if columnName}&nbsp;› {columnName}{/if}
+			{boardName}{#if columnName}
+				&nbsp;› {columnName}
+			{/if}
 		</p>
 		<span class="text-xs whitespace-nowrap" aria-live="polite">
 			{#if status === 'saving'}
@@ -687,7 +689,8 @@
 										<span
 											class="min-w-0 flex-1 text-sm"
 											class:line-through={item.done}
-											class:text-muted-foreground={item.done}>{item.title}</span
+											class:text-muted-foreground={item.done}
+											>{item.title}</span
 										>
 									{/if}
 									{#if canEdit}

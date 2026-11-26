@@ -4,21 +4,28 @@
  * Fremde, erledigte, spätere und Aufgaben ohne Fälligkeit erscheinen nicht; Modul aus → nichts.
  * Heute = Mittwoch 2026-06-03, Woche 2026-06-01 … 2026-06-07.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { disableModule, enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { getDb, schema } from '$testing';
-import { collectDashboardFeed } from '$testing';
-import { core } from '$lib/sdk/server';
 import { setTodayForTests } from '$lib/sdk/dates';
-import tasksModule from '$modules/tasks/module';
+import { core } from '$lib/sdk/server';
 import type { RequestContext } from '$lib/sdk/types';
+import tasksModule from '$modules/tasks/module';
+import {
+	bootstrapAdmin,
+	collectDashboardFeed,
+	contextForUser,
+	createRole,
+	createUser,
+	disableModule,
+	enableModule,
+	getDb,
+	registerCoreApi,
+	registerModule,
+	schema,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const TODAY = '2026-06-03';
 let close: () => Promise<void>;

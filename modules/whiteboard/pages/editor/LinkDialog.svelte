@@ -1,10 +1,10 @@
 <script lang="ts">
 	// Link einfügen oder bearbeiten (http(s), mailto oder interne Seite wie /modules/…)
 	import { tick, untrack } from 'svelte';
+	import { FormField } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { FormField } from '$lib/components/layout';
 	import { isAllowedLink, type LinkData } from '../../schemas';
 
 	let {
