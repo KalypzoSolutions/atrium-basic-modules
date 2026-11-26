@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { type CalendarItem, MonthCalendar } from '$lib/components/layout';
 	import { todayBerlin } from '$lib/sdk/dates';
-	import { MonthCalendar, type CalendarItem } from '$lib/components/layout';
 	import type { BoardDetail, TaskCard } from '../../schemas';
 
 	/** Monatskalender: Phasen als Balken, Aufgaben am Fälligkeitstag (Meilensteine mit ◆) */

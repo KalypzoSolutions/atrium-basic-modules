@@ -56,6 +56,7 @@ Aktion; erste Version **mit** Freihand, Live-Cursor/Anwesenheit, Rahmen, Version
 | `privacy.ts`, `search.ts`, `notify.ts` | Löschen/Reset/Auskunft, Suche (Boards + Rahmentitel, `?focus=`), `board-shared` |
 | `pages/BoardsPage.svelte`, `BoardDialog.svelte`, `BoardPage.svelte`, `widgets/RecentBoardsWidget.svelte` | Übersicht + Import, Anlegen/Eigenschaften (Aktion nur Eigentümer*in), Laden, Dashboard-Kachel |
 | `pages/editor/` | **rein**: `geometry.ts`, `connectors.ts`, `text-layout.ts`, `viewport.ts`, `freehand.ts`, `bounds.ts`, `render.ts`, `export.ts`; **Zustand**: `store.svelte.ts` (Elemente, Auswahl, Rückgängig/Gesten `begin/preview/end/cancel`), `sync.svelte.ts` (EventSource, Bündeln, Wiederholen, Presence), `controller.svelte.ts` (Werkzeuge, Pointer/Touch/Stift, Griffe, Zwischenablage); **UI**: `Editor`, `Canvas`, `ElementView` (+ `ShapeView`, `ConnectorView`, `FreehandView`, `CardView`), `Toolbar`, `PropertiesBar`, `ColorButton`, Dialoge `ExportDialog`, `HistoryDialog`, `RefPicker`, `LinkDialog`, `ExportSvg` |
+| `peer-contracts.ts` | Lokale Spiegelung der genutzten Teile fremder Verträge (`actions`: `ActionsService`, `ActionRef`, `AccessibleAction`; `galleries`: `GalleryRefsService`, `GalleryRefInfo`, `GalleryCardInfo`) – nur `optionalDependencies`; bei Änderungen am Original nachziehen |
 
 Außerhalb: `actions/pages/ActionWhiteboardsCard.svelte` (nur REST, in `ActionDetailPage` mit `whiteboard.board.view`), Verträge `tasks/contract.ts` +
 `refs.service.ts`, `files/contract.ts` + `refs.service.ts`, `galleries/contract.ts` (`searchGalleryCards`/`describeGalleryCards`), Core
@@ -101,7 +102,7 @@ Anwesenheit/`since`/`revoked`/`access`, Bild-Upload + Auslieferung, Versionen + 
 PDF, Karten je Betrachter*in, Aufräum-Job + `hello.reset`, Audit, Konto löschen, Modul aus). Mit `members`/`actions` (Gruppen-Freigabe,
 mehrere Boards je Aktion, `/boards/by-action`, Aktions-Karten): `ep-intern-modules/modules/_integration/tests/integration/whiteboard-actions.test.ts`. Unit `whiteboard-editor.test.ts`, `whiteboard-archive.test.ts`.
 E2E `tests/e2e/whiteboard.spec.ts` (Notiz tippen, live im zweiten Browser, Verbinder, Rückgängig/Wiederholen bei beiden, Neuladen, Touch-Pinch, PNG/PDF,
-Board aus der Aktion). Demo: `node scripts/seed-demo-whiteboard.mjs`.
+Board aus der Aktion). Demo: `bun scripts/seed-demo-whiteboard.mjs`.
 
 ## Fallen
 - Core-Dienste (Einstellungen, Storage, Bilder) **nie** in `mdb().transaction` – `boardLimitBytes()` vorher holen (PGlite hängt sonst; im Test passiert).

@@ -82,7 +82,8 @@
 						onclick={() => {
 							onapply('');
 							open = false;
-						}}>Link entfernen</Button
+						}}
+						>Link entfernen</Button
 					>
 				{:else}
 					<span></span>

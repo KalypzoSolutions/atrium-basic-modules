@@ -4,13 +4,13 @@
  * schlägt Transaktion 2 fehl, werden die Dateien wieder entfernt.
  */
 import { sql } from 'drizzle-orm';
-import { core, errors, inList, num, rowsOf, type RequestContext, type Row } from '$lib/sdk/server';
+import { core, errors, inList, num, type RequestContext, type Row, rowsOf } from '$lib/sdk/server';
 import { requireNoteAccess } from './access';
 import { mdb } from './db';
-import { bytesOf, flushAll, jsonFromState, usedAssetIds } from './doc.service';
 import { assetIdsOf } from './doc/text';
-import { assetPath, IMAGE_TYPES, IMAGE_VARIANTS, removeFiles, storeFile } from './storage';
+import { bytesOf, flushAll, jsonFromState, usedAssetIds } from './doc.service';
 import type { NoteAsset } from './schemas';
+import { assetPath, IMAGE_TYPES, IMAGE_VARIANTS, removeFiles, storeFile } from './storage';
 
 export function assetOf(r: Row): NoteAsset {
 	return {

@@ -6,8 +6,8 @@ import { sql } from 'drizzle-orm';
 import { type ModuleSearchProvider, rowsOf, type SearchHit } from '$lib/sdk/server';
 import { loadTaskContext, visibleBoardsFilter } from './access';
 import { mdb } from './boards.service';
-import { PERM } from './schemas';
 import { boardLink } from './notify';
+import { PERM } from './schemas';
 
 const like = (q: string) => `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
 
@@ -29,23 +29,24 @@ export const tasksSearch: ModuleSearchProvider = {
 					LIMIT ${limit}`
 			)
 		);
-		return rows.map((r): SearchHit =>
-			r.kind === 'board'
-				? {
-						id: String(r.id),
-						title: String(r.title),
-						href: boardLink(String(r.id)),
-						icon: 'kanban',
-						type: 'Board'
-					}
-				: {
-						id: String(r.id),
-						title: String(r.title),
-						subtitle: String(r.board_name),
-						href: boardLink(String(r.board_id), String(r.id)),
-						icon: 'kanban',
-						type: 'Aufgabe'
-					}
+		return rows.map(
+			(r): SearchHit =>
+				r.kind === 'board'
+					? {
+							id: String(r.id),
+							title: String(r.title),
+							href: boardLink(String(r.id)),
+							icon: 'kanban',
+							type: 'Board'
+						}
+					: {
+							id: String(r.id),
+							title: String(r.title),
+							subtitle: String(r.board_name),
+							href: boardLink(String(r.board_id), String(r.id)),
+							icon: 'kanban',
+							type: 'Aufgabe'
+						}
 		);
 	}
 };

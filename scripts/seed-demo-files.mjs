@@ -1,14 +1,14 @@
 // Demo-Daten für das Modul `files` (Dateien / Cloud-Ablage; idempotent, über die echte API).
-// Voraussetzung: demo-server läuft (http://localhost:4300), `node scripts/seed-demo.mjs` wurde ausgeführt,
+// Voraussetzung: demo-server läuft (http://localhost:4300), `bun scripts/seed-demo.mjs` wurde ausgeführt,
 // Storage ist konfiguriert (MinIO per `docker compose -f docker-compose.demo.yml up -d` +
-// `node scripts/setup-demo-storage.mjs`).
+// `bun scripts/setup-demo-storage.mjs`).
 // Aktiviert `members` und `files` und legt in der Ansicht „Dateien“ (eigene Wurzel des Admins) an:
 // „Fotos Sommerlager“ (erzeugte Bilder, Packliste), „Elternbriefe“ (PDF) und „Satzung und Protokolle“
 // (PDF, Textdatei) – die beiden letzten mit Freigabe an den ganzen Stamm (`everyone:*`, Lesen), denn einen
 // eigenen Stammesordner gibt es nicht mehr. Dazu je ein öffentlicher Link auf die Fotos zum Ansehen und
 // zum Hochladen; die URLs werden ausgegeben (sie lassen sich über `GET /nodes/:id/links` jederzeit abrufen).
 // Vorhandene Ordner, Dateien, Freigaben und aktive Links werden wiederverwendet, nicht doppelt angelegt.
-// Neue Links erzwingen: NEW_LINK=1 node scripts/seed-demo-files.mjs
+// Neue Links erzwingen: NEW_LINK=1 bun scripts/seed-demo-files.mjs
 import sharp from 'sharp';
 
 const BASE = 'http://127.0.0.1:4300';
@@ -36,7 +36,7 @@ async function call(method, path, body, base = '/api/v1') {
 }
 
 // Zugangsdaten überschreibbar, falls die Admin-Adresse in der Demo-DB geändert wurde:
-//   DEMO_EMAIL=… DEMO_PASSWORD=… node scripts/seed-demo-files.mjs
+//   DEMO_EMAIL=… DEMO_PASSWORD=… bun scripts/seed-demo-files.mjs
 const EMAIL = process.env.DEMO_EMAIL ?? 'admin@demo.test';
 const PASSWORD = process.env.DEMO_PASSWORD ?? 'Demo-Admin-2026!';
 
@@ -61,7 +61,7 @@ function storageMissing() {
 		'\nDer Dateispeicher (S3) ist nicht konfiguriert oder nicht erreichbar (503).\n' +
 			'Bitte zuerst MinIO starten und hinterlegen:\n' +
 			'  docker compose -f docker-compose.demo.yml up -d\n' +
-			'  node scripts/setup-demo-storage.mjs\n'
+			'  bun scripts/setup-demo-storage.mjs\n'
 	);
 	process.exit(1);
 }

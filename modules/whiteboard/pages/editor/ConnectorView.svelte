@@ -67,7 +67,8 @@
 			font-family={FONT_FAMILY}
 			font-size={labelSize}
 			fill={rc.palette.ink}
-			style="white-space: pre">{data.label}</text
+			style="white-space: pre;"
+			>{data.label}</text
 		>
 	{/if}
 </g>

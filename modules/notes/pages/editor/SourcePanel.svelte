@@ -1,12 +1,12 @@
 <script lang="ts">
+	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import X from '@lucide/svelte/icons/x';
+	import type { Editor, JSONContent } from '@tiptap/core';
+	import { MarkdownManager } from '@tiptap/markdown';
 	// Quelltext-Ansicht (Markdown): Tippen wird nach 800 ms Ruhe BLOCKWEISE in den Editor übernommen
 	// (nur der geänderte Bereich, eine Transaktion) – gleichzeitige Änderungen anderer an anderen Stellen bleiben.
 	// Während das Feld fokussiert ist, werden Fremdänderungen nicht hineingespiegelt (Hinweis + „Neu laden“).
 	import { onDestroy, onMount } from 'svelte';
-	import type { Editor, JSONContent } from '@tiptap/core';
-	import { MarkdownManager } from '@tiptap/markdown';
-	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
-	import X from '@lucide/svelte/icons/x';
 	import { Alert, AlertDescription } from '$lib/components/ui/alert';
 	import { Button } from '$lib/components/ui/button';
 	import { Textarea } from '$lib/components/ui/textarea';
@@ -49,14 +49,18 @@
 
 	function currentBlocks(): string[] {
 		const out: string[] = [];
-		editor.state.doc.forEach((child) => out.push(canonical(child.toJSON())));
+		editor.state.doc.forEach((child) => {
+			out.push(canonical(child.toJSON()));
+		});
 		return out;
 	}
 
 	/** Textfeld aus dem Dokument neu aufbauen */
 	function resync() {
 		const blocks: unknown[] = [];
-		editor.state.doc.forEach((child) => blocks.push(child.toJSON()));
+		editor.state.doc.forEach((child) => {
+			blocks.push(child.toJSON());
+		});
 		chunks = chunksFromBlocks(blocks, serializeBlock);
 		text = chunksText(chunks);
 		stale = false;
@@ -81,7 +85,9 @@
 		}
 		const parsed = (manager.parse(plan.text).content ?? []) as JSONContent[];
 		const sizes: number[] = [];
-		editor.state.doc.forEach((child) => sizes.push(child.nodeSize));
+		editor.state.doc.forEach((child) => {
+			sizes.push(child.nodeSize);
+		});
 		const range = blockPositions(sizes, plan.fromBlock, plan.toBlock);
 		const whole = range.from === 0 && range.to === editor.state.doc.content.size;
 		applying = true;

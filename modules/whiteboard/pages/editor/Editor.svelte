@@ -1,11 +1,4 @@
 <script lang="ts">
-	// Whiteboard-Editor: Kopfzeile (Name, Status, Anwesende, Teilen, Menü), Zeichenfläche, Werkzeuge, Eigenschaften,
-	// Zoom/Minikarte, Kontextmenü, Tastatur, Zwischenablage, Drag & Drop, Upload und Dialoge.
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import { onDestroy, onMount, untrack } from 'svelte';
-	import { SvelteMap } from 'svelte/reactivity';
-	import { toast } from 'svelte-sonner';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import Backpack from '@lucide/svelte/icons/backpack';
 	import ClipboardPaste from '@lucide/svelte/icons/clipboard-paste';
@@ -25,31 +18,38 @@
 	import StickyNote from '@lucide/svelte/icons/sticky-note';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Undo2 from '@lucide/svelte/icons/undo-2';
-	import { apiFetch } from '$lib/sdk/client';
-	import type { PrincipalInfo } from '$lib/sdk/types/sharing';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as ContextMenu from '$lib/components/ui/context-menu';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { onDestroy, onMount, untrack } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
+	import { toast } from 'svelte-sonner';
+	// Whiteboard-Editor: Kopfzeile (Name, Status, Anwesende, Teilen, Menü), Zeichenfläche, Werkzeuge, Eigenschaften,
+	// Zoom/Minikarte, Kontextmenü, Tastatur, Zwischenablage, Drag & Drop, Upload und Dialoge.
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
 		ConfirmDialog,
 		EntityAvatar,
 		PageTitle,
-		ShareMenu,
 		type ShareCandidate,
-		type ShareEntry
+		type ShareEntry,
+		ShareMenu
 	} from '$lib/components/layout';
 	import { shareKey } from '$lib/components/layout/share-types';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as ContextMenu from '$lib/components/ui/context-menu';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { apiFetch } from '$lib/sdk/client';
+	import type { PrincipalInfo } from '$lib/sdk/types/sharing';
 	import {
-		MAX_ASSET_BYTES,
 		type Asset,
 		type Board,
 		type BoardDetail,
 		type BoardShares,
 		DEFAULT_USER_PREFS,
-		type UserPrefs,
+		MAX_ASSET_BYTES,
 		type RefCard,
 		type RefType,
+		type UserPrefs,
 		type WbElement
 	} from '../../schemas';
 	import BoardDialog from '../BoardDialog.svelte';
@@ -62,13 +62,13 @@
 	import LinkDialog from './LinkDialog.svelte';
 	import PropertiesBar from './PropertiesBar.svelte';
 	import RefPicker from './RefPicker.svelte';
-	import { assetUrl, fixedPalette, LIGHT, readPalette, type Palette } from './render';
+	import { assetUrl, fixedPalette, LIGHT, type Palette, readPalette } from './render';
 	import SurfaceMenu from './SurfaceMenu.svelte';
 	import { BoardStore } from './store.svelte';
 	import { BoardSync } from './sync.svelte';
-	import { browserMeasure } from './text-layout';
 	import Toolbar from './Toolbar.svelte';
-	import { refKey, type RenderContext } from './types';
+	import { browserMeasure } from './text-layout';
+	import { type RenderContext, refKey } from './types';
 
 	/**
 	 * `embedded`: im iframe einer anderen Seite (`/embed/whiteboard/<id>`) – Kopf ohne Rücklink, Freigabe,
@@ -784,7 +784,9 @@
 					></span>
 					<span class="sr-only md:not-sr-only">{status}</span>
 				{/if}
-				{#if uploading}· Lädt {uploading} {uploading === 1 ? 'Datei' : 'Dateien'} hoch …{/if}
+				{#if uploading}
+					· Lädt {uploading} {uploading === 1 ? 'Datei' : 'Dateien'} hoch …
+				{/if}
 			</span>
 		</div>
 		{#if people.length}
@@ -918,12 +920,13 @@
 								onclick={() => {
 									linkEdit = ctxEl ?? null;
 									linkOpen = true;
-								}}><Pencil /> Link bearbeiten</ContextMenu.Item
+								}}
+								><Pencil /> Link bearbeiten</ContextMenu.Item
 							>
 						{/if}
 						<ContextMenu.Item onclick={() => ctrl.duplicate()}
-							><Copy /> Duplizieren <ContextMenu.Shortcut>Strg+D</ContextMenu.Shortcut
-							></ContextMenu.Item
+							><Copy /> Duplizieren
+							<ContextMenu.Shortcut>Strg+D</ContextMenu.Shortcut></ContextMenu.Item
 						>
 						<ContextMenu.Item onclick={() => ctrl.bringToFront()}>Nach vorne</ContextMenu.Item>
 						<ContextMenu.Item onclick={() => ctrl.sendToBack()}>Nach hinten</ContextMenu.Item>
@@ -950,7 +953,8 @@
 									h: 200
 								});
 								if (el) ctrl.startEditing(el.id, 'text');
-							}}><StickyNote /> Notiz hier</ContextMenu.Item
+							}}
+							><StickyNote /> Notiz hier</ContextMenu.Item
 						>
 						<ContextMenu.Item onclick={() => ctrl.paste(undefined, ctxPoint)}
 							><ClipboardPaste /> Einfügen</ContextMenu.Item
@@ -1021,7 +1025,8 @@
 					size="icon"
 					aria-label="Verkleinern"
 					title="Verkleinern"
-					onclick={() => ctrl.zoomStep(-1)}><Minus /></Button
+					onclick={() => ctrl.zoomStep(-1)}
+					><Minus /></Button
 				>
 				<button
 					type="button"
@@ -1036,14 +1041,16 @@
 					size="icon"
 					aria-label="Vergrößern"
 					title="Vergrößern"
-					onclick={() => ctrl.zoomStep(1)}><Plus /></Button
+					onclick={() => ctrl.zoomStep(1)}
+					><Plus /></Button
 				>
 				<Button
 					variant="ghost"
 					size="icon"
 					aria-label="Alles zeigen (1)"
 					title="Alles zeigen (1)"
-					onclick={() => ctrl.fit()}><Scan /></Button
+					onclick={() => ctrl.fit()}
+					><Scan /></Button
 				>
 			</div>
 

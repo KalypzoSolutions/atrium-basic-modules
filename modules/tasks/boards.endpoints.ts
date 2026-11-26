@@ -1,8 +1,9 @@
 /** REST für Boards, Freigaben, Spalten und Personensuche (`/api/v1/modules/tasks/…`). */
 import { sql } from 'drizzle-orm';
+import { addDays, daysBetween, todayBerlin } from '$lib/sdk/dates';
 import {
-	addedPrincipals,
 	type AnyApiEndpoint,
+	addedPrincipals,
 	core,
 	defineEndpoint,
 	describePrincipals,
@@ -13,8 +14,8 @@ import {
 	type RequestContext,
 	requireShareCapability,
 	rowsOf,
-	searchPrincipals,
 	type StoredShare,
+	searchPrincipals,
 	type Tx,
 	validatePrincipals
 } from '$lib/sdk/server';
@@ -36,11 +37,12 @@ import {
 	userRefs
 } from './boards.service';
 import { notifyBoardShared } from './notify';
-import { applyTemplate } from './templates';
-import { insertApplied, loadTemplateData } from './templates.service';
-import { addDays, daysBetween, todayBerlin } from '$lib/sdk/dates';
 import {
+	type ActionBoardInfo,
 	actionParams,
+	type BoardDetail,
+	type BoardList,
+	type BoardShares,
 	boardInput,
 	boardUpdateInput,
 	columnDeleteQuery,
@@ -53,16 +55,14 @@ import {
 	MAX_COLUMNS,
 	MODULE_ID,
 	orderInput,
-	peopleQuery,
 	PERM,
+	peopleQuery,
 	searchQuery,
 	sharesInput,
-	type ActionBoardInfo,
-	type BoardDetail,
-	type BoardList,
-	type BoardShares,
 	type UserRef
 } from './schemas';
+import { applyTemplate } from './templates';
+import { insertApplied, loadTemplateData } from './templates.service';
 
 const tags = ['Aufgaben'];
 const STAMM_NAME_SETTING = 'events.stamm.name';

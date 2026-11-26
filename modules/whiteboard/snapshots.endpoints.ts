@@ -1,17 +1,17 @@
 /** Versionsverlauf (`/api/v1/modules/whiteboard/boards/:id/snapshots…`) und Karten-Verweise (`/refs…`). */
 import { type AnyApiEndpoint, core, defineEndpoint } from '$lib/sdk/server';
 import { describeRefs, searchRefs } from './refs.service';
-import { deleteSnapshot, listSnapshots, restoreSnapshot, saveSnapshot } from './snapshots.service';
 import {
 	idParams,
 	PERM,
+	type RefCard,
 	refDescribeInput,
 	refSearchQuery,
+	type Snapshot,
 	snapshotInput,
-	snapshotParams,
-	type RefCard,
-	type Snapshot
+	snapshotParams
 } from './schemas';
+import { deleteSnapshot, listSnapshots, restoreSnapshot, saveSnapshot } from './snapshots.service';
 
 const tags = ['Whiteboard'];
 

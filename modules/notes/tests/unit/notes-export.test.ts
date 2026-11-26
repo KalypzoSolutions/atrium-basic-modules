@@ -2,10 +2,12 @@
  * Notizen-Export (rein): HTML-Serialisierer (Escaping, Allowlist), Markdown (Bilder/Einbettungen, ZIP-Struktur),
  * Word (gültiges ZIP mit `word/document.xml`), Import-Hilfen (Titel, relative Pfade, ZIP-Grenzen).
  */
-import { describe, expect, it } from 'vitest';
+
+import { describe, expect, it } from 'bun:test';
 import { strFromU8, unzipSync, zipSync } from 'fflate';
 import { exportDocx, hexColor } from '$modules/notes/export/docx';
-import { nodeHtml, htmlDocument, pagesFragment } from '$modules/notes/export/html';
+import type { ResolvedEmbed } from '$modules/notes/export/embeds';
+import { htmlDocument, nodeHtml, pagesFragment } from '$modules/notes/export/html';
 import {
 	exportMarkdown,
 	exportMarkdownFiles,
@@ -15,7 +17,6 @@ import {
 	takeTitle
 } from '$modules/notes/export/markdown';
 import { readZip, ZipError } from '$modules/notes/export/zip';
-import type { ResolvedEmbed } from '$modules/notes/export/embeds';
 
 const ASSET = '0b8f3c1e-7d2a-4f6b-9c1e-1234567890ab';
 const FOREIGN = '1b8f3c1e-7d2a-4f6b-9c1e-1234567890ab';

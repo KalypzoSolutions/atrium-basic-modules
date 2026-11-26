@@ -1,14 +1,4 @@
 <script lang="ts">
-	// Tiptap-Editor einer Notiz mit Yjs (Collaboration + Carets). Der Inhalt lebt NUR im Y.Doc/Editor – keine
-	// Svelte-Kopie (große Dokumente); die Leisten lesen ihren Zustand über `tick` (gedrosselt per requestAnimationFrame).
-	import { onMount, type Snippet } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { toast } from 'svelte-sonner';
-	import { Editor } from '@tiptap/core';
-	import Collaboration from '@tiptap/extension-collaboration';
-	import { CollaborationCaret } from '@tiptap/extension-collaboration-caret';
-	import { Placeholder } from '@tiptap/extensions';
-	import { Markdown } from '@tiptap/markdown';
 	import CodeXml from '@lucide/svelte/icons/code-xml';
 	import FilePlus from '@lucide/svelte/icons/file-plus';
 	import Heading1 from '@lucide/svelte/icons/heading-1';
@@ -23,7 +13,18 @@
 	import Pilcrow from '@lucide/svelte/icons/pilcrow';
 	import Presentation from '@lucide/svelte/icons/presentation';
 	import Quote from '@lucide/svelte/icons/quote';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Table from '@lucide/svelte/icons/table';
+	import { Editor } from '@tiptap/core';
+	import Collaboration from '@tiptap/extension-collaboration';
+	import { CollaborationCaret } from '@tiptap/extension-collaboration-caret';
+	import { Placeholder } from '@tiptap/extensions';
+	import { Markdown } from '@tiptap/markdown';
+	// Tiptap-Editor einer Notiz mit Yjs (Collaboration + Carets). Der Inhalt lebt NUR im Y.Doc/Editor – keine
+	// Svelte-Kopie (große Dokumente); die Leisten lesen ihren Zustand über `tick` (gedrosselt per requestAnimationFrame).
+	import { onMount, type Snippet } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
 	import { contrastTextColor } from '$lib/components/ui/color-picker';
 	import { noteExtensions, setListStyleAt } from '../../doc/extensions';
 	import { MAX_ASSET_BYTES, YDOC_FIELD } from '../../schemas';
@@ -31,13 +32,12 @@
 	import BubbleMenu from './BubbleMenu.svelte';
 	import EmbedPicker from './EmbedPicker.svelte';
 	import LinkDialog from './LinkDialog.svelte';
+	import ListStyles from './ListStyles.svelte';
+	import NoteAssist from './NoteAssist.svelte';
 	import { BrowserEmbed, browserImage, GuestEmbed } from './node-views.svelte';
 	import SlashMenu, { type SlashItem } from './SlashMenu.svelte';
 	import type { NoteSync } from './sync.svelte';
-	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Toolbar from './Toolbar.svelte';
-	import ListStyles from './ListStyles.svelte';
-	import NoteAssist from './NoteAssist.svelte';
 
 	let {
 		sync,
@@ -566,31 +566,31 @@
 	.note-root :global(.note-content li > p) {
 		margin: 0.15em 0;
 	}
-	.note-root :global(.note-content ul[data-type='taskList']) {
+	.note-root :global(.note-content ul[data-type="taskList"]) {
 		list-style: none;
 		padding-left: 0.25rem;
 	}
-	.note-root :global(.note-content ul[data-type='taskList'] li) {
+	.note-root :global(.note-content ul[data-type="taskList"] li) {
 		display: flex;
 		align-items: flex-start;
 		gap: 0.5rem;
 	}
-	.note-root :global(.note-content ul[data-type='taskList'] li > label) {
+	.note-root :global(.note-content ul[data-type="taskList"] li > label) {
 		flex: none;
 		margin-top: 0.3em;
 		user-select: none;
 	}
-	.note-root :global(.note-content ul[data-type='taskList'] li > div) {
+	.note-root :global(.note-content ul[data-type="taskList"] li > div) {
 		flex: 1;
 		min-width: 0;
 	}
-	.note-root :global(.note-content ul[data-type='taskList'] input[type='checkbox']) {
+	.note-root :global(.note-content ul[data-type="taskList"] input[type="checkbox"]) {
 		width: 1rem;
 		height: 1rem;
 		accent-color: var(--primary);
 		cursor: pointer;
 	}
-	.note-root :global(.note-content li[data-checked='true'] > div) {
+	.note-root :global(.note-content li[data-checked="true"] > div) {
 		color: var(--muted-foreground);
 		text-decoration: line-through;
 	}
@@ -664,7 +664,7 @@
 		margin: 0;
 	}
 	.note-root :global(.note-content .selectedCell::after) {
-		content: '';
+		content: "";
 		position: absolute;
 		inset: 0;
 		background: color-mix(in srgb, var(--primary) 15%, transparent);
@@ -706,25 +706,25 @@
 	}
 	.note-root :global(.note-content [data-resize-container]:hover [data-resize-handle]),
 	.note-root :global(.note-content .ProseMirror-selectednode [data-resize-handle]),
-	.note-root :global(.note-content [data-resize-state='true'] [data-resize-handle]) {
+	.note-root :global(.note-content [data-resize-state="true"] [data-resize-handle]) {
 		opacity: 1;
 	}
-	.note-root :global(.note-content [data-resize-handle='top-left']) {
+	.note-root :global(.note-content [data-resize-handle="top-left"]) {
 		top: -0.375rem;
 		left: -0.375rem;
 		cursor: nwse-resize;
 	}
-	.note-root :global(.note-content [data-resize-handle='top-right']) {
+	.note-root :global(.note-content [data-resize-handle="top-right"]) {
 		top: -0.375rem;
 		right: -0.375rem;
 		cursor: nesw-resize;
 	}
-	.note-root :global(.note-content [data-resize-handle='bottom-left']) {
+	.note-root :global(.note-content [data-resize-handle="bottom-left"]) {
 		bottom: -0.375rem;
 		left: -0.375rem;
 		cursor: nesw-resize;
 	}
-	.note-root :global(.note-content [data-resize-handle='bottom-right']) {
+	.note-root :global(.note-content [data-resize-handle="bottom-right"]) {
 		bottom: -0.375rem;
 		right: -0.375rem;
 		cursor: nwse-resize;

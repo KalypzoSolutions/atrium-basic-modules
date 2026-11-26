@@ -2,7 +2,14 @@
  * Modul `whiteboard` – reine Bausteine: Geometrie (Drehung, Anker, Rahmen-Inhalt), Verbinder, Textumbruch,
  * Freihand (Ausdünnen, natürliche Größe), Ansicht (Zoom am Punkt, Einpassen), Element-Schemas und Links.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
+import {
+	arrowHeadPath,
+	connectorDistance,
+	connectorGeometry,
+	resolveConnector
+} from '$modules/whiteboard/pages/editor/connectors';
+import { finalizeStroke, strokePath } from '$modules/whiteboard/pages/editor/freehand';
 import {
 	anchorPoint,
 	borderPoint,
@@ -14,27 +21,6 @@ import {
 	shapePath
 } from '$modules/whiteboard/pages/editor/geometry';
 import {
-	arrowHeadPath,
-	connectorDistance,
-	connectorGeometry,
-	resolveConnector
-} from '$modules/whiteboard/pages/editor/connectors';
-import {
-	approxMeasure,
-	fitFontSize,
-	textHeight,
-	layoutText,
-	wrapText
-} from '$modules/whiteboard/pages/editor/text-layout';
-import { finalizeStroke, strokePath } from '$modules/whiteboard/pages/editor/freehand';
-import {
-	fitRect,
-	stepZoom,
-	toScreen,
-	toWorld,
-	zoomAt
-} from '$modules/whiteboard/pages/editor/viewport';
-import {
 	fileKind,
 	fixedPalette,
 	hostOf,
@@ -42,6 +28,20 @@ import {
 	LIGHT,
 	textOn
 } from '$modules/whiteboard/pages/editor/render';
+import {
+	approxMeasure,
+	fitFontSize,
+	layoutText,
+	textHeight,
+	wrapText
+} from '$modules/whiteboard/pages/editor/text-layout';
+import {
+	fitRect,
+	stepZoom,
+	toScreen,
+	toWorld,
+	zoomAt
+} from '$modules/whiteboard/pages/editor/viewport';
 import {
 	connectorData,
 	isAllowedLink,

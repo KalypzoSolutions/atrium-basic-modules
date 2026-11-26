@@ -30,17 +30,17 @@ import {
 	idParams,
 	MAX_CHECKLIST,
 	MAX_TASKS_PER_BOARD,
+	type MyTask,
 	myTasksQuery,
 	orderInput,
 	PERM,
+	type Priority,
 	reorder,
 	taskDateIssues,
 	taskInput,
 	taskMoveInput,
 	taskParams,
-	taskUpdateInput,
-	type MyTask,
-	type Priority
+	taskUpdateInput
 } from './schemas';
 
 const tags = ['Aufgaben'];

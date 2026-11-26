@@ -2,31 +2,37 @@
  * Modul `notes`: Export (md, zip, html, docx, pdf – mit Unterseiten, Bildern, Einbettungen) und Import (.md, .zip mit
  * Bildern, Unterseiten aus Ordnern), Zugriff (fremd → 404, ohne Anlegen-Recht → 403), manipulierte Archive → 422, Audit.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import sharp from 'sharp';
 import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
-import { useTestDatabase } from '$testing';
-import { installFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import { setPdfRendererForTests } from '$testing';
-import { core } from '$testing';
+import sharp from 'sharp';
 import { rowsOf } from '$lib/sdk/server';
-import notesModule from '$modules/notes/module';
-import whiteboardModule from '$modules/whiteboard/module';
-import { resetDocsForTests } from '$modules/notes/doc.service';
-import type { NoteDetail, NoteNode } from '$modules/notes/schemas';
 import type { RequestContext } from '$lib/sdk/types';
+import { resetDocsForTests } from '$modules/notes/doc.service';
+import notesModule from '$modules/notes/module';
+import type { NoteDetail, NoteNode } from '$modules/notes/schemas';
+import whiteboardModule from '$modules/whiteboard/module';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	setPdfRendererForTests,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules';
 const keys: Record<string, string> = {};

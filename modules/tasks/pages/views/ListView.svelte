@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Diamond from '@lucide/svelte/icons/diamond';
 	import Lock from '@lucide/svelte/icons/lock';
+	import { DataTable } from '$lib/components/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { SelectField } from '$lib/components/ui/select-field';
-	import { DataTable } from '$lib/components/layout';
-	import { PRIORITY_RANK, type BoardDetail, type Phase, type TaskCard } from '../../schemas';
+	import { type BoardDetail, type Phase, PRIORITY_RANK, type TaskCard } from '../../schemas';
 	import { dueText, dueTone, priorityLabel, shortDate } from '../helpers';
 
 	/** Liste je Phase (Gruppe „Ohne Phase“ am Ende), abhaken direkt in der Zeile */
@@ -134,15 +134,13 @@
 									onopen(t.id);
 								}}
 							>
-								{#if t.isMilestone}<Diamond
-										class="size-3.5 shrink-0 fill-current"
-										aria-label="Meilenstein"
-									/>{/if}
+								{#if t.isMilestone}
+									<Diamond class="size-3.5 shrink-0 fill-current" aria-label="Meilenstein" />
+								{/if}
 								<span class="truncate">{t.title}</span>
-								{#if t.openBlockers && !done}<Lock
-										class="size-3.5 shrink-0 text-muted-foreground"
-										aria-label="blockiert"
-									/>{/if}
+								{#if t.openBlockers && !done}
+									<Lock class="size-3.5 shrink-0 text-muted-foreground" aria-label="blockiert" />
+								{/if}
 							</button>
 							{#if t.priority === 'high' || t.priority === 'urgent'}
 								<Badge

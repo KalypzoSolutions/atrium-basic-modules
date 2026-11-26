@@ -4,10 +4,15 @@
  * erledigte ausblenden, ausführlich mit Unteraufgaben; Sichtbarkeit wie beim Lesen (Zuweisung reicht, Fremde 404,
  * ohne Recht 403); Texte maskiert, CSV mit Formelschutz; Audit ohne Inhalte.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq } from 'drizzle-orm';
-import { PDFDocument } from 'pdf-lib';
 import { unzipSync } from 'fflate';
+import { PDFDocument } from 'pdf-lib';
+import { setTodayForTests } from '$lib/sdk/dates';
+import type { RequestContext } from '$lib/sdk/types';
+import tasksModule from '$modules/tasks/module';
+import type { BoardDetail, TaskDetail } from '$modules/tasks/schemas';
 import {
 	bootstrapAdmin,
 	contextForUser,
@@ -26,10 +31,6 @@ import {
 	syncModules,
 	useTestDatabase
 } from '$testing';
-import { setTodayForTests } from '$lib/sdk/dates';
-import tasksModule from '$modules/tasks/module';
-import type { BoardDetail, TaskDetail } from '$modules/tasks/schemas';
-import type { RequestContext } from '$lib/sdk/types';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/tasks';
 const keys: Record<string, string> = {};

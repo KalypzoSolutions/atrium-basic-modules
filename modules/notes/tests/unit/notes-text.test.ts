@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { assetIdsOf, embedsOf, excerptOf, plainTextOf } from '$modules/notes/doc/text';
 
 const ASSET = '0b8f3c1e-7d2a-4f6b-9c1e-1234567890ab';

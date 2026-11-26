@@ -1,13 +1,13 @@
 <script lang="ts">
+	import CalendarDays from '@lucide/svelte/icons/calendar-days';
 	// Dashboard-Kachel „Nächste Termine“: die nächsten fünf Termine ab heute (lokal).
 	import { onMount } from 'svelte';
-	import CalendarDays from '@lucide/svelte/icons/calendar-days';
-	import { ApiClientError, apiFetch } from '$lib/sdk/client';
-	import type { DashboardWidgetProps } from '$lib/sdk/types/module-ui';
 	import { DashboardCard } from '$lib/components/layout';
 	import { localToday, monthOf } from '$lib/components/layout/month-calendar';
-	import type { EventItem, EventList } from '../../schemas';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import type { DashboardWidgetProps } from '$lib/sdk/types/module-ui';
 	import { formatEventRange } from '../../format';
+	import type { EventItem, EventList } from '../../schemas';
 
 	let { onstatus }: DashboardWidgetProps = $props();
 
@@ -80,7 +80,9 @@
 					<span class="min-w-0 flex-1">
 						<span class="block truncate font-medium" title={e.title}>{e.title}</span>
 						<span class="block truncate text-xs text-muted-foreground">
-							{formatEventRange(e)}{#if e.location}&nbsp;· {e.location}{/if}
+							{formatEventRange(e)}{#if e.location}
+								&nbsp;· {e.location}
+							{/if}
 						</span>
 					</span>
 				</a>

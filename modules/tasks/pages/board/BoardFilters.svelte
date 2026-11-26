@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ListFilter from '@lucide/svelte/icons/list-filter';
 	import X from '@lucide/svelte/icons/x';
+	import { ChoiceChips } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
@@ -8,19 +9,18 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { SelectField } from '$lib/components/ui/select-field';
 	import { Switch } from '$lib/components/ui/switch';
-	import { ChoiceChips } from '$lib/components/layout';
 	import {
+		type Phase,
 		PRIORITIES,
 		PRIORITY_LABELS,
-		type Phase,
 		type Priority,
 		type UserRef
 	} from '../../schemas';
 	import {
 		activeFilterCount,
 		DUE_FILTER_LABELS,
-		emptyFilter,
 		type DueFilter,
+		emptyFilter,
 		type TaskFilter
 	} from '../filter';
 

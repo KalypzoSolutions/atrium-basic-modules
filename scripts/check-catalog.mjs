@@ -1,6 +1,6 @@
 // Prüft den Katalog `modules/atrium-modules.json`: jedes Modul mit `atrium-module.json` steht darin (und umgekehrt),
 // Pfade stimmen, IDs sind eindeutig, harte Abhängigkeiten liegen im Repo oder haben einen `source`-Link.
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 

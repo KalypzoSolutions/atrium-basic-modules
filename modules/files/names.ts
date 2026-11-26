@@ -12,7 +12,7 @@ const EXTENSION_RE = /^\.[\p{L}\p{N}]{1,10}$/u;
 /** Vorhandenes Zähler-Suffix „ (n)“ am Ende der Basis */
 const COUNTER_RE = /^(.*) \((\d{1,6})\)$/su;
 /** Steuerzeichen (wie in `nodeName`) */
-// eslint-disable-next-line no-control-regex
+// biome-ignore lint/suspicious/noControlCharactersInRegex: Steuerzeichen werden bewusst erkannt/entfernt
 const CONTROL_RE = /[\u0000-\u001f\u007f]/;
 
 /** Auf `max` Zeichen (Codepoints) kürzen, ohne Surrogatpaare zu zerreißen */

@@ -2,9 +2,10 @@
  * Browser-Verhalten für die Schema-Knoten (ohne das Schema zu ändern): Node-View für `embed` (Svelte-Komponente
  * per `mount`) und Bildadresse aus der Asset-ID (damit die Tiptap-Größenänderung ein `src` bekommt).
  */
-import { mount, unmount } from 'svelte';
+
 import type { NodeViewRendererProps } from '@tiptap/core';
 import type { Node as PmNode } from '@tiptap/pm/model';
+import { mount, unmount } from 'svelte';
 import { assetUrl, Embed, isUuid, noteImage } from '../../doc/extensions';
 import { DEFAULT_EMBED_HEIGHT } from '../../schemas';
 import EmbedView from './EmbedView.svelte';

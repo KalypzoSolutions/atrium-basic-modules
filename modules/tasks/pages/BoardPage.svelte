@@ -1,8 +1,4 @@
 <script lang="ts">
-	import { goto, replaceState } from '$app/navigation';
-	import { page } from '$app/state';
-	import { untrack } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import CalendarRange from '@lucide/svelte/icons/calendar-range';
 	import CopyPlus from '@lucide/svelte/icons/copy-plus';
@@ -15,18 +11,10 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Tent from '@lucide/svelte/icons/tent';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import type { ModulePageProps } from '$lib/sdk/types/module-ui';
-	import type { PrincipalInfo } from '$lib/sdk/types/sharing';
-	import { apiFetch, can } from '$lib/sdk/client';
-	import { todayBerlin } from '$lib/sdk/dates';
-	import { Alert, AlertDescription } from '$lib/components/ui/alert';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { Input } from '$lib/components/ui/input';
-	import { SelectField } from '$lib/components/ui/select-field';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import { untrack } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { goto, replaceState } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
 		ConfirmDialog,
 		deviceLayout,
@@ -37,13 +25,29 @@
 		NumberStepper,
 		PageHeader,
 		PageTitle,
-		ShareMenu,
-		toastWithUndo,
 		type ShareCandidate,
-		type ShareEntry
+		type ShareEntry,
+		ShareMenu,
+		toastWithUndo
 	} from '$lib/components/layout';
 	import { shareKey } from '$lib/components/layout/share-types';
+	import { Alert, AlertDescription } from '$lib/components/ui/alert';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { Input } from '$lib/components/ui/input';
+	import { SelectField } from '$lib/components/ui/select-field';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { apiFetch, can } from '$lib/sdk/client';
+	import { todayBerlin } from '$lib/sdk/dates';
+	import type { ModulePageProps } from '$lib/sdk/types/module-ui';
+	import type { PrincipalInfo } from '$lib/sdk/types/sharing';
 	import {
+		type BoardDetail,
+		type BoardShares,
+		type BoardView,
+		type Column,
 		MAX_COLUMN_NAME,
 		MAX_SHIFT_DAYS,
 		MAX_TASKS_PER_BOARD,
@@ -51,14 +55,10 @@
 		PERM,
 		SHARE_LEVEL_LABELS,
 		SHARE_LEVELS,
-		VIEW_LABELS,
-		VIEWS,
-		type BoardDetail,
-		type BoardShares,
-		type BoardView,
-		type Column,
 		type TaskCard,
-		type UserRef
+		type UserRef,
+		VIEW_LABELS,
+		VIEWS
 	} from '../schemas';
 	import type { DateRange, TimelineTarget } from '../timeline';
 	import BoardDialog from './BoardDialog.svelte';
@@ -66,14 +66,14 @@
 	import MobileBoard from './board/MobileBoard.svelte';
 	import PhaseStrip from './board/PhaseStrip.svelte';
 	import PhasesDialog from './board/PhasesDialog.svelte';
+	import ExportDialog, { type ExportTarget } from './ExportDialog.svelte';
 	import {
-		emptyFilter,
-		matchesFilter,
 		activeFilterCount,
+		emptyFilter,
 		filterSummary,
+		matchesFilter,
 		type TaskFilter
 	} from './filter';
-	import ExportDialog, { type ExportTarget } from './ExportDialog.svelte';
 	import { BASE, errMsg } from './helpers';
 	import TaskSheet from './task/TaskSheet.svelte';
 	import CalendarView from './views/CalendarView.svelte';
@@ -724,7 +724,8 @@
 				class="focus-ring inline-flex items-center gap-1.5 rounded-sm text-sm text-link hover:underline"
 				onclick={() => (phasesOpen = true)}
 			>
-				<Flag class="size-4" aria-hidden="true" /> Phasen anlegen (z. B. Planung, Durchführung, Nachbereitung)
+				<Flag class="size-4" aria-hidden="true" /> Phasen anlegen (z. B. Planung, Durchführung,
+				Nachbereitung)
 			</button>
 		{/if}
 

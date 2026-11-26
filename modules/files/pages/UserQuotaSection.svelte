@@ -1,9 +1,9 @@
 <script lang="ts">
+	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	// Reiter „Speicherplatz“ im Dialog „Benutzer bearbeiten“ (`userAdminSections`):
 	// Belegung, Auswahl Standard / eigenes Limit / unbegrenzt, Warnung unter der Belegung. Speichert selbst.
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	import { BUSY_SAVE, ErrorState, LoadingState } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -11,8 +11,8 @@
 	import { apiFetch } from '$lib/sdk/client';
 	import type { UserAdminSectionProps } from '$lib/sdk/types/module-ui';
 	import { MAX_USER_QUOTA_MB, type QuotaMode, type UserQuota } from '../schemas';
-	import QuotaBar from './QuotaBar.svelte';
 	import { API, errorText, formatBytes } from './helpers';
+	import QuotaBar from './QuotaBar.svelte';
 
 	let { userId, userName }: UserAdminSectionProps = $props();
 

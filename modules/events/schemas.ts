@@ -186,7 +186,7 @@ export const recurrenceRule = z
 			.array(z.number().int().min(1).max(7))
 			.max(7)
 			.optional()
-			.transform((v) => (v && v.length ? [...new Set(v)].sort((a, b) => a - b) : undefined)),
+			.transform((v) => (v?.length ? [...new Set(v)].sort((a, b) => a - b) : undefined)),
 		/** Nur `monthly`/`yearly` (Standard `day`) */
 		monthlyMode: z.enum(MONTHLY_MODES).optional(),
 		end: recurrenceEnd.default({ type: 'never' })
@@ -417,7 +417,8 @@ export interface EventDetail extends EventItem {
 	shares: EventShare[];
 	/** Serie: Werte der Serie selbst (unabhängig vom angefragten Vorkommen und seinem Override) */
 	series:
-		(EventDates & { title: string; description: string | null; location: string | null }) | null;
+		| (EventDates & { title: string; description: string | null; location: string | null })
+		| null;
 	/** Serie: gespeicherter Override dieses Vorkommens (nur bei Bearbeiten-Zugriff, sonst `null`) */
 	override: OccurrenceOverride | null;
 	/** Serie, nur bei Bearbeiten-Zugriff: abgesagte Vorkommen (ursprüngliche Daten) */

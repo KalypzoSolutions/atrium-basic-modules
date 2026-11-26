@@ -1,10 +1,10 @@
 <script lang="ts">
+	import Presentation from '@lucide/svelte/icons/presentation';
 	// Dashboard-Kachel „Whiteboards“: zuletzt geänderte sichtbare Whiteboards
 	import { onMount } from 'svelte';
-	import Presentation from '@lucide/svelte/icons/presentation';
+	import { DashboardCard } from '$lib/components/layout';
 	import { apiFetch } from '$lib/sdk/client';
 	import type { DashboardWidgetProps } from '$lib/sdk/types/module-ui';
-	import { DashboardCard } from '$lib/components/layout';
 	import type { Board } from '../../schemas';
 	import { BASE, errMsg, relativeTime } from '../helpers';
 

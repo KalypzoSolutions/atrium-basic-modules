@@ -1,16 +1,16 @@
 <script lang="ts">
+	import Lock from '@lucide/svelte/icons/lock';
+	import PanelLeft from '@lucide/svelte/icons/panel-left';
 	// Eine Seite über einen öffentlichen Link: Live-Verbindung als Gast (eigene Endpunkte unter `/public/links/…`),
 	// Titel nur lesend, Editor im Gastmodus (nur Text). Wird je Seite neu aufgebaut ({#key}).
 	import { onDestroy, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import Lock from '@lucide/svelte/icons/lock';
-	import PanelLeft from '@lucide/svelte/icons/panel-left';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import { API_BASE, presenceColor, type PublicNoteNode, type ShareLevel } from '../schemas';
-	import { noteTitle } from './helpers';
+	import { API_BASE, type PublicNoteNode, presenceColor, type ShareLevel } from '../schemas';
 	import NoteEditor from './editor/NoteEditor.svelte';
 	import { NoteSync } from './editor/sync.svelte';
+	import { noteTitle } from './helpers';
 	import NoteIcon from './NoteIcon.svelte';
 	import PeerAvatars from './PeerAvatars.svelte';
 

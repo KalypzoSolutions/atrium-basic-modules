@@ -3,32 +3,41 @@
  * öffentlicher Upload (`POST /public/links/:token/upload`, Multipart, ohne Login).
  * Storage über `tests/helpers/fake-storage.ts`.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { fakeObjects, installFakeStorage, uninstallFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { setSetting } from '$testing';
-import { listAudit } from '$testing';
+import type { RequestContext } from '$lib/sdk/types';
 import filesModule from '$modules/files/module';
 import {
-	MAX_PUBLIC_UPLOAD_FILES,
 	type FileNode,
 	type FolderListing,
+	MAX_PUBLIC_UPLOAD_FILES,
 	type PublicLinkInfo,
 	type PublicUploadResult,
 	type ShareLink
 } from '$modules/files/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	encodeMultipart,
+	fakeObjects,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	setSetting,
+	syncModules,
+	uninstallFakeStorage,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/files';
 const PW = 'a-long-enough-pw';
@@ -41,7 +50,7 @@ const ctxOf = async (id: string) => (await contextForUser(id))!.ctx;
 
 interface Res {
 	status: number;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: bewusst ungetypt
 	body: any;
 }
 
@@ -108,11 +117,11 @@ async function pubUpload(token: string, files: PubFile[], fields: Record<string,
 				: new Uint8Array(f.size ?? 10).fill(65);
 		form.append('file', new File([bytes as BlobPart], f.name, { type: f.type ?? 'text/plain' }));
 	}
-	const r = new Response(form);
-	const buf = new Uint8Array(await r.arrayBuffer());
+	const r = await encodeMultipart(form);
+	const buf = r.body;
 	return send(null, 'POST', `/public/links/${token}/upload`, {
 		headers: {
-			'content-type': r.headers.get('content-type')!,
+			'content-type': r.contentType,
 			'content-length': String(buf.byteLength)
 		},
 		body: buf
@@ -126,11 +135,11 @@ async function upload(who: string, parent: string, name: string, text: string) {
 		'file',
 		new File([new TextEncoder().encode(text) as BlobPart], name, { type: 'text/plain' })
 	);
-	const r = new Response(form);
-	const buf = new Uint8Array(await r.arrayBuffer());
+	const r = await encodeMultipart(form);
+	const buf = r.body;
 	return send(who, 'POST', `/nodes/${parent}/upload`, {
 		headers: {
-			'content-type': r.headers.get('content-type')!,
+			'content-type': r.contentType,
 			'content-length': String(buf.byteLength)
 		},
 		body: buf

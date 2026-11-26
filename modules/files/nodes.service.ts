@@ -3,7 +3,7 @@
  * Verschieben, Suche, DTO-Aufbau.
  * Muster: `principalKeysFor` vor der Transaktion → DB in `mdb().transaction` → Namen (`userRefs`) danach → Audit danach.
  */
-import { sql, type SQL } from 'drizzle-orm';
+import { type SQL, sql } from 'drizzle-orm';
 import { todayBerlin } from '$lib/sdk/dates';
 import { loadIconSet } from '$lib/sdk/icons';
 import {
@@ -34,28 +34,28 @@ import {
 	loadNodes,
 	mdb,
 	NODE_COLUMNS,
+	type NodeRow,
 	nodeRowOf,
-	userRefs,
-	type NodeRow
+	userRefs
 } from './db';
 import { displayPath, normalizeName, uniqueName } from './names';
-import { keysFor } from './shares.service';
-import { assertQuota } from './storage';
 import {
-	MAX_DEPTH,
-	MAX_SEARCH_RESULTS,
-	ROOT_LABEL,
 	type AccessLevel,
 	type Breadcrumb,
 	type BulkResult,
 	type FileNode,
 	type FolderCreateInput,
 	type FolderListing,
+	MAX_DEPTH,
+	MAX_SEARCH_RESULTS,
 	type MoveInput,
+	ROOT_LABEL,
 	type SearchResult,
 	type StyleInput,
 	type UserRef
 } from './schemas';
+import { keysFor } from './shares.service';
+import { assertQuota } from './storage';
 
 /** Zusatzinfos je Knoten für `FileNode` (in der Transaktion ermittelt) */
 export interface NodeExtras {

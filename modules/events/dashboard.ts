@@ -4,19 +4,19 @@
  * (`visibleEventsFilter`, Principal-Schlüssel VOR der Transaktion).
  */
 import { sql } from 'drizzle-orm';
-import { moduleDb, type ModuleDashboardSources, principalKeysFor, rowsOf } from '$lib/sdk/server';
+import { type ModuleDashboardSources, moduleDb, principalKeysFor, rowsOf } from '$lib/sdk/server';
 import type { DashboardAgendaItem } from '$lib/sdk/types/dashboard';
 import { visibleEventsFilter } from './access';
 import {
+	compareOccurrences,
 	EVENT_COLUMNS,
 	EVENT_ORDER,
-	compareOccurrences,
 	expandRow,
 	hydrateRows,
 	loadExceptions,
+	type OccurrenceRow,
 	overlapsWindow,
-	singleOccurrence,
-	type OccurrenceRow
+	singleOccurrence
 } from './events.service';
 import { MODULE_ID } from './schemas';
 

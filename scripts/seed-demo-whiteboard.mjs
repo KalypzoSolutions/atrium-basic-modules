@@ -1,5 +1,5 @@
 // Demo-Daten für das Modul `whiteboard` (über die echte API, idempotent über den Namen).
-// Voraussetzung: demo-server läuft, `node scripts/seed-demo.mjs` (+ optional `seed-demo-modules.mjs` für Aktionen).
+// Voraussetzung: demo-server läuft, `bun scripts/seed-demo.mjs` (+ optional `seed-demo-modules.mjs` für Aktionen).
 // Aktiviert das Modul und legt das Whiteboard „Sommerlager – Programmideen“ mit Rahmen, Notizzetteln, Formen,
 // Verbindern, Freihand-Strich, Link und (falls vorhanden) einer Karte der Aktion „Kopenhagen 2026“ an.
 

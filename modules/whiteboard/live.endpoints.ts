@@ -7,11 +7,11 @@ import { applyOps } from './ops.service';
 import {
 	idParams,
 	liveQuery,
+	type OpsResult,
 	opsInput,
 	PERM,
 	presenceColor,
-	presenceInput,
-	type OpsResult
+	presenceInput
 } from './schemas';
 
 const tags = ['Whiteboard'];

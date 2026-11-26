@@ -14,16 +14,16 @@ import { sql } from 'drizzle-orm';
 import { core, errors, type RequestContext } from '$lib/sdk/server';
 import { requireNoteAccess } from '../access';
 import { mdb } from '../db';
-import { jsonFromState, stateFromJson } from '../doc.service';
 import { plainTextOf } from '../doc/text';
+import { jsonFromState, stateFromJson } from '../doc.service';
 import { MAX_ASSET_BYTES, MAX_CHILDREN, MAX_DEPTH, MAX_DOC_BYTES, MAX_TITLE } from '../schemas';
 import { assetPath, IMAGE_VARIANTS, removeFiles, storeFile } from '../storage';
 import {
+	type Container,
 	canCreate,
 	childCount,
 	lockContainer,
-	nextPosition,
-	type Container
+	nextPosition
 } from '../tree.service';
 import { parseMarkdown, resolveRelative, rewriteImageRefs, takeTitle } from './markdown';
 import { readZip, ZipError } from './zip';
@@ -142,7 +142,9 @@ function planZipPages(files: Map<string, Uint8Array>, zipName: string): PlannedP
 			depth
 		});
 		const list = (children.get(key) ?? []).sort((a, b) => collator.compare(a, b));
-		list.forEach((c, i) => visit(c, key, depth + 1, i));
+		list.forEach((c, i) => {
+			visit(c, key, depth + 1, i);
+		});
 	};
 	if (wrap) {
 		out.push({
@@ -155,7 +157,7 @@ function planZipPages(files: Map<string, Uint8Array>, zipName: string): PlannedP
 			position: 0,
 			depth: 0
 		});
-		tops.sort((a, b) => collator.compare(a, b)).forEach((k, i) => visit(k, '', 1, i));
+		for (const [i, k] of tops.sort((a, b) => collator.compare(a, b)).entries()) visit(k, '', 1, i);
 	} else {
 		visit(tops[0]!, null, 0, 0);
 	}
@@ -205,7 +207,7 @@ async function storeImages(planned: PlannedImage[]): Promise<{
 	const paths: string[] = [];
 	try {
 		for (const img of planned) {
-			let processed;
+			let processed: Awaited<ReturnType<typeof core.images.process>>;
 			try {
 				processed = await core.images.process(img.bytes, { variants: IMAGE_VARIANTS });
 			} catch {

@@ -5,8 +5,8 @@ import type { FileRefInfo, FileRefsService } from './contract';
 import { mdb, type NodeRow } from './db';
 import { displayPath } from './names';
 import { searchNodes } from './nodes.service';
-import { keysFor } from './shares.service';
 import { BASE_PATH, PERMISSIONS, ROOT_LABEL } from './schemas';
+import { keysFor } from './shares.service';
 
 const API = '/api/v1/modules/files';
 const MAX_IDS = 200;

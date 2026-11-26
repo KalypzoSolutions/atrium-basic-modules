@@ -4,14 +4,14 @@
  * Zugriffskontext selbst; nur außerhalb offener Transaktionen aufrufen.
  */
 import { sql } from 'drizzle-orm';
-import { core, inList, type RequestContext, rowsOf, type Row, toIso } from '$lib/sdk/server';
+import { core, inList, type RequestContext, type Row, rowsOf, toIso } from '$lib/sdk/server';
 import { loadNoteContext, notInTrashSql, visibleNotesSql } from './access';
+import type { NoteRefInfo, NoteRefsService } from './contract';
 import { mdb } from './db';
 import { excerptOf } from './doc/text';
 import { noteLink } from './notify';
-import { likePattern, pathText, visibleAncestors } from './tree.service';
 import { PERM } from './schemas';
-import type { NoteRefInfo, NoteRefsService } from './contract';
+import { likePattern, pathText, visibleAncestors } from './tree.service';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

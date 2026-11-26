@@ -13,10 +13,10 @@ import type {
 import {
 	anchorDirection,
 	anchorPoint,
+	type Box,
 	boxOf,
 	center,
 	isBoxElement,
-	type Box,
 	type Point
 } from './geometry';
 

@@ -1,14 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
 	import Download from '@lucide/svelte/icons/download';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Tent from '@lucide/svelte/icons/tent';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
-	import { apiFetch, can } from '$lib/sdk/client';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
 		EmptyState,
 		ErrorState,
@@ -16,7 +12,11 @@
 		PageHeader,
 		SearchInput
 	} from '$lib/components/layout';
-	import { PERM, type BoardDetail, type BoardList } from '../schemas';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
+	import { apiFetch, can } from '$lib/sdk/client';
+	import { type BoardDetail, type BoardList, PERM } from '../schemas';
 	import BoardDialog from './BoardDialog.svelte';
 	import ExportDialog from './ExportDialog.svelte';
 	import { BASE, errMsg, shortDate } from './helpers';

@@ -3,24 +3,31 @@
  * `collectDashboardFeed` – Sichtbarkeit (Freigabe vs. ohne), Serien je Vorkommen im Zeitraum
  * (abgesagtes fehlt, geändertes mit neuem Titel), mehrtägige Überlappung, Uhrzeiten und Link.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { disableModule, enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { collectDashboardFeed } from '$testing';
-import eventsModule from '$modules/events/module';
-import eventsUi from '$modules/events/ui';
-import type { EventDetail } from '$modules/events/schemas';
 import type { RequestContext } from '$lib/sdk/types';
+import eventsModule from '$modules/events/module';
+import type { EventDetail } from '$modules/events/schemas';
+import eventsUi from '$modules/events/ui';
+import {
+	bootstrapAdmin,
+	collectDashboardFeed,
+	contextForUser,
+	createApiKey,
+	createRole,
+	createUser,
+	disableModule,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/events';
 // Woche Mo 02.11. – So 08.11.2026

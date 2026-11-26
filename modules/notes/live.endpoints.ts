@@ -4,21 +4,21 @@ import { requireNoteAccess } from './access';
 import { mdb, userRefs } from './db';
 import { applyClientUpdate, stateFor } from './doc.service';
 import { hub, peersOf } from './live';
-import { stateResponse } from './state-response';
 import {
 	awarenessInput,
 	idParams,
+	type LiveEvent,
 	liveQuery,
 	MAX_STREAMS_PER_USER,
 	MAX_UPDATE_BYTES,
 	PERM,
+	type Peer,
 	presenceColor,
 	stateQuery,
-	updatesQuery,
-	type LiveEvent,
-	type Peer,
-	type UpdateResult
+	type UpdateResult,
+	updatesQuery
 } from './schemas';
+import { stateResponse } from './state-response';
 
 const tags = ['Notizen'];
 const b64 = (u: Uint8Array) => Buffer.from(u).toString('base64');

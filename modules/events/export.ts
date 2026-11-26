@@ -10,9 +10,9 @@
  */
 import { escapeHtml } from '$lib/sdk/server';
 import type { PdfBlock } from '$lib/sdk/types';
+import { formatEventTime } from './format';
 import type { CalendarAction } from './peer-contracts';
 import { addDays, daysBetween, isoWeekday } from './recurrence';
-import { formatEventTime } from './format';
 import type { EventItem, ExportLayout } from './schemas';
 
 export interface ExportEntry {
@@ -323,13 +323,14 @@ export interface CalendarOptions {
 	minLines: number;
 }
 
-const FILLER = '<span style="font-size:7.5pt">&nbsp;</span>';
+// 10px = 7,5 pt; der Sanitizer des Core erlaubt pt nur ganzzahlig
+const FILLER = '<span style="font-size:10px">&nbsp;</span>';
 
 function calendarLine(e: ExportEntry, day: string): string {
 	const time = e.startsOn === day ? formatEventTime(e.startsTime) : '';
 	const text = e.startsOn === day ? e.title : `… ${e.title}`;
 	return (
-		`<span style="font-size:7.5pt;background-color:${tint(e.color)};color:#111827">` +
+		`<span style="font-size:10px;background-color:${tint(e.color)};color:#111827">` +
 		`${time ? `<strong>${esc(time)}</strong> ` : ''}${esc(text)}</span>`
 	);
 }

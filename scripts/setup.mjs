@@ -1,16 +1,16 @@
-// Einrichtung des Module-Repos (Kalypzo Atrium, Phase 8): `npm run setup`
+// Einrichtung des Module-Repos (Kalypzo Atrium, Phase 8): `bun run setup`
 //
-// 1. Core als Git-Submodul `.core` holen (fester Tag, siehe .gitmodules) und dessen Abhängigkeiten installieren
+// 1. Core als Git-Submodul `.core` holen (fester Stand, siehe .gitmodules) und dessen Abhängigkeiten installieren
 // 2. `node_modules` dieses Repos = Link auf `.core/node_modules` (Junction unter Windows), damit Moduldateien die
 //    Pakete des Core finden (Svelte, Zod, bits-ui …)
 // 3. modulspezifische npm-Pakete (Feld `npm` der `atrium-module.json`) nach `modules/node_modules` installieren –
-//    genau wie der Supervisor beim Neubau im Server
+//    genau wie der Supervisor beim Neubau im Server (`bun install --production --ignore-scripts --linker hoisted`)
 import { execFileSync } from 'node:child_process';
 import {
 	existsSync,
 	lstatSync,
-	readFileSync,
 	readdirSync,
+	readFileSync,
 	rmSync,
 	symlinkSync,
 	writeFileSync
@@ -21,9 +21,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CORE = join(ROOT, '.core');
 const MODULES = join(ROOT, 'modules');
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const run = (cmd, args, cwd) =>
-	execFileSync(cmd, args, { cwd, stdio: 'inherit', shell: process.platform === 'win32' });
+// Läuft unter Bun (`bun run setup`): `process.execPath` ist die Bun-Binärdatei
+const bun = process.execPath;
+const run = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, stdio: 'inherit' });
 
 if (!existsSync(join(CORE, 'package.json'))) {
 	console.log('== Core-Submodul holen');
@@ -33,7 +33,7 @@ if (!existsSync(join(CORE, 'package.json'))) {
 const corePkg = JSON.parse(readFileSync(join(CORE, 'package.json'), 'utf8'));
 console.log(`== Core ${corePkg.name}@${corePkg.version}: Abhängigkeiten`);
 if (!existsSync(join(CORE, 'node_modules')) || process.argv.includes('--force'))
-	run(npm, ['ci'], CORE);
+	run(bun, ['install', '--frozen-lockfile'], CORE);
 
 console.log('== node_modules → .core/node_modules');
 const link = join(ROOT, 'node_modules');
@@ -72,11 +72,11 @@ for (const id of readdirSync(MODULES).sort()) {
 if (Object.keys(packages).length) {
 	writeFileSync(
 		join(MODULES, 'package.json'),
-		JSON.stringify({ private: true, dependencies: packages }, null, '\t') + '\n'
+		`${JSON.stringify({ private: true, dependencies: packages }, null, '\t')}\n`
 	);
 	run(
-		npm,
-		['install', '--ignore-scripts', '--no-audit', '--no-fund', '--legacy-peer-deps', '--omit=dev'],
+		bun,
+		['install', '--production', '--ignore-scripts', '--linker', 'hoisted', '--no-summary'],
 		MODULES
 	);
 	// gleiche Regel wie der Supervisor im Server: Kopien von Paketen, die der Core schon hat, entfernen
@@ -87,4 +87,6 @@ if (Object.keys(packages).length) {
 	if (removed.length) console.log(`vom Core übernommen: ${removed.join(', ')}`);
 } else console.log('keine eigenen Pakete');
 
-console.log('\nFertig. Nächste Schritte: npm run check · npm test · npm run build · npm run demo');
+console.log(
+	'\nFertig. Nächste Schritte: bun run check · bun run test · bun run build · bun run demo'
+);

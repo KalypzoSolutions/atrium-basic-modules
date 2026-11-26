@@ -1,37 +1,37 @@
 <script lang="ts">
+	import Backpack from '@lucide/svelte/icons/backpack';
 	// Darstellung eines Elements (Ansicht und Export): verteilt auf die Typ-Komponenten
 	import CalendarDays from '@lucide/svelte/icons/calendar-days';
+	import File from '@lucide/svelte/icons/file';
 	import FileArchive from '@lucide/svelte/icons/file-archive';
 	import FileImage from '@lucide/svelte/icons/file-image';
 	import FileSpreadsheet from '@lucide/svelte/icons/file-spreadsheet';
 	import FileText from '@lucide/svelte/icons/file-text';
-	import File from '@lucide/svelte/icons/file';
 	import Folder from '@lucide/svelte/icons/folder';
 	import Images from '@lucide/svelte/icons/images';
 	import Link2 from '@lucide/svelte/icons/link-2';
 	import ListTodo from '@lucide/svelte/icons/list-todo';
-	import Presentation from '@lucide/svelte/icons/presentation';
-	import Backpack from '@lucide/svelte/icons/backpack';
-	import SquareKanban from '@lucide/svelte/icons/square-kanban';
 	import Mail from '@lucide/svelte/icons/mail';
 	import NotebookPen from '@lucide/svelte/icons/notebook-pen';
+	import Presentation from '@lucide/svelte/icons/presentation';
+	import SquareKanban from '@lucide/svelte/icons/square-kanban';
 	import { REF_LABELS, type RefType, type WbElement } from '../../schemas';
 	import CardView from './CardView.svelte';
 	import ConnectorView from './ConnectorView.svelte';
 	import FreehandView from './FreehandView.svelte';
-	import ShapeView from './ShapeView.svelte';
 	import {
 		extensionLabel,
 		FILE_COLORS,
+		type FileKind,
 		fileKind,
 		formatBytes,
 		hostOf,
 		ink,
-		REF_COLORS,
-		type FileKind
+		REF_COLORS
 	} from './render';
+	import ShapeView from './ShapeView.svelte';
 	import { FONT_FAMILY } from './text-layout';
-	import { refKey, type RenderContext } from './types';
+	import { type RenderContext, refKey } from './types';
 
 	let { el, rc }: { el: WbElement; rc: RenderContext } = $props();
 
@@ -93,7 +93,8 @@
 				text-anchor="middle"
 				font-family={FONT_FAMILY}
 				font-size="14"
-				fill={rc.palette.muted}>Bild nicht verfügbar</text
+				fill={rc.palette.muted}
+				>Bild nicht verfügbar</text
 			>
 		{/if}
 		{#if d.stroke !== 'transparent' && d.strokeWidth > 0}
@@ -207,7 +208,8 @@
 				font-size="16"
 				font-weight="700"
 				fill={d.color ?? rc.palette.ink}
-				style="white-space: pre">{d.title}</text
+				style="white-space: pre;"
+				>{d.title}</text
 			>
 		{/if}
 	</g>

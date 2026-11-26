@@ -1,5 +1,5 @@
 /** Zod-Eingaben des Moduls `files` (`schemas.ts`). */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import {
 	bulkInput,
 	folderCreateInput,
@@ -9,15 +9,15 @@ import {
 	linkCanView,
 	linkCreateInput,
 	listQuery,
-	MAX_UPLOADER_NAME,
-	publicUploadFields,
 	MAX_BULK,
 	MAX_NAME,
 	MAX_PASSWORD,
 	MAX_SHARES,
+	MAX_UPLOADER_NAME,
 	MIN_PASSWORD,
 	moveInput,
 	nodeName,
+	publicUploadFields,
 	sharesInput
 } from '$modules/files/schemas';
 

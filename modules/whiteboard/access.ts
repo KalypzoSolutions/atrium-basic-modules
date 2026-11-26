@@ -10,20 +10,20 @@
  * Principal-Schlüssel und Aktions-Zugriffe rufen Core bzw. `actions` auf und stehen daher VOR der
  * Transaktion fest (`loadBoardContext`, für alle Endpoints über `withBoardContext`).
  */
-import { sql, type SQL } from 'drizzle-orm';
+import { type SQL, sql } from 'drizzle-orm';
 import {
+	type AnyApiEndpoint,
 	core,
 	createShareAccess,
 	errors,
 	inList,
 	principalKeysFor,
-	rowsOf,
-	type AnyApiEndpoint,
 	type RequestContext,
+	rowsOf,
 	type Tx
 } from '$lib/sdk/server';
 import type { ActionsService } from './peer-contracts';
-import { MODULE_ID, PERM, type BoardAccess, type ShareLevel } from './schemas';
+import { type BoardAccess, MODULE_ID, PERM, type ShareLevel } from './schemas';
 
 export const boardShareAccess = createShareAccess({
 	table: 'boards',

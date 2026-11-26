@@ -23,7 +23,7 @@ async function noteContext(ctx: RequestContext, id: string) {
 			.slice(0, -1)
 			.map((n) => n.title)
 			.filter(Boolean);
-		if (path.length) facts['Oberseiten'] = path.join(' › ');
+		if (path.length) facts.Oberseiten = path.join(' › ');
 		const actionId = chain.find((n) => n.actionId)?.actionId;
 		const action = actionId ? nc.actionNames.get(actionId) : undefined;
 		if (action) facts['Gehört zur Aktion'] = action;

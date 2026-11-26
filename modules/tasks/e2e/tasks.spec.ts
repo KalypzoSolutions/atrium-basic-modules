@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 // Aufgaben 2.0: Board anlegen, Aufgabe über ＋ im Spaltenkopf anlegen, im Seitenblatt Unteraufgabe abhaken und
 // über „Stand“ erledigen; Ziehen zwischen Spalten; Phasen anlegen, Liste und Zeitleiste; Handy-Ansicht.

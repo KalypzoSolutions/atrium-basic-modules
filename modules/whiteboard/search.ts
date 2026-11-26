@@ -31,23 +31,24 @@ export const whiteboardSearch: ModuleSearchProvider = {
 					LIMIT ${limit}`
 			)
 		);
-		return rows.map((r): SearchHit =>
-			r.kind === 'board'
-				? {
-						id: String(r.id),
-						title: String(r.title),
-						href: boardLink(String(r.id)),
-						icon: 'presentation',
-						type: 'Whiteboard'
-					}
-				: {
-						id: String(r.id),
-						title: String(r.title),
-						subtitle: String(r.board_name),
-						href: `${boardLink(String(r.board_id))}?focus=${encodeURIComponent(String(r.id))}`,
-						icon: 'presentation',
-						type: 'Rahmen'
-					}
+		return rows.map(
+			(r): SearchHit =>
+				r.kind === 'board'
+					? {
+							id: String(r.id),
+							title: String(r.title),
+							href: boardLink(String(r.id)),
+							icon: 'presentation',
+							type: 'Whiteboard'
+						}
+					: {
+							id: String(r.id),
+							title: String(r.title),
+							subtitle: String(r.board_name),
+							href: `${boardLink(String(r.board_id))}?focus=${encodeURIComponent(String(r.id))}`,
+							icon: 'presentation',
+							type: 'Rahmen'
+						}
 		);
 	}
 };

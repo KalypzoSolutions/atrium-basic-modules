@@ -265,7 +265,7 @@ URL wieder abrufbar, Fehlversuche), **neu** `files-upload-link.test.ts` (Link-Ar
 Überschreiben/Widerruf während des Uploads/Audit) und `files-migration.test.ts` (Migration 0003 mit Stamm-Daten: Eigentum, `everyone:*`, Namenskonflikte);
 Integration `files-thumbs.test.ts` (`core.pdf.renderPage`, PDF-Vorschau beim Upload, kaputtes PDF, Backfill genau einmal);
 E2E `tests/e2e/files.spec.ts` (eine Ansicht, Rechtsklick, Upload-Link ohne Login); S3-Ersatz `tests/helpers/s3-mock.ts`.
-Demo: `node scripts/seed-demo-files.mjs` (braucht MinIO).
+Demo: `bun scripts/seed-demo-files.mjs` (braucht MinIO).
 
 ## Offen / Bekannt
 - Rollen-Bearbeitungsrechte aus dem früheren `files.shared.edit` wurden bei 0003 **nicht** übertragen (siehe Migration) – ggf. von Hand freigeben.

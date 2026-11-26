@@ -6,8 +6,8 @@
  */
 import { sql } from 'drizzle-orm';
 import {
-	moduleDb,
 	type ModuleSearchProvider,
+	moduleDb,
 	principalKeysFor,
 	rowsOf,
 	type SearchHit
@@ -19,9 +19,9 @@ import {
 	expandRow,
 	hydrateRows,
 	loadExceptions,
+	type OccurrenceRow,
 	singleOccurrence,
-	todayBerlin,
-	type OccurrenceRow
+	todayBerlin
 } from './events.service';
 import { formatEventRange } from './format';
 import { addDays } from './recurrence';

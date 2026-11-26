@@ -1,7 +1,7 @@
 node_modules
 modules/node_modules
 modules/package.json
-modules/package-lock.json
+modules/bun.lock
 .data
 /test-results
 /playwright-report

@@ -1,16 +1,16 @@
 <script lang="ts">
+	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
 	// Papierkorb: gelöschte Seiten (mit Unterseiten) wiederherstellen oder endgültig löschen
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
-	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import { apiFetch } from '$lib/sdk/client';
-	import { formatDateDe } from '$lib/sdk/dates';
 	import { ConfirmDialog, EmptyState, ErrorState, LoadingState } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
+	import { apiFetch } from '$lib/sdk/client';
+	import { formatDateDe } from '$lib/sdk/dates';
 	import { TRASH_DAYS, type TrashItem } from '../schemas';
-	import NoteIcon from './NoteIcon.svelte';
 	import { API, errMsg, noteTitle, relativeTime } from './helpers';
+	import NoteIcon from './NoteIcon.svelte';
 
 	let items = $state<TrashItem[]>([]);
 	let loading = $state(true);
@@ -93,7 +93,8 @@
 							? ` · aus „${noteTitle(item.parentTitle)}“`
 							: ''}{item.descendants
 							? ` · ${item.descendants} ${item.descendants === 1 ? 'Unterseite' : 'Unterseiten'}`
-							: ''} · endgültig am {formatDateDe(item.purgeOn)}
+							: ''}
+						· endgültig am {formatDateDe(item.purgeOn)}
 					</p>
 				</div>
 				<div class="flex gap-2">

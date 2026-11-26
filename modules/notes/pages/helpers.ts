@@ -1,7 +1,8 @@
 /** Kleine UI-Hilfen der Notizen-Seiten (ohne Server-Importe). */
+
+import type { ShareCandidate, ShareEntry } from '$lib/components/layout';
 import { ApiClientError, apiFetch } from '$lib/sdk/client';
 import type { PrincipalInfo } from '$lib/sdk/types/sharing';
-import type { ShareCandidate, ShareEntry } from '$lib/components/layout';
 import { BASE_PATH, type NoteAsset, type NoteDetail, type NoteShares } from '../schemas';
 
 export const BASE = BASE_PATH;

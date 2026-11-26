@@ -8,31 +8,17 @@
  * Fälle mit `members`/`actions` (Gruppen-Freigabe, mehrere Boards je Aktion, Aktions-Karten) liegen in
  * `ep-intern-modules` unter `modules/_integration/tests/integration/whiteboard-actions.test.ts`.
  */
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import sharp from 'sharp';
+import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
 import { PDFDocument } from 'pdf-lib';
-import { unzipSync, strFromU8, zipSync, strToU8 } from 'fflate';
-import { useTestDatabase } from '$testing';
-import { installFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { disableModule, enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import { setPdfRendererForTests } from '$testing';
-import { core } from '$testing';
+import sharp from 'sharp';
+import type { RequestContext } from '$lib/sdk/types';
 import tasksModule from '$modules/tasks/module';
-import whiteboardModule from '$modules/whiteboard/module';
 import { closeAllStreamsForTests } from '$modules/whiteboard/live';
+import whiteboardModule from '$modules/whiteboard/module';
 import { onUserDeleted } from '$modules/whiteboard/privacy';
-import { runAutoSnapshots, runCleanup } from '$modules/whiteboard/snapshots.service';
 import type {
 	Asset,
 	BoardDetail,
@@ -43,7 +29,29 @@ import type {
 	Snapshot,
 	UserPrefs
 } from '$modules/whiteboard/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import { runAutoSnapshots, runCleanup } from '$modules/whiteboard/snapshots.service';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	disableModule,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	setPdfRendererForTests,
+	syncModules,
+	useTestDatabase,
+	waitFor as waitUntil
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules';
 const keys: Record<string, string> = {};
@@ -161,7 +169,7 @@ async function openLive(who: string, boardId: string, client: string, since?: nu
 		type: T,
 		pred: (e: Extract<LiveEvent, { type: T }>) => boolean = () => true
 	) =>
-		vi.waitFor(
+		waitUntil(
 			() => {
 				const hit = events.find(
 					(e): e is Extract<LiveEvent, { type: T }> =>
@@ -490,7 +498,7 @@ describe('Live (SSE)', () => {
 
 		const helper = await openLive('helper', boardId, 'client-helper-live', seq);
 		const helperHello = await helper.waitFor('hello');
-		expect(helperHello.peers.map((p) => p.userId)).toEqual([userIds.owner]);
+		expect<unknown>(helperHello.peers.map((p) => p.userId)).toEqual([userIds.owner]);
 		await owner.waitFor('join', (e) => e.peer.userId === userIds.helper);
 
 		const id = crypto.randomUUID();
@@ -503,7 +511,7 @@ describe('Live (SSE)', () => {
 		);
 		const ops = await owner.waitFor('ops', (e) => e.elements.some((el) => el.id === id));
 		expect(ops.client).toBe('client-helper-live');
-		expect(ops.userId).toBe(userIds.helper);
+		expect<unknown>(ops.userId).toBe(userIds.helper);
 		expect(ops.elements[0]).toMatchObject({ id, type: 'shape', version: 1, deleted: false });
 		expect(helper.events.some((e) => e.type === 'ops')).toBe(false);
 
@@ -539,7 +547,7 @@ describe('Live (SSE)', () => {
 		helper.close();
 		await owner.waitFor('leave', (e) => e.client === 'client-helper-live');
 		owner.close();
-		await vi.waitFor(() => expect(owner.isEnded()).toBe(true));
+		await waitUntil(() => expect(owner.isEnded()).toBe(true));
 	});
 
 	it('holt verpasste Änderungen (inkl. Löschungen) über `since` nach', async () => {
@@ -570,7 +578,7 @@ describe('Live (SSE)', () => {
 			})
 		);
 		await live.waitFor('revoked');
-		await vi.waitFor(() => expect(live.isEnded()).toBe(true));
+		await waitUntil(() => expect(live.isEnded()).toBe(true));
 		fail(await call('helper', 'GET', `/boards/${boardId}`), 404, 'not_found');
 	});
 
@@ -740,7 +748,7 @@ describe('Dateien, Versionen, Export/Import, PDF', () => {
 		expect(copy.elements).toHaveLength(source.elements.length);
 		const img = copy.elements.find((e) => e.id === imageId);
 		expect(img?.type).toBe('image');
-		const newAsset = (img?.data as { assetId: string }).assetId;
+		const newAsset = (img!.data as { assetId: string }).assetId;
 		expect(newAsset).not.toBe(imageAsset.id);
 		expect(copy.assets.map((a) => a.id)).toEqual([newAsset]);
 		fail(await call('parent', 'GET', `/boards/${copy.id}`), 404, 'not_found');
@@ -938,7 +946,7 @@ describe('Aufräumen, Audit, Konto löschen, Modul aus', () => {
 			);
 		const row = (rows as unknown as { rows: { owner_id: string; updated_by: string | null }[] })
 			.rows[0]!;
-		expect(row.owner_id).toBe(userIds.helper);
+		expect<unknown>(row.owner_id).toBe(userIds.helper);
 		expect(row.updated_by).not.toBe(userIds.owner);
 	});
 

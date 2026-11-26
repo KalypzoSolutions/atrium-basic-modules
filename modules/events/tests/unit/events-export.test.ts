@@ -1,18 +1,18 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import { sanitizeDocumentHtml } from '$lib/sdk/server';
 import {
 	calendarBlocks,
+	daysInMonth,
+	type ExportEntry,
 	exportFileName,
 	exportTitle,
 	listBlocks,
 	monthCalendarHtml,
-	monthWeeks,
 	monthsBetween,
-	daysInMonth,
+	monthWeeks,
 	tint,
 	yearBlocks,
-	yearPlanHtml,
-	type ExportEntry
+	yearPlanHtml
 } from '$modules/events/export';
 import { exportQuery } from '$modules/events/schemas';
 
@@ -168,7 +168,13 @@ describe('Monatskalender', () => {
 
 	it('überlebt die Bereinigung des Core unverändert (nur erlaubte Styles)', () => {
 		const html = monthCalendarHtml('2026-10', [entry({ color: '#2563eb' })], { minLines: 2 });
-		expect(sanitizeDocumentHtml(html).replace(/\s/g, '')).toBe(html.replace(/\s/g, ''));
+		// Leerraum (auch &nbsp; als Zeichen) und Schreibweise von <br> sind egal, Tags und Styles müssen bleiben
+		const norm = (s: string) =>
+			s
+				.replace(/&nbsp;/g, ' ')
+				.replace(/\s/g, '')
+				.replace(/<br\/?>/g, '<br>');
+		expect(norm(sanitizeDocumentHtml(html))).toBe(norm(html));
 	});
 
 	it('je Monat ein Seitenumbruch', () => {
@@ -200,7 +206,13 @@ describe('Jahresplan', () => {
 		expect(html.match(/Sommerla…/g)).toHaveLength(2);
 		const tinted = tint('#16a34a');
 		expect(html.split(tinted).length - 1).toBe(5);
-		expect(sanitizeDocumentHtml(html).replace(/\s/g, '')).toBe(html.replace(/\s/g, ''));
+		// Leerraum (auch &nbsp; als Zeichen) und Schreibweise von <br> sind egal, Tags und Styles müssen bleiben
+		const norm = (s: string) =>
+			s
+				.replace(/&nbsp;/g, ' ')
+				.replace(/\s/g, '')
+				.replace(/<br\/?>/g, '<br>');
+		expect(norm(sanitizeDocumentHtml(html))).toBe(norm(html));
 	});
 
 	it('Monate über Jahresgrenze mit Jahr; mehr als 12 Monate → zweite Seite', () => {

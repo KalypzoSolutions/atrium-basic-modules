@@ -1,9 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { FilesMeta } from '$modules/files/schemas';
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import {
-	MULTIPART_BASE_RESERVE,
 	collectEntries,
+	type EntryLike,
+	type FileLike,
 	fromFileList,
+	MULTIPART_BASE_RESERVE,
 	makeItems,
 	partReserve,
 	pendingBytes,
@@ -14,10 +15,9 @@ import {
 	summaryToast,
 	typeAllowed,
 	uploadError,
-	xhrUpload,
-	type EntryLike,
-	type FileLike
+	xhrUpload
 } from '$modules/files/pages/upload-queue';
+import type { FilesMeta } from '$modules/files/schemas';
 
 const MB = 1024 * 1024;
 

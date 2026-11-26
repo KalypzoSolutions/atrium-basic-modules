@@ -1,20 +1,20 @@
 import { defineModule, manifestFromPackage } from '$lib/sdk/server';
-import pkg from './atrium-module.json';
-import { tasksAssist, PERM_AI } from './assist';
 import { withTaskContext } from './access';
+import { PERM_AI, tasksAssist } from './assist';
+import pkg from './atrium-module.json';
 import { boardEndpoints } from './boards.endpoints';
-import { taskEndpoints } from './tasks.endpoints';
-import { exportEndpoints } from './export.endpoints';
-import { planningEndpoints } from './planning.endpoints';
-import { sendDueReminders } from './notify';
-import { onUserDeleted, resetAreas, resetUsers, subjectExport } from './privacy';
-import { tasksSearch } from './search';
-import { tasksDashboard } from './dashboard';
-import { taskRefsService } from './refs.service';
 import type { TaskRefsService } from './contract';
-import { NOTIFY_BOARD_SHARED, NOTIFY_TASK_ASSIGNED, NOTIFY_TASK_DUE, PERM } from './schemas';
+import { tasksDashboard } from './dashboard';
+import { exportEndpoints } from './export.endpoints';
 import m0001 from './migrations/0001_init.sql?raw';
 import m0002 from './migrations/0002_planning.sql?raw';
+import { sendDueReminders } from './notify';
+import { planningEndpoints } from './planning.endpoints';
+import { onUserDeleted, resetAreas, resetUsers, subjectExport } from './privacy';
+import { taskRefsService } from './refs.service';
+import { NOTIFY_BOARD_SHARED, NOTIFY_TASK_ASSIGNED, NOTIFY_TASK_DUE, PERM } from './schemas';
+import { tasksSearch } from './search';
+import { taskEndpoints } from './tasks.endpoints';
 
 export default defineModule({
 	package: pkg,

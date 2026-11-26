@@ -46,6 +46,9 @@ als eigener Eintrag (`order` 10, ganz oben nach dem Dashboard).
 | `pages/CalendarFeedsPanel.svelte`, `CalendarFeedDialog.svelte`, `CalendarFeedsCard.svelte` | Abos verwalten (Profilkarte „Kalender-Abo“ und Dialog „Kalender abonnieren“ auf der Terminseite) |
 | `migrations/0004_calendar_feeds.sql` | `calendar_feeds` |
 | `migrations/0003_checks.sql` | DB-CHECKs als Rückhalt zur Zod-Prüfung (#73): `starts_at`/`ends_at` `HH:MM`, Enduhrzeit nur mit Enddatum, `ends_on ≥ starts_on`, gleicher Tag `ends_at ≥ starts_at`; Altbestand vorher bereinigt (ungültige Werte → `NULL`), dann `VALIDATE`. Test `tests/integration/db-constraints.test.ts` |
+| `assist.ts` | KI-Schreibhilfe (`PERM_AI` = `events.ai.use`): Beschreibung, Kontext `events:event` (Eckdaten, keine Personen) |
+| `dashboard.ts` | Übersicht „Diese Woche“: sichtbare Termine im Zeitraum (Art `event`), Serien als einzelne Vorkommen (abgesagte fehlen, verschobene am neuen Datum), Sichtbarkeit wie `GET /events` (`visibleEventsFilter`, Principal-Schlüssel **vor** der Transaktion) |
+| `peer-contracts.ts` | Lokale Spiegelung der genutzten Teile fremder Verträge (`actions`: `ActionsService`, `CalendarAction`) – Module aus `ep-intern-modules` sind nur `optionalDependencies`; bei Änderungen am Original nachziehen |
 
 ## Datenmodell (0001)
 - `events`: `id` (UUID), `title`, `description`, `location`, `color` (CHECK `#rrggbb` klein oder NULL), `starts_on date`,

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Settings2 from '@lucide/svelte/icons/settings-2';
-	import { todayBerlin } from '$lib/sdk/dates';
 	import { Button } from '$lib/components/ui/button';
-	import { currentPhase, phaseState, PHASE_STATE_LABELS } from '../../phases';
+	import { todayBerlin } from '$lib/sdk/dates';
+	import { currentPhase, PHASE_STATE_LABELS, phaseState } from '../../phases';
 	import type { Phase, TaskCard } from '../../schemas';
 	import { shortDate } from '../helpers';
 

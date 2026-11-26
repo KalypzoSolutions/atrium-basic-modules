@@ -1,12 +1,12 @@
 <script lang="ts">
-	// Darstellung eines eingebetteten Inhalts (Node-View des Knotens `embed`): Kopf mit Titel/Icon, iframe der
-	// Einbett-Seite des anbietenden Moduls – erst geladen, wenn sichtbar, außer Sicht nach 30 s wieder entladen –,
-	// Höhe per Griff ziehbar. Zugriff prüft das anbietende Modul (je Betrachter*in).
-	import { onMount } from 'svelte';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import GripHorizontal from '@lucide/svelte/icons/grip-horizontal';
 	import RotateCw from '@lucide/svelte/icons/rotate-cw';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	// Darstellung eines eingebetteten Inhalts (Node-View des Knotens `embed`): Kopf mit Titel/Icon, iframe der
+	// Einbett-Seite des anbietenden Moduls – erst geladen, wenn sichtbar, außer Sicht nach 30 s wieder entladen –,
+	// Höhe per Griff ziehbar. Zugriff prüft das anbietende Modul (je Betrachter*in).
+	import { onMount } from 'svelte';
 	import { iconFor } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import type { EmbedInfo } from '$lib/sdk/types/embeds';

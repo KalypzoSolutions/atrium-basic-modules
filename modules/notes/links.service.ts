@@ -24,10 +24,10 @@ import {
 	type RequestContext,
 	type Row,
 	rowsOf,
-	toIso,
-	type Tx
+	type Tx,
+	toIso
 } from '$lib/sdk/server';
-import { chainOf, MAX_WALK, requireNoteAccess, subtreeIds, type ChainNode } from './access';
+import { type ChainNode, chainOf, MAX_WALK, requireNoteAccess, subtreeIds } from './access';
 import { filesCtx, mdb, refOf, userRefs } from './db';
 import { recheckNotes } from './live';
 import {
@@ -35,9 +35,9 @@ import {
 	MAX_LINKS_PER_NOTE,
 	MAX_UNLOCK_FAILURES,
 	MODULE_ID,
+	type NoteLink,
 	PERM,
 	PUBLIC_LINK_PATH,
-	type NoteLink,
 	type PublicLinkInfo,
 	type PublicNoteNode,
 	type ShareLevel

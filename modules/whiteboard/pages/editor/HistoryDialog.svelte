@@ -1,15 +1,9 @@
 <script lang="ts">
-	// Versionsverlauf: benannte und automatische Versionen, Stand speichern, wiederherstellen, löschen
-	import { toast } from 'svelte-sonner';
 	import History from '@lucide/svelte/icons/history';
 	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import { apiFetch } from '$lib/sdk/client';
-	import { formatDateTimeDe } from '$lib/sdk/dates';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Input } from '$lib/components/ui/input';
+	// Versionsverlauf: benannte und automatische Versionen, Stand speichern, wiederherstellen, löschen
+	import { toast } from 'svelte-sonner';
 	import {
 		BUSY_SAVE,
 		ConfirmDialog,
@@ -17,6 +11,12 @@
 		ErrorState,
 		LoadingState
 	} from '$lib/components/layout';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Input } from '$lib/components/ui/input';
+	import { apiFetch } from '$lib/sdk/client';
+	import { formatDateTimeDe } from '$lib/sdk/dates';
 	import type { Snapshot } from '../../schemas';
 	import { BASE, errMsg } from '../helpers';
 
@@ -136,7 +136,9 @@
 							<div class="min-w-0 flex-1">
 								<p class="truncate text-sm font-medium">
 									{s.label ?? 'Automatisch gespeichert'}
-									{#if s.auto}<Badge variant="secondary" class="ml-1">automatisch</Badge>{/if}
+									{#if s.auto}
+										<Badge variant="secondary" class="ml-1">automatisch</Badge>
+									{/if}
 								</p>
 								<p class="text-xs text-muted-foreground">
 									{formatDateTimeDe(s.createdAt)} · {s.elementCount}

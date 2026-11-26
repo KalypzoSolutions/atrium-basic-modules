@@ -1,15 +1,15 @@
 <script lang="ts">
 	// Freigabe einer beliebigen Seite (aus dem Baum): lädt die Freigaben selbst, zeigt geerbte in der Beschreibung
 	import { toast } from 'svelte-sonner';
-	import { ShareDialog, type ShareCandidate } from '$lib/components/layout';
+	import { type ShareCandidate, ShareDialog } from '$lib/components/layout';
 	import { shareKey } from '$lib/components/layout/share-types';
 	import type { NoteNode, NoteShares } from '../schemas';
 	import {
 		errMsg,
 		loadShares,
+		SHARE_LEVELS_UI,
 		saveShares,
 		searchPrincipals,
-		SHARE_LEVELS_UI,
 		shareCandidateEntry,
 		shareDescription,
 		shareEntries

@@ -4,25 +4,32 @@
  * Teilbaum gehört der Person, die die Stamm-Wurzel angelegt hat, genau eine `everyone:*`-Lesefreigabe je
  * Stamm-Wurzel, Namenskonflikte mit „(Stamm …)“ aufgelöst, idempotent.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { splitSqlStatements } from '$testing';
-import { core } from '$testing';
-import filesModule from '$modules/files/module';
-import m0003 from '$modules/files/migrations/0003_single_view_upload_links.sql?raw';
-import { ROOT_LABEL, type FileNode, type FolderListing } from '$modules/files/schemas';
 import type { RequestContext } from '$lib/sdk/types';
+import m0003 from '$modules/files/migrations/0003_single_view_upload_links.sql?raw';
+import filesModule from '$modules/files/module';
+import { type FileNode, type FolderListing, ROOT_LABEL } from '$modules/files/schemas';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	encodeMultipart,
+	getDb,
+	handleApiRequest,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	splitSqlStatements,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/files';
 const PW = 'a-long-enough-pw';
@@ -36,7 +43,7 @@ const mdb = () => core.database.forModule('files');
 
 interface Res {
 	status: number;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: bewusst ungetypt
 	body: any;
 }
 
@@ -75,8 +82,8 @@ async function upload(who: string, parent: string, name: string) {
 		'file',
 		new File([new Uint8Array(4).fill(65) as BlobPart], name, { type: 'text/plain' })
 	);
-	const r = new Response(form);
-	const buf = new Uint8Array(await r.arrayBuffer());
+	const r = await encodeMultipart(form);
+	const buf = r.body;
 	resetAllForTests();
 	const url = new URL(`${ROOT}/nodes/${parent}/upload`);
 	const res = await handleApiRequest({
@@ -84,7 +91,7 @@ async function upload(who: string, parent: string, name: string) {
 			method: 'POST',
 			headers: {
 				authorization: `Bearer ${keys[who]}`,
-				'content-type': r.headers.get('content-type')!,
+				'content-type': r.contentType,
 				'content-length': String(buf.byteLength)
 			},
 			body: buf
@@ -274,7 +281,7 @@ describe('Migration 0003', () => {
 		expect(root.breadcrumbs).toEqual([{ id: null, name: ROOT_LABEL }]);
 		const m = root.items.find((i) => i.id === n.annaStamm)!;
 		expect(m).toMatchObject({ stamm: true, own: false, access: 'read', canShare: false });
-		expect(m.owner).toEqual({ id: ids.anna, name: 'Anna' });
+		expect<unknown>(m.owner).toEqual({ id: ids.anna, name: 'Anna' });
 		expect(root.items.some((i) => i.id === n.benStamm)).toBe(true);
 		// Papierkorb und eigene Wurzel anderer bleiben verborgen
 		expect(root.items.some((i) => i.id === n.deleted)).toBe(false);

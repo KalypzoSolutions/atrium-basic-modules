@@ -3,6 +3,7 @@
  * (`core.users.byIds`) und Aktionsdaten erst DANACH aufgelöst (PGlite hat nur eine Sitzung).
  */
 import { sql } from 'drizzle-orm';
+import { daysBetween, todayBerlin } from '$lib/sdk/dates';
 import {
 	core,
 	errors,
@@ -12,28 +13,27 @@ import {
 	type RequestContext,
 	type Row,
 	rowsOf,
+	type Tx,
 	toIso,
-	toIsoOrNull,
-	type Tx
+	toIsoOrNull
 } from '$lib/sdk/server';
-import { daysBetween, todayBerlin } from '$lib/sdk/dates';
 import { boardAccessForMany, requireTask, resolveBoardAccess, taskContextOf } from './access';
 import { currentPhase } from './phases';
 import {
-	MODULE_ID,
-	PERM,
-	VIEWS,
 	type Board,
 	type BoardAccess,
 	type BoardDetail,
 	type BoardView,
 	type ChecklistItem,
 	type Column,
+	MODULE_ID,
+	PERM,
 	type Phase,
 	type Priority,
 	type TaskCard,
 	type TaskDetail,
-	type UserRef
+	type UserRef,
+	VIEWS
 } from './schemas';
 
 export const mdb = () => moduleDb(MODULE_ID);

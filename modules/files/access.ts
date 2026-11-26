@@ -10,20 +10,20 @@
  *   - gelöschte Knoten (Papierkorb) und ohne Zugriff                  -> 404 (Existenz nicht verraten)
  * `keys` = `principalKeysFor(ctx, 'files')`, immer VOR der Transaktion ermitteln.
  */
-import { sql, type SQL } from 'drizzle-orm';
+import { type SQL, sql } from 'drizzle-orm';
 import {
 	core,
 	errors,
 	inList,
 	principalMatchSql,
-	rowsOf,
-	shareLevelOn,
 	type RequestContext,
+	rowsOf,
 	type ShareTable,
+	shareLevelOn,
 	type Tx
 } from '$lib/sdk/server';
-import { ancestorsOf, nodeRowOf, NODE_COLUMNS, type NodeRow } from './db';
-import { PERMISSIONS, type AccessLevel } from './schemas';
+import { ancestorsOf, NODE_COLUMNS, type NodeRow, nodeRowOf } from './db';
+import { type AccessLevel, PERMISSIONS } from './schemas';
 
 export interface NodeAccess {
 	node: NodeRow;

@@ -1,19 +1,19 @@
 <script lang="ts">
+	import Check from '@lucide/svelte/icons/check';
 	// Aussehen einer Seite: Icon (Icon-Bibliothek) und Farbe (Vorschläge + ColorPicker), sichtbar für alle mit Zugriff
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import Check from '@lucide/svelte/icons/check';
-	import { apiFetch } from '$lib/sdk/client';
-	import { STYLE_COLORS } from '$lib/sdk/style-presets';
 	import { BUSY_SAVE } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { ColorPicker, contrastTextColor } from '$lib/components/ui/color-picker';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { IconPicker } from '$lib/components/ui/icon-picker';
+	import { apiFetch } from '$lib/sdk/client';
+	import { STYLE_COLORS } from '$lib/sdk/style-presets';
 	import { cn } from '$lib/utils';
 	import type { NoteDetail, NoteNode } from '../schemas';
-	import NoteIcon from './NoteIcon.svelte';
 	import { API, errMsg, noteTitle } from './helpers';
+	import NoteIcon from './NoteIcon.svelte';
 
 	let {
 		open = $bindable(false),
@@ -125,7 +125,8 @@
 						variant="outline"
 						size="sm"
 						disabled={icon === null}
-						onclick={() => (icon = null)}>Kein Icon</Button
+						onclick={() => (icon = null)}
+						>Kein Icon</Button
 					>
 				</div>
 				<div class="max-h-[min(22rem,45dvh)] overflow-y-auto rounded-md border p-2">

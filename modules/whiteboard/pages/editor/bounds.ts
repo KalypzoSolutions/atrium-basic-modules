@@ -1,7 +1,7 @@
 /** Hüllrechtecke von Elementen (rein): Rahmen-Elemente über ihre Ecken, Verbinder über den Pfad */
 import type { WbElement } from '../../schemas';
 import { resolveConnector, samplePath } from './connectors';
-import { boundsOfPoints, boxOf, corners, inflate, unionRects, type Rect } from './geometry';
+import { boundsOfPoints, boxOf, corners, inflate, type Rect, unionRects } from './geometry';
 
 export function elementBounds(el: WbElement, lookup: (id: string) => WbElement | undefined): Rect {
 	if (el.type === 'connector') {

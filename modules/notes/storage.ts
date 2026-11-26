@@ -3,7 +3,7 @@
  * Objektprüfung mit einem System-Kontext gelesen/geschrieben – Bearbeitende brauchen keine Storage-Rechte.
  * Alle Funktionen mit `core.*` nur AUSSERHALB offener Modul-Transaktionen aufrufen (PGlite).
  */
-import { core, secureFileResponse, type ImageVariantSpec } from '$lib/sdk/server';
+import { core, type ImageVariantSpec, secureFileResponse } from '$lib/sdk/server';
 import { filesCtx } from './db';
 import { MODULE_ID } from './schemas';
 

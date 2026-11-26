@@ -1,26 +1,27 @@
 /** REST für Phasen, Verschieben aller Daten und Vorlagen (`/api/v1/modules/tasks/…`). */
 import { sql } from 'drizzle-orm';
+import { todayBerlin } from '$lib/sdk/dates';
 import {
 	type AnyApiEndpoint,
 	core,
 	defineEndpoint,
 	errors,
-	rowsOf,
-	type RequestContext
+	type RequestContext,
+	rowsOf
 } from '$lib/sdk/server';
-import { todayBerlin } from '$lib/sdk/dates';
 import { canEditAll, requireBoardAccess } from './access';
 import {
+	actionInfos,
 	buildDetail,
 	loadDetailRows,
 	lockBoard,
 	mdb,
 	PHASE_SELECT,
 	strOrNull,
-	userRefs,
-	actionInfos
+	userRefs
 } from './boards.service';
 import {
+	type BoardDetail,
 	idParams,
 	MAX_PHASES,
 	MAX_TEMPLATES_PER_USER,
@@ -30,12 +31,11 @@ import {
 	phaseParams,
 	phaseUpdateInput,
 	shiftInput,
+	type TemplateSummary,
 	templateParams,
-	templateSaveInput,
-	type BoardDetail,
-	type TemplateSummary
+	templateSaveInput
 } from './schemas';
-import { BUILTIN_TEMPLATES, earliestDate, templateFromBoard, type TemplateData } from './templates';
+import { BUILTIN_TEMPLATES, earliestDate, type TemplateData, templateFromBoard } from './templates';
 import { boardTemplateSource, listStoredTemplates } from './templates.service';
 
 const tags = ['Aufgaben'];

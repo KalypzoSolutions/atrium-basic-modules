@@ -1,4 +1,4 @@
-import { expect, test, type Browser, type Page } from '@playwright/test';
+import { type Browser, expect, type Page, test } from '@playwright/test';
 
 // Whiteboards: anlegen, Notiz per Taste + Klick und Tippen, zweiter Browser sieht es live, Verbinder per
 // Werkzeug zwischen zwei Notizen, Neuladen behält alles, Zwei-Finger-Zoom (Touch), PNG-/PDF-Export.

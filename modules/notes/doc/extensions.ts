@@ -11,11 +11,11 @@
  *     Markdown: `:::embed {module="whiteboard" kind="board" refId="…" height="480"} :::`.
  */
 import {
+	type AnyExtension,
 	createAtomBlockMarkdownSpec,
 	getSchema,
 	mergeAttributes,
-	Node,
-	type AnyExtension
+	Node
 } from '@tiptap/core';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
@@ -23,9 +23,9 @@ import { OrderedList, TaskItem, TaskList } from '@tiptap/extension-list';
 import { Table, TableKit } from '@tiptap/extension-table';
 import TextAlign from '@tiptap/extension-text-align';
 import { TextStyleKit } from '@tiptap/extension-text-style';
-import StarterKit from '@tiptap/starter-kit';
 import type { Schema } from '@tiptap/pm/model';
 import type { EditorState, Transaction } from '@tiptap/pm/state';
+import StarterKit from '@tiptap/starter-kit';
 import { API_BASE, DEFAULT_EMBED_HEIGHT, MAX_EMBED_HEIGHT, MIN_EMBED_HEIGHT } from '../schemas';
 import { isListStyle, listStart, listStyleFromHtml, ownListStyle } from './list-style';
 

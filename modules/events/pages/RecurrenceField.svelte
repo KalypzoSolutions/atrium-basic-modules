@@ -1,18 +1,18 @@
 <script lang="ts">
+	import { FormField, NumberStepper } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { SelectField } from '$lib/components/ui/select-field';
-	import { FormField, NumberStepper } from '$lib/components/layout';
+	import { describeRecurrence, isoWeekday } from '../recurrence';
 	import {
-		MAX_RECURRENCE_COUNT,
-		RECURRENCE_FREQS,
-		RECURRENCE_FREQ_LABELS,
 		isRealDate,
+		MAX_RECURRENCE_COUNT,
 		type MonthlyMode,
+		RECURRENCE_FREQ_LABELS,
+		RECURRENCE_FREQS,
 		type RecurrenceFreq,
 		type RecurrenceRule
 	} from '../schemas';
-	import { describeRecurrence, isoWeekday } from '../recurrence';
 
 	let {
 		value = $bindable(null),
@@ -138,7 +138,7 @@
 	];
 
 	const selectedWeekdays = $derived.by(() => {
-		if (!value || value.freq !== 'weekly') return [] as number[];
+		if (value?.freq !== 'weekly') return [] as number[];
 		if (value.byWeekday?.length) return value.byWeekday;
 		return start ? [start.weekday] : [];
 	});
@@ -241,7 +241,7 @@
 	<fieldset class="grid gap-4" {disabled}>
 		<legend class="sr-only">Wiederholung</legend>
 		<div class="grid gap-4 sm:grid-cols-2">
-			<FormField label="Wiederholung" id={ids.freq} error={err('freq') ?? errors['recurrence']}>
+			<FormField label="Wiederholung" id={ids.freq} error={err('freq') ?? errors.recurrence}>
 				<SelectField
 					id={ids.freq}
 					label="Wiederholung"

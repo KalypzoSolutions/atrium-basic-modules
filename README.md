@@ -24,18 +24,21 @@ Administration → Module → **Installieren** → Link `https://github.com/<org
 
 Der Core ist als Git-Submodul `.core` auf einen festen Stand gepinnt.
 
+Voraussetzung: [Bun](https://bun.sh) in der Version aus `.core/.bun-version`.
+
 ```bash
 git clone --recurse-submodules <url> && cd atrium-basic-modules
-npm run setup        # Core-Abhängigkeiten, node_modules-Link, Pakete der Module
-npm run check        # Typprüfung (Core + Module)
-npm test             # Tests der Module (Vitest, PGlite)
-npm run build        # Produktions-Build
-npm run e2e          # Playwright
-npm run demo         # Demo-Server http://localhost:4300 mit diesen Modulen
-npm run check:catalog && npm run check:migrations
+bun run setup        # Core-Abhängigkeiten, node_modules-Link, Pakete der Module
+bun run check        # Typprüfung (Core + Module)
+bun run test         # Tests der Module (bun test, PGlite)
+bun run lint         # Biome (Format + Lint) und Modulgrenzen; bun run format schreibt Korrekturen
+bun run build        # Produktions-Build
+bun run e2e          # Playwright
+bun run demo         # Demo-Server http://localhost:4300 mit diesen Modulen
+bun run check:catalog && bun run check:migrations
 ```
 
-Core aktualisieren: `git -C .core fetch --tags && git -C .core checkout <tag>`, dann `npm run setup -- --force`, prüfen, committen.
+Core aktualisieren: `git -C .core fetch --tags && git -C .core checkout <tag>`, dann `bun run setup --force`, prüfen, committen.
 Angewendete Migrationen sind unveränderlich (`check:migrations` vergleicht mit dem letzten Tag dieses Repos).
 
 Regeln für die Arbeit an Modulen: `.core/.claude/rules/modules.md` (Muster, Rechte, Endpunkte) und `.claude/rules/module-<id>.md`.

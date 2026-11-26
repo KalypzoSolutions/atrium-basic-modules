@@ -1,15 +1,15 @@
 /** Vorlagen laden, auf ein neues Board anwenden und aus einem Board erzeugen (in der Modul-Transaktion). */
 import { sql } from 'drizzle-orm';
-import { errors, type RequestContext, rowsOf, toIso, type Tx } from '$lib/sdk/server';
+import { errors, type RequestContext, rowsOf, type Tx, toIso } from '$lib/sdk/server';
 import { canEditAll } from './access';
 import { bool, PHASE_SELECT, strOrNull } from './boards.service';
 import { MAX_CHECKLIST, type Priority } from './schemas';
 import {
 	type AppliedTemplate,
 	builtinTemplate,
-	templateDataSchema,
 	type TemplateData,
-	type TemplateSource
+	type TemplateSource,
+	templateDataSchema
 } from './templates';
 
 export interface StoredTemplate {

@@ -3,17 +3,17 @@
  * Benutzernamen), Pfade aus sichtbaren Oberseiten, Positionen unter Geschwistern und Teilbaum-Operationen
  * (Papierkorb, endgültig löschen).
  */
-import { sql, type SQL } from 'drizzle-orm';
+import { type SQL, sql } from 'drizzle-orm';
 import {
 	core,
 	errors,
 	inList,
 	num,
 	type RequestContext,
-	rowsOf,
 	type Row,
-	toIso,
-	type Tx
+	rowsOf,
+	type Tx,
+	toIso
 } from '$lib/sdk/server';
 import {
 	accessForMany,
@@ -26,7 +26,7 @@ import {
 } from './access';
 import { mdb, refOf, userRefs } from './db';
 import { excerptOf } from './doc/text';
-import { PERM, type Breadcrumb, type NoteDetail, type NoteNode, type ShareLevel } from './schemas';
+import { type Breadcrumb, type NoteDetail, type NoteNode, PERM, type ShareLevel } from './schemas';
 
 export type AccessEntry = { level: ShareLevel; isOwner: boolean; canShare: boolean };
 

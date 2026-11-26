@@ -8,19 +8,19 @@
  * als JSON (base64) mit kleinerem Byte-Budget, weil öffentliche Endpunkte nur JSON annehmen.
  */
 import { SvelteMap } from 'svelte/reactivity';
-import * as Y from 'yjs';
 import {
-	applyAwarenessUpdate,
 	Awareness,
+	applyAwarenessUpdate,
 	encodeAwarenessUpdate,
 	removeAwarenessStates
 } from 'y-protocols/awareness';
+import * as Y from 'yjs';
 import { apiFetch } from '$lib/sdk/client';
 import {
 	API_BASE,
+	type LiveEvent,
 	MAX_PUBLIC_UPDATE_BYTES,
 	MAX_UPDATE_BYTES,
-	type LiveEvent,
 	type NoteNode,
 	type Peer,
 	type ShareLevel

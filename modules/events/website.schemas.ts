@@ -6,7 +6,7 @@
  * gegen dieselben Typen geprüft.
  */
 import { z } from 'zod';
-import { websiteQuery, type WebsiteEvent } from './schemas';
+import { type WebsiteEvent, websiteQuery } from './schemas';
 
 /** Exakte Typgleichheit (beide Richtungen) */
 type Exact<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;

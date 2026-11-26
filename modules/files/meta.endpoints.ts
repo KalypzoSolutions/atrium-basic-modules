@@ -1,11 +1,11 @@
 /**
  * Metadaten für die Oberfläche: Kontingent, Upload-Grenzen, Papierkorb-Dauer, Fähigkeiten des Aufrufers.
  */
-import { core, defineEndpoint, type ApiEndpoint } from '$lib/sdk/server';
+import { type ApiEndpoint, core, defineEndpoint } from '$lib/sdk/server';
 import { canManageAll } from './access';
 import { filesSettings, mdb } from './db';
+import { type FilesMeta, PERMISSIONS } from './schemas';
 import { quotaLimitFor, quotaUsed, storageLimits } from './storage';
-import { PERMISSIONS, type FilesMeta } from './schemas';
 
 const TAGS = ['Modul: files'];
 

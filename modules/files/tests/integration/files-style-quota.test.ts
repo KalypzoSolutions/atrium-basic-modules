@@ -3,25 +3,33 @@
  * Speicherkontingent je Person (`GET/PUT /quotas/:userId`, wirksam bei Upload, Meta, Link-Upload),
  * Ordnergröße im DTO, Aufräumen beim Löschen des Kontos, Audit ohne Werte.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { eq, like } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { installFakeStorage, uninstallFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser, deleteUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { core } from '$testing';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
+import { eq, like, sql } from 'drizzle-orm';
+import type { RequestContext } from '$lib/sdk/types';
 import filesModule from '$modules/files/module';
 import type { FileNode, FolderListing, UserQuota } from '$modules/files/schemas';
-import type { RequestContext } from '$lib/sdk/types';
-import { sql } from 'drizzle-orm';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	deleteUser,
+	enableModule,
+	encodeMultipart,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	syncModules,
+	uninstallFakeStorage,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/files';
 const PW = 'a-long-enough-pw';
@@ -36,7 +44,7 @@ const ctxOf = async (id: string) => (await contextForUser(id))!.ctx;
 
 interface Res {
 	status: number;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: bewusst ungetypt
 	body: any;
 }
 
@@ -69,11 +77,11 @@ const api = (who: string | null, method: string, path: string, data?: unknown) =
 async function upload(who: string, parent: string, name: string, size: number) {
 	const form = new FormData();
 	form.set('file', new File([new Uint8Array(size).fill(65)], name, { type: 'text/plain' }));
-	const r = new Response(form);
-	const buf = new Uint8Array(await r.arrayBuffer());
+	const r = await encodeMultipart(form);
+	const buf = r.body;
 	return send(who, 'POST', `/nodes/${parent}/upload`, {
 		headers: {
-			'content-type': r.headers.get('content-type')!,
+			'content-type': r.contentType,
 			'content-length': String(buf.byteLength)
 		},
 		body: buf

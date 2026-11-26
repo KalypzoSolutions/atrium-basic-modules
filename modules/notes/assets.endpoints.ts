@@ -1,6 +1,7 @@
 /** Bilder in Notizen hochladen und ausliefern (`/api/v1/modules/notes/…`). */
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
+import { EXTENSION_CONTENT_TYPES } from '$lib/sdk/content-types';
 import {
 	type AnyApiEndpoint,
 	core,
@@ -10,12 +11,11 @@ import {
 	readUpload,
 	rowsOf
 } from '$lib/sdk/server';
-import { EXTENSION_CONTENT_TYPES } from '$lib/sdk/content-types';
 import { resolveNoteAccess } from './access';
-import { mdb } from './db';
 import { assetPaths, uploadImage } from './assets.service';
+import { mdb } from './db';
+import { assetParams, idParams, MAX_ASSET_BYTES, type NoteAsset, PERM } from './schemas';
 import { fileResponse } from './storage';
-import { assetParams, idParams, MAX_ASSET_BYTES, PERM, type NoteAsset } from './schemas';
 
 const tags = ['Notizen'];
 const downloadQuery = z.object({ download: z.enum(['0', '1']).optional() });

@@ -70,7 +70,7 @@
 			text-decoration={[data.underline && 'underline', data.strike && 'line-through']
 				.filter(Boolean)
 				.join(' ') || undefined}
-			style="white-space: pre"
+			style="white-space: pre;"
 		>
 			{#each layout.lines as line, i (i)}
 				<tspan x={line.x} y={line.y}>{line.text}</tspan>

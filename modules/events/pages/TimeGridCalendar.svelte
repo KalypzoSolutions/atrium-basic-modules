@@ -3,9 +3,9 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Repeat from '@lucide/svelte/icons/repeat';
-	import { Button } from '$lib/components/ui/button';
 	import {
 		addDays,
+		type CalendarItem,
 		calendarItemKey,
 		contrastTextColor,
 		describeItem,
@@ -18,17 +18,17 @@
 		itemsOnDay,
 		layoutWeek,
 		localToday,
-		weekdayLabels,
-		type CalendarItem,
-		type WeekSegment
+		type WeekSegment,
+		weekdayLabels
 	} from '$lib/components/layout/month-calendar';
+	import { Button } from '$lib/components/ui/button';
 	import {
 		allDayItems,
 		hourRange,
 		isoWeek,
 		layoutDay,
-		weekDays,
-		type TimedBlock
+		type TimedBlock,
+		weekDays
 	} from '../time-grid';
 
 	interface Props {
@@ -254,10 +254,9 @@
 							{#if !seg.continuesBefore && formatItemTime(seg.item)}
 								<span class="shrink-0 tabular-nums opacity-80">{formatItemTime(seg.item)}</span>
 							{/if}
-							{#if seg.item.recurring}<Repeat
-									class="size-3 shrink-0 opacity-80"
-									aria-hidden="true"
-								/>{/if}
+							{#if seg.item.recurring}
+								<Repeat class="size-3 shrink-0 opacity-80" aria-hidden="true" />
+							{/if}
 							<span class="truncate font-medium">{seg.item.title}</span>
 						</button>
 					{/each}
@@ -277,7 +276,8 @@
 						class="text-muted-foreground absolute right-1.5 text-[0.7rem] tabular-nums {i === 0
 							? 'translate-y-0.5'
 							: '-translate-y-1/2'}"
-						style="top: {i * HOUR}rem">{pad(h)}:00</span
+						style="top: {i * HOUR}rem"
+						>{pad(h)}:00</span
 					>
 				{/each}
 			</div>
@@ -322,13 +322,14 @@
 								onclick={() => onselect?.(b.item)}
 							>
 								<span class="flex min-w-0 items-center gap-1 font-medium">
-									{#if b.item.recurring}<Repeat
-											class="size-3 shrink-0 opacity-80"
-											aria-hidden="true"
-										/>{/if}
+									{#if b.item.recurring}
+										<Repeat class="size-3 shrink-0 opacity-80" aria-hidden="true" />
+									{/if}
 									<span class="truncate">{b.item.title}</span>
 								</span>
-								{#if time}<span class="shrink-0 tabular-nums opacity-80">{time}</span>{/if}
+								{#if time}
+									<span class="shrink-0 tabular-nums opacity-80">{time}</span>
+								{/if}
 							</button>
 						{/each}
 						{#if showNow && isToday}
@@ -337,7 +338,8 @@
 								style="top: {((nowMinutes - range.from * 60) / 60) * HOUR}rem"
 								aria-hidden="true"
 							>
-								<span class="bg-destructive absolute -top-[5px] -left-[5px] size-2 rounded-full"
+								<span
+									class="bg-destructive absolute -top-[5px] -left-[5px] size-2 rounded-full"
 								></span>
 							</div>
 						{/if}
@@ -398,10 +400,12 @@
 										></span>
 										<span class="min-w-0 flex-1">
 											<span class="flex min-w-0 items-center gap-1.5 font-medium">
-												{#if item.recurring}<Repeat
+												{#if item.recurring}
+													<Repeat
 														class="text-muted-foreground size-3.5 shrink-0"
 														aria-hidden="true"
-													/>{/if}
+													/>
+												{/if}
 												<span class="truncate">{item.title}</span>
 											</span>
 											{#if formatItemTime(item) || rangeText(item)}
@@ -430,6 +434,7 @@
 	<span
 		class="inline-flex size-6 items-center justify-center rounded-full text-xs tabular-nums {isToday
 			? 'bg-primary text-primary-foreground font-semibold'
-			: 'text-foreground'}">{Number(d.slice(8, 10))}</span
+			: 'text-foreground'}"
+		>{Number(d.slice(8, 10))}</span
 	>
 {/snippet}

@@ -62,7 +62,7 @@ export function escapeText(value: string): string {
 	return (
 		value
 			.replace(/\r\n?/g, '\n')
-			// eslint-disable-next-line no-control-regex
+			// biome-ignore lint/suspicious/noControlCharactersInRegex: Steuerzeichen werden bewusst erkannt/entfernt
 			.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '')
 			.replace(/\\/g, '\\\\')
 			.replace(/;/g, '\\;')

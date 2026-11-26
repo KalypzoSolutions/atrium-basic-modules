@@ -16,21 +16,21 @@ import {
 	unlockLink
 } from './links.service';
 import {
+	idParams,
+	type LinkCreateInput,
+	linkCreateInput,
+	linkIdParams,
+	linkUnlockInput,
 	MAX_PUBLIC_UPLOAD_BYTES,
 	MAX_PUBLIC_UPLOAD_FILES,
 	PERMISSIONS,
-	idParams,
-	linkCreateInput,
-	publicInfoQuery,
-	linkIdParams,
-	linkUnlockInput,
+	type PublicUploadFields,
 	publicContentQuery,
+	publicInfoQuery,
 	publicNodesQuery,
 	publicUploadFields,
 	tokenNodeParams,
-	tokenParams,
-	type LinkCreateInput,
-	type PublicUploadFields
+	tokenParams
 } from './schemas';
 
 const TAGS = ['Dateien – Links'];

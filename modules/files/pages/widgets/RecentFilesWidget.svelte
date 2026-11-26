@@ -1,14 +1,14 @@
 <script lang="ts">
+	import Cloud from '@lucide/svelte/icons/cloud';
 	// Dashboard-Kachel „Zuletzt geändert“: zuletzt geänderte eigene und freigegebene Dateien.
 	// Klick öffnet den Ordner der Datei (bzw. die Wurzel „Dateien“, wenn der Ordner nicht zugänglich ist).
 	import { onMount } from 'svelte';
-	import Cloud from '@lucide/svelte/icons/cloud';
+	import { DashboardCard } from '$lib/components/layout';
 	import { apiFetch } from '$lib/sdk/client';
 	import type { DashboardWidgetProps } from '$lib/sdk/types/module-ui';
-	import { DashboardCard } from '$lib/components/layout';
 	import { BASE_PATH, type RecentFile } from '../../schemas';
-	import { errorText, formatBytes, formatDateTime } from '../helpers';
 	import FileTypeGlyph from '../FileTypeGlyph.svelte';
+	import { errorText, formatBytes, formatDateTime } from '../helpers';
 
 	let { onstatus }: DashboardWidgetProps = $props();
 

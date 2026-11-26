@@ -4,6 +4,8 @@
  * setzt sie über `core.pdf` zu einem Dokument zusammen.
  */
 import { sql } from 'drizzle-orm';
+import { DEFAULT_ALLOWED_CONTENT_TYPES } from '$lib/sdk/content-types';
+import { formatDateDe, todayBerlin } from '$lib/sdk/dates';
 import {
 	type AnyApiEndpoint,
 	checkUploadBytes,
@@ -14,39 +16,37 @@ import {
 	rowsOf,
 	takeUpload
 } from '$lib/sdk/server';
-import { DEFAULT_ALLOWED_CONTENT_TYPES } from '$lib/sdk/content-types';
-import { formatDateDe, todayBerlin } from '$lib/sdk/dates';
 import { requireBoardAccess } from './access';
 import {
+	type ArchiveAsset,
+	type ArchiveDocument,
 	ArchiveError,
 	buildArchive,
 	fileSlug,
-	parseArchive,
-	type ArchiveAsset,
-	type ArchiveDocument
+	parseArchive
 } from './archive';
 import { IMAGE_TYPES, insertAsset, processAndStore, type StoredAsset } from './assets.service';
 import { boardDetail } from './boards.endpoints';
 import { BOARD_COLUMNS, boardLimitBytes, mdb } from './boards.service';
 import { checkOps, writeOps } from './ops.service';
-import { readFile, removeFiles } from './storage';
 import {
 	ARCHIVE_EXTENSION,
 	ARCHIVE_FORMAT,
 	ARCHIVE_VERSION,
 	BACKGROUNDS,
+	type Background,
+	type BoardDetail,
+	type ElementOp,
+	type ElementType,
 	idParams,
 	MAX_BOARD_NAME,
 	MAX_IMPORT_BYTES,
 	MAX_PDF_PAGE_BYTES,
 	MAX_PDF_PAGES,
 	MAX_PDF_TOTAL_BYTES,
-	PERM,
-	type Background,
-	type BoardDetail,
-	type ElementOp,
-	type ElementType
+	PERM
 } from './schemas';
+import { readFile, removeFiles } from './storage';
 
 const tags = ['Whiteboard'];
 

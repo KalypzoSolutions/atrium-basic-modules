@@ -1,5 +1,6 @@
 /** Versionsverlauf einer Notiz (`/api/v1/modules/notes/notes/:id/versions…`). */
 import { type AnyApiEndpoint, core, defineEndpoint } from '$lib/sdk/server';
+import { idParams, PERM, versionInput, versionParams } from './schemas';
 import {
 	deleteVersion,
 	getVersion,
@@ -7,7 +8,6 @@ import {
 	restoreVersion,
 	saveVersion
 } from './versions.service';
-import { idParams, PERM, versionInput, versionParams } from './schemas';
 
 const tags = ['Notizen'];
 

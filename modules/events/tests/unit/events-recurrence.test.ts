@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'bun:test';
 import {
 	addDays,
 	daysBetween,
@@ -10,7 +10,7 @@ import {
 	minGapDays,
 	nextWeekday
 } from '$modules/events/recurrence';
-import { recurrenceRule, type EventDates, type RecurrenceRuleInput } from '$modules/events/schemas';
+import { type EventDates, type RecurrenceRuleInput, recurrenceRule } from '$modules/events/schemas';
 
 // Kalender 2026 zum Nachrechnen: 01.01. Do, 01.02. So, 01.03. So, 01.04. Mi, 01.05. Fr, 01.06. Mo,
 // 01.07. Mi, 01.10. Do, 01.11. So, 01.12. Di.

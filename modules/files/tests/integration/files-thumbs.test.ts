@@ -2,26 +2,34 @@
  * Modul `files` v1.3.0: Vorschaubilder für PDFs (erste Seite über `core.pdf.renderPage`), kaputte PDFs ohne
  * Vorschau, Nachziehen für den Bestand (Job `files.thumbs-backfill`, Migration 0005) – je Datei genau ein Versuch.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
-import { useTestDatabase } from '$testing';
-import { installFakeStorage, uninstallFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { renderPdfPage } from '$testing';
-import filesModule from '$modules/files/module';
-import { runBackfill } from '$modules/files/thumbs.service';
-import type { FileNode } from '$modules/files/schemas';
 import type { RequestContext } from '$lib/sdk/types';
+import filesModule from '$modules/files/module';
+import type { FileNode } from '$modules/files/schemas';
+import { runBackfill } from '$modules/files/thumbs.service';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	encodeMultipart,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	registerCoreApi,
+	registerModule,
+	renderPdfPage,
+	resetAllForTests,
+	schema,
+	syncModules,
+	uninstallFakeStorage,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/files';
 const PW = 'a-long-enough-pw';
@@ -44,11 +52,11 @@ async function send(method: string, path: string, init: RequestInit = {}) {
 async function upload(name: string, bytes: Uint8Array, type: string): Promise<FileNode> {
 	const form = new FormData();
 	form.set('file', new File([new Uint8Array(bytes)], name, { type }));
-	const r = new Response(form);
-	const buf = new Uint8Array(await r.arrayBuffer());
+	const r = await encodeMultipart(form);
+	const buf = r.body;
 	const res = await send('POST', '/nodes/root/upload', {
 		headers: {
-			'content-type': r.headers.get('content-type')!,
+			'content-type': r.contentType,
 			'content-length': String(buf.byteLength)
 		},
 		body: buf

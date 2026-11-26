@@ -1,27 +1,27 @@
 <script lang="ts">
-	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 4.1.
-	import { untrack } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import FolderTree from '@lucide/svelte/icons/folder-tree';
 	import Info from '@lucide/svelte/icons/info';
 	import Tent from '@lucide/svelte/icons/tent';
-	import { ApiClientError, apiFetch } from '$lib/sdk/client';
-	import { PRINCIPAL_TYPE_LABELS, type PrincipalInfo } from '$lib/sdk/types/sharing';
+	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 4.1.
+	import { untrack } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import type { ShareCandidate, ShareEntry } from '$lib/components/layout';
+	import { SharePanel } from '$lib/components/layout';
+	import { shareKey } from '$lib/components/layout/share-types';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Label } from '$lib/components/ui/label';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { Switch } from '$lib/components/ui/switch';
-	import { SharePanel } from '$lib/components/layout';
-	import type { ShareCandidate, ShareEntry } from '$lib/components/layout';
-	import { shareKey } from '$lib/components/layout/share-types';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import { PRINCIPAL_TYPE_LABELS, type PrincipalInfo } from '$lib/sdk/types/sharing';
 	import {
-		SHARE_LEVELS,
-		SHARE_LEVEL_LABELS,
 		type FileNode,
 		type NodeShare,
 		type NodeShares,
+		SHARE_LEVEL_LABELS,
+		SHARE_LEVELS,
 		type ShareLevel
 	} from '../schemas';
 	import { API, errorText } from './helpers';
@@ -284,8 +284,8 @@
 								/>
 							</div>
 							<p id="files-share-stamm-hint" class="text-xs text-muted-foreground">
-								Alle Mitglieder mit Konto sehen {isFolder ? 'den Ordner' : 'die Datei'} dann direkt unter
-								„Dateien“.
+								Alle Mitglieder mit Konto sehen {isFolder ? 'den Ordner' : 'die Datei'} dann direkt
+								unter „Dateien“.
 							</p>
 							{#if !stammOwn && stammInherited}
 								<p class="flex items-center gap-1 text-xs text-muted-foreground">

@@ -4,13 +4,13 @@
 	import Tent from '@lucide/svelte/icons/tent';
 	import Upload from '@lucide/svelte/icons/upload';
 	import Users from '@lucide/svelte/icons/users';
+	import { SummaryList, type SummaryRow } from '$lib/components/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { SummaryList, type SummaryRow } from '$lib/components/layout';
 	import type { FileNode } from '../schemas';
-	import { formatBytes, formatDateTime, iconFor, thumbUrl } from './helpers';
 	import FileTypeGlyph from './FileTypeGlyph.svelte';
+	import { formatBytes, formatDateTime, iconFor, thumbUrl } from './helpers';
 
 	let {
 		open = $bindable(false),
@@ -119,7 +119,8 @@
 	<Dialog.Content class="sm:max-w-md">
 		<Dialog.Header>
 			<Dialog.Title>Details</Dialog.Title>
-			<Dialog.Description class="sr-only">Informationen zum ausgewählten Eintrag</Dialog.Description
+			<Dialog.Description class="sr-only"
+				>Informationen zum ausgewählten Eintrag</Dialog.Description
 			>
 		</Dialog.Header>
 		{#if node}

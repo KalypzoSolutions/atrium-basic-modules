@@ -1,13 +1,13 @@
 <script lang="ts">
+	import NotebookPen from '@lucide/svelte/icons/notebook-pen';
 	// Dashboard-Kachel „Notizen“: zuletzt bearbeitete sichtbare Notizen
 	import { onMount } from 'svelte';
-	import NotebookPen from '@lucide/svelte/icons/notebook-pen';
+	import { DashboardCard } from '$lib/components/layout';
 	import { apiFetch } from '$lib/sdk/client';
 	import type { DashboardWidgetProps } from '$lib/sdk/types/module-ui';
-	import { DashboardCard } from '$lib/components/layout';
 	import type { NoteNode } from '../../schemas';
+	import { API, BASE, errMsg, notePath, noteTitle, relativeTime } from '../helpers';
 	import NoteIcon from '../NoteIcon.svelte';
-	import { API, BASE, errMsg, noteTitle, notePath, relativeTime } from '../helpers';
 
 	let { onstatus }: DashboardWidgetProps = $props();
 

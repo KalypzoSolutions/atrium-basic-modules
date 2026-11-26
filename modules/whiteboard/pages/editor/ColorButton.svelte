@@ -56,7 +56,9 @@
 						style:background-color={isNone ? undefined : value}
 						aria-hidden="true"
 					>
-						{#if isNone}<Ban class="size-full text-muted-foreground" />{/if}
+						{#if isNone}
+							<Ban class="size-full text-muted-foreground" />
+						{/if}
 					</span>
 				{/if}
 			</Button>

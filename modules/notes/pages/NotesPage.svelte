@@ -1,22 +1,19 @@
 <script lang="ts">
-	// Übersicht der Notizen: Suche, zuletzt bearbeitet, eigene, geteilte und Aktions-Notizen; Anlegen, Import, Papierkorb
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import { toast } from 'svelte-sonner';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import FileUp from '@lucide/svelte/icons/file-up';
 	import NotebookPen from '@lucide/svelte/icons/notebook-pen';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Search from '@lucide/svelte/icons/search';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import { apiFetch } from '$lib/sdk/client';
+	import { toast } from 'svelte-sonner';
+	// Übersicht der Notizen: Suche, zuletzt bearbeitet, eigene, geteilte und Aktions-Notizen; Anlegen, Import, Papierkorb
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { EmptyState, ErrorState, LoadingState, PageHeader } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import { apiFetch } from '$lib/sdk/client';
 	import type { NoteNode, NoteRoots, NoteSearchHit } from '../schemas';
-	import NoteIcon from './NoteIcon.svelte';
-	import NoteList from './NoteList.svelte';
-	import TrashView from './TrashView.svelte';
 	import {
 		API,
 		BASE,
@@ -24,9 +21,12 @@
 		errMsg,
 		IMPORT_ACCEPT,
 		importNote,
-		noteTitle,
-		notePath
+		notePath,
+		noteTitle
 	} from './helpers';
+	import NoteIcon from './NoteIcon.svelte';
+	import NoteList from './NoteList.svelte';
+	import TrashView from './TrashView.svelte';
 
 	const trash = $derived(page.url.searchParams.get('view') === 'trash');
 

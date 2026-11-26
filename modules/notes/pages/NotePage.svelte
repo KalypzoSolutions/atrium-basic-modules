@@ -1,9 +1,7 @@
 <script lang="ts">
+	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	// Editor-Seite (vollflächig): Seitenbaum links (einklappbar, mobil als Blatt) und die geöffnete Notiz
 	import { onMount } from 'svelte';
-	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-	import { apiFetch, ApiClientError } from '$lib/sdk/client';
-	import type { ModulePageProps } from '$lib/sdk/types/module-ui';
 	import {
 		BottomSheet,
 		deviceLayout,
@@ -12,6 +10,8 @@
 		LoadingState
 	} from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import type { ModulePageProps } from '$lib/sdk/types/module-ui';
 	import type { NoteDetail } from '../schemas';
 	import { API, BASE, errMsg } from './helpers';
 	import NoteView from './NoteView.svelte';

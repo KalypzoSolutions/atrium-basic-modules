@@ -1,8 +1,8 @@
 /** REST für Whiteboards, Freigaben und Aktions-Verknüpfung (`/api/v1/modules/whiteboard/…`). */
 import { sql } from 'drizzle-orm';
 import {
-	addedPrincipals,
 	type AnyApiEndpoint,
+	addedPrincipals,
 	core,
 	defineEndpoint,
 	describePrincipals,
@@ -11,8 +11,8 @@ import {
 	type RequestContext,
 	requireShareCapability,
 	rowsOf,
-	searchPrincipals,
 	type StoredShare,
+	searchPrincipals,
 	type Tx,
 	validatePrincipals
 } from '$lib/sdk/server';
@@ -34,9 +34,13 @@ import {
 } from './boards.service';
 import { broadcast, closeBoard, recheckBoard } from './live';
 import { notifyBoardShared } from './notify';
-import { removeFiles } from './storage';
 import {
+	type ActionBoards,
 	actionParams,
+	type Board,
+	type BoardDetail,
+	type BoardList,
+	type BoardShares,
 	boardInput,
 	boardUpdateInput,
 	idParams,
@@ -45,13 +49,9 @@ import {
 	PERM,
 	recentQuery,
 	searchQuery,
-	sharesInput,
-	type ActionBoards,
-	type Board,
-	type BoardDetail,
-	type BoardList,
-	type BoardShares
+	sharesInput
 } from './schemas';
+import { removeFiles } from './storage';
 
 const tags = ['Whiteboard'];
 const STAMM_NAME_SETTING = 'events.stamm.name';

@@ -2,7 +2,7 @@
 import { sql } from 'drizzle-orm';
 import { type AnyApiEndpoint, defineEndpoint, errors, rowsOf } from '$lib/sdk/server';
 import { mdb } from './db';
-import { DEFAULT_USER_PREFS, PERM, userPrefsInput, type UserPrefs } from './schemas';
+import { DEFAULT_USER_PREFS, PERM, type UserPrefs, userPrefsInput } from './schemas';
 
 const tags = ['Notizen'];
 

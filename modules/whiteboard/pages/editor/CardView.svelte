@@ -2,7 +2,7 @@
 	// Karte im Whiteboard (Datei, Link, Datensatz aus einem anderen Modul): Symbol oder Bild, Typ, Titel, Unterzeile
 	import type { Component } from 'svelte';
 	import type { Palette } from './render';
-	import { FONT_FAMILY, wrapText, type Measure } from './text-layout';
+	import { FONT_FAMILY, type Measure, wrapText } from './text-layout';
 
 	let {
 		id,
@@ -29,7 +29,7 @@
 		h: number;
 		rotation?: number;
 		accent: string;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// biome-ignore lint/suspicious/noExplicitAny: bewusst ungetypt
 		icon: Component<any>;
 		kicker: string;
 		title: string;
@@ -121,7 +121,8 @@
 		font-size="10"
 		font-weight="700"
 		letter-spacing="0.06em"
-		fill={accent}>{kicker.toUpperCase()}</text
+		fill={accent}
+		>{kicker.toUpperCase()}</text
 	>
 	{#if badge}
 		<rect
@@ -139,7 +140,8 @@
 			text-anchor="middle"
 			font-family={FONT_FAMILY}
 			font-size="11"
-			fill={accent}>{badge}</text
+			fill={accent}
+			>{badge}</text
 		>
 	{/if}
 	<text
@@ -147,7 +149,7 @@
 		font-size="15"
 		font-weight="700"
 		fill={unavailable ? palette.muted : palette.ink}
-		style="white-space: pre"
+		style="white-space: pre;"
 	>
 		{#each titleLines as line, i (i)}
 			<tspan x={textX} y={top + 30 + i * 19}>{line}</tspan>
@@ -160,7 +162,8 @@
 			font-family={FONT_FAMILY}
 			font-size="12"
 			fill={palette.muted}
-			style="white-space: pre">{fitSub(subtitle)}</text
+			style="white-space: pre;"
+			>{fitSub(subtitle)}</text
 		>
 	{/if}
 </g>

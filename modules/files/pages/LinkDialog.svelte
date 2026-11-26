@@ -1,7 +1,4 @@
 <script lang="ts">
-	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 4.2.
-	import { tick } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import Check from '@lucide/svelte/icons/check';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Copy from '@lucide/svelte/icons/copy';
@@ -13,7 +10,10 @@
 	import LockOpen from '@lucide/svelte/icons/lock-open';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	import Upload from '@lucide/svelte/icons/upload';
-	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 4.2.
+	import { tick } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { ConfirmDialog, FormField } from '$lib/components/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -21,20 +21,20 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { Switch } from '$lib/components/ui/switch';
-	import { ConfirmDialog, FormField } from '$lib/components/layout';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import { addDays, formatDateDe, todayBerlin } from '$lib/sdk/dates';
 	import {
-		LINK_MODES,
+		type FileNode,
 		LINK_MODE_DESCRIPTIONS,
 		LINK_MODE_LABELS,
-		MAX_PASSWORD,
-		MIN_PASSWORD,
+		LINK_MODES,
+		type LinkMode,
 		linkCanUpload,
 		linkCreateInput,
-		type FileNode,
-		type LinkMode,
+		MAX_PASSWORD,
+		MIN_PASSWORD,
 		type ShareLink
 	} from '../schemas';
-	import { addDays, formatDateDe, todayBerlin } from '$lib/sdk/dates';
 	import { API, errorText, formatDateTime } from './helpers';
 
 	let {
@@ -399,9 +399,7 @@
 <Dialog.Root bind:open>
 	<Dialog.Content class="sm:max-w-xl">
 		<Dialog.Header>
-			<Dialog.Title class="break-words">
-				Öffentlicher Link für „{node?.name ?? ''}“
-			</Dialog.Title>
+			<Dialog.Title class="break-words"> Öffentlicher Link für „{node?.name ?? ''}“ </Dialog.Title>
 			<Dialog.Description>
 				{isFolder
 					? 'Jede*r mit dem Link kann – je nach Art – den Ordner ansehen und herunterladen oder Dateien hineinladen, ganz ohne Konto.'
@@ -557,9 +555,8 @@
 			<section class="grid gap-2" aria-labelledby="files-link-list-title">
 				<h3 id="files-link-list-title" class="font-semibold">
 					{#if !loading && !loadError}
-						Aktive Links <span class="font-normal text-muted-foreground"
-							>({activeLinks.length})</span
-						>
+						Aktive Links
+						<span class="font-normal text-muted-foreground">({activeLinks.length})</span>
 					{:else}
 						Aktive Links
 					{/if}

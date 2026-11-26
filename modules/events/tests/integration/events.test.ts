@@ -6,34 +6,41 @@
  * Freigaben an Gruppen/Leitungen/Mitglieder und `members` deaktiviert prüft
  * `ep-intern-modules/modules/_integration/tests/integration/events-members.test.ts`.
  */
-import { beforeAll, describe, expect, it } from 'vitest';
+
+import { beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { disableModule, enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { listAudit } from '$testing';
-import { setSetting } from '$testing';
-import { core } from '$testing';
+import type { RequestContext } from '$lib/sdk/types';
+import type { PrincipalInfo } from '$lib/sdk/types/sharing';
 import eventsModule from '$modules/events/module';
-import { todayBerlin } from '$modules/events/website.endpoints';
 import {
 	DEFAULT_STAMM_NAME,
-	STAMM_NAME_SETTING,
 	type EventDetail,
 	type EventGroupRef,
 	type EventList,
+	STAMM_NAME_SETTING,
 	type WebsiteEvent
 } from '$modules/events/schemas';
-import type { PrincipalInfo } from '$lib/sdk/types/sharing';
-import type { RequestContext } from '$lib/sdk/types';
+import { todayBerlin } from '$modules/events/website.endpoints';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	disableModule,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	setSetting,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules';
 const keys: Record<string, string> = {};
@@ -755,7 +762,7 @@ describe('Freigabe-Kandidaten, Gruppen, Tags', () => {
 			id: editorsRole,
 			name: 'Redaktion'
 		});
-		expect(await search('Benutzer Em')).toContainEqual({
+		expect<unknown>(await search('Benutzer Em')).toContainEqual({
 			type: 'user',
 			id: userIds.e,
 			name: 'Benutzer Emil',

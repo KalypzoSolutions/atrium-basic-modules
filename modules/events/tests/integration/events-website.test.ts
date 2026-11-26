@@ -4,25 +4,31 @@
  * (Filter `group=<id>`, Gruppennamen, Principal-Suche, `/groups` mit/ohne `members`) prüft
  * `ep-intern-modules/modules/_integration/tests/integration/events-website.test.ts`.
  */
-import { beforeAll, describe, expect, it } from 'vitest';
+
+import { beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { core } from '$testing';
-import eventsModule from '$modules/events/module';
-import { todayBerlin } from '$modules/events/website.endpoints';
-import { DEFAULT_STAMM_NAME } from '$modules/events/schemas';
-import { websiteEventPageSchema, websiteEventSchema } from '$modules/events/website.schemas';
 import type { RequestContext } from '$lib/sdk/types';
+import eventsModule from '$modules/events/module';
+import { DEFAULT_STAMM_NAME } from '$modules/events/schemas';
+import { todayBerlin } from '$modules/events/website.endpoints';
+import { websiteEventPageSchema, websiteEventSchema } from '$modules/events/website.schemas';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 const BASE = 'http://localhost:5173/api/v1/modules/events';
 const ctxOf = async (id: string) => (await contextForUser(id))!.ctx;

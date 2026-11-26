@@ -3,34 +3,45 @@
  * Inhalt/Thumbnail, Liste (eine Ansicht „Dateien“: eigene + freigegebene Einträge), Umbenennen, Verschieben,
  * Stamm-Freigabe (`everyone:*`), Suche, Papierkorb inkl. Job, Zugriff, Audit, Modul deaktiviert. Testbilder werden mit sharp erzeugt.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, like, sql } from 'drizzle-orm';
 import sharp from 'sharp';
-import { useTestDatabase } from '$testing';
-import { fakeFileRows, fakeObjects, installFakeStorage, uninstallFakeStorage } from '$testing';
-import { getDb, schema } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { disableModule, enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { resetAllForTests } from '$testing';
-import { setSetting } from '$testing';
-import { runJobNow } from '$testing';
-import { core } from '$testing';
+import { todayBerlin } from '$lib/sdk/dates';
+import type { RequestContext } from '$lib/sdk/types';
 import filesModule from '$modules/files/module';
 import {
-	MAX_DEPTH,
-	ROOT_LABEL,
 	type FileNode,
 	type FolderListing,
+	MAX_DEPTH,
+	ROOT_LABEL,
 	type TrashItem
 } from '$modules/files/schemas';
-import type { RequestContext } from '$lib/sdk/types';
-import { todayBerlin } from '$lib/sdk/dates';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	core,
+	createApiKey,
+	createRole,
+	createUser,
+	disableModule,
+	enableModule,
+	encodeMultipart,
+	fakeFileRows,
+	fakeObjects,
+	getDb,
+	handleApiRequest,
+	installFakeStorage,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	runJobNow,
+	schema,
+	setSetting,
+	syncModules,
+	uninstallFakeStorage,
+	useTestDatabase
+} from '$testing';
 
 const ROOT = 'http://localhost:5173/api/v1/modules/files';
 const PW = 'a-long-enough-pw';
@@ -45,7 +56,7 @@ const ctxOf = async (id: string) => (await contextForUser(id))!.ctx;
 interface Res {
 	status: number;
 	headers: Headers;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: bewusst ungetypt
 	body: any;
 }
 
@@ -90,9 +101,9 @@ async function upload(who: string, parent: string, name: string, o: UploadOpts =
 	if (o.conflict) form.set('conflict', o.conflict);
 	const bytes = o.bytes ?? new Uint8Array(o.size ?? 10).fill(65);
 	form.set('file', new File([bytes as BlobPart], name, { type: o.type ?? 'text/plain' }));
-	const r = new Response(form);
-	const buf = new Uint8Array(await r.arrayBuffer());
-	const headers: Record<string, string> = { 'content-type': r.headers.get('content-type')! };
+	const r = await encodeMultipart(form);
+	const buf = r.body;
+	const headers: Record<string, string> = { 'content-type': r.contentType };
 	if (o.withLength !== false) headers['content-length'] = String(buf.byteLength);
 	return send(who, 'POST', `/nodes/${parent}/upload`, { headers, body: buf });
 }
@@ -353,12 +364,13 @@ describe('Upload und Inhalt', () => {
 	});
 
 	it('Word-/Office-Vorlagen und OpenDocument sind erlaubt (auch nur nach Endung)', async () => {
-		const cases: [string, string][] = [
+		const cases: [string, string | string[]][] = [
 			['typ-brief.dotx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.template'],
 			['typ-alt.dot', 'application/msword'],
 			['typ-tabelle.xltx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.template'],
 			['typ-folien.potx', 'application/vnd.openxmlformats-officedocument.presentationml.template'],
-			['typ-text.rtf', 'application/rtf'],
+			// Bun setzt bei multipart den Typ aus der Endung (`text/rtf`), beide gelten als RTF
+			['typ-text.rtf', ['application/rtf', 'text/rtf']],
 			['typ-notiz.odt', 'application/vnd.oasis.opendocument.text'],
 			['typ-vorlage.ott', 'application/vnd.oasis.opendocument.text-template']
 		];
@@ -366,7 +378,7 @@ describe('Upload und Inhalt', () => {
 			// Browser ohne bekannten Typ → Erkennung über die Endung
 			const r = await upload('u1', 'root', name, { type: '' });
 			expect(r.status, name).toBe(201);
-			expect(r.body.data.contentType).toBe(expected);
+			expect([expected].flat()).toContain(r.body.data.contentType);
 		}
 		const macro = await upload('u1', 'root', 'typ-makro.docm', {
 			type: 'application/vnd.ms-word.document.macroEnabled.12'
@@ -552,7 +564,7 @@ describe('Liste, Umbenennen, Verschieben', () => {
 		const root2 = (await list('u2')).body.data as FolderListing;
 		const seen = root2.items.find((i) => i.id === ziel)!;
 		expect(seen).toMatchObject({ own: false, stamm: true, access: 'read', canShare: false });
-		expect(seen.owner).toEqual({ id: ids.u1, name: 'U1' });
+		expect<unknown>(seen.owner).toEqual({ id: ids.u1, name: 'U1' });
 		const inner = (await list('u2', ziel)).body.data as FolderListing;
 		expect(inner.breadcrumbs[0]).toEqual({ id: null, name: ROOT_LABEL });
 		expect(inner.access).toBe('read');

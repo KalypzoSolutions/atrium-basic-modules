@@ -3,8 +3,8 @@
  * Wird von Server UND UI genutzt – keine Server-Imports.
  */
 import { z } from 'zod';
-import { styleColor as folderColor, styleIcon as folderIcon } from '$lib/sdk/style-presets';
 import { isRealDate } from '$lib/sdk/dates';
+import { styleColor as folderColor, styleIcon as folderIcon } from '$lib/sdk/style-presets';
 import { PRINCIPAL_TYPES, type PrincipalInfo } from '$lib/sdk/types/sharing';
 
 export const MODULE_ID = 'files';
@@ -123,7 +123,7 @@ export const NEVER_INLINE_TYPES = ['text/html', 'image/svg+xml', 'application/xh
  * nicht erlaubt. Absichtlich einzelne (auch kombinierende) Zeichen, kein Graphem-Abgleich.
  */
 export const INVISIBLE_CHARS =
-	// eslint-disable-next-line no-misleading-character-class
+	// biome-ignore lint/suspicious/noMisleadingCharacterClass: Zeichenklasse bewusst so
 	/[\u00AD\u0080-\u009F\u034F\u061C\u115F\u1160\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\u3164\uFEFF\uFFF9-\uFFFB]/u;
 
 /** Ordner-/Dateiname: keine Pfadtrenner, keine Steuerzeichen, nicht „.“/„..“ */
@@ -134,7 +134,7 @@ export const nodeName = z
 	// Zeichen (Codepoints) wie `normalizeName`, nicht UTF-16-Einheiten (Emoji zählen einfach)
 	.refine((v) => Array.from(v).length <= MAX_NAME, `Höchstens ${MAX_NAME} Zeichen`)
 	.refine(
-		// eslint-disable-next-line no-control-regex
+		// biome-ignore lint/suspicious/noControlCharactersInRegex: Steuerzeichen werden bewusst erkannt/entfernt
 		(v) => !/[/\\\u0000-\u001f\u007f]/.test(v),
 		'Name darf keine / \\ oder Steuerzeichen enthalten'
 	)

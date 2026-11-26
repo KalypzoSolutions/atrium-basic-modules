@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { tick, untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import { BUSY_SAVE, FormField } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { MultiSelect } from '$lib/components/ui/multi-select';
 	import { Switch } from '$lib/components/ui/switch';
 	import { TagInput } from '$lib/components/ui/tag-input';
-	import { BUSY_SAVE, FormField } from '$lib/components/layout';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
 	import {
+		type CalendarFeed,
+		calendarFeedInput,
+		type EventGroupRef,
 		MAX_FEED_NAME,
 		MAX_TAG_LENGTH,
 		MAX_TAGS,
-		STAMM_GROUP_ID,
-		calendarFeedInput,
-		type CalendarFeed,
-		type EventGroupRef
+		STAMM_GROUP_ID
 	} from '../schemas';
 
 	/**

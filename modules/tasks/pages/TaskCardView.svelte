@@ -86,14 +86,19 @@
 		<span class="min-w-0">{task.title}</span>
 	</p>
 
-	{#if due || task.checklist.total || task.assignees.length || task.openBlockers || (showPhase && phase)}
+	{#if due ||
+		task.checklist.total ||
+		task.assignees.length ||
+		task.openBlockers ||
+		(showPhase && phase)}
 		<div class="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-muted-foreground">
 			{#if due}
 				<span
 					class="tabular-nums"
 					class:text-destructive={tone === 'overdue'}
 					class:text-warning={tone === 'soon'}
-					class:font-medium={tone !== 'normal'}>{due}</span
+					class:font-medium={tone !== 'normal'}
+					>{due}</span
 				>
 			{/if}
 			{#if task.checklist.total}
@@ -125,7 +130,9 @@
 				<AvatarGroup class="ml-auto">
 					{#each task.assignees.slice(0, 3) as a (a.id)}
 						<Avatar class="size-6 border-2 border-card" title={a.name}>
-							{#if a.image}<AvatarImage src={a.image} alt={a.name} />{/if}
+							{#if a.image}
+								<AvatarImage src={a.image} alt={a.name} />
+							{/if}
 							<AvatarFallback class="text-xs">{initials(a.name)}</AvatarFallback>
 						</Avatar>
 					{/each}

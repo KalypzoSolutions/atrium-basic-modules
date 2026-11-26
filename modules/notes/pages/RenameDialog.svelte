@@ -2,11 +2,11 @@
 	// Seite umbenennen (PATCH title)
 	import { untrack } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { apiFetch } from '$lib/sdk/client';
 	import { BUSY_SAVE, FormField } from '$lib/components/layout';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
+	import { apiFetch } from '$lib/sdk/client';
 	import { MAX_TITLE, type NoteDetail, type NoteNode } from '../schemas';
 	import { API, errMsg } from './helpers';
 

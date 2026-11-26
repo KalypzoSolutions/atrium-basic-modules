@@ -8,7 +8,7 @@ import { boundsOfElements } from './bounds';
 import ExportSvg from './ExportSvg.svelte';
 import { frameChildren, inflate, intersects, type Rect } from './geometry';
 import { LIGHT } from './render';
-import { refKey, type RenderContext } from './types';
+import { type RenderContext, refKey } from './types';
 
 /** Größte Kantenlänge/Pixelzahl eines Canvas (Browsergrenzen, v. a. iOS) */
 const MAX_EDGE = 8192;

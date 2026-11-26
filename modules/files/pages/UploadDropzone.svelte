@@ -1,8 +1,4 @@
 <script lang="ts">
-	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 3.3.
-	import { onDestroy, type Snippet } from 'svelte';
-	import { beforeNavigate } from '$app/navigation';
-	import { toast } from 'svelte-sonner';
 	import Ban from '@lucide/svelte/icons/ban';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
@@ -13,24 +9,28 @@
 	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
 	import Upload from '@lucide/svelte/icons/upload';
 	import X from '@lucide/svelte/icons/x';
+	// VERTRAG (Welle 0) – Props nicht ändern; Implementierung: Welle 3.3.
+	import { onDestroy, type Snippet } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { beforeNavigate } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
-	import { ROOT_LABEL, UPLOAD_CONCURRENCY, type FilesMeta } from '../schemas';
+	import { type FilesMeta, ROOT_LABEL, UPLOAD_CONCURRENCY } from '../schemas';
 	import { RAW_API } from './helpers';
 	import {
-		STATUS_LABELS,
 		collectEntries,
+		type EntryLike,
 		fromFileList,
 		makeItems,
 		pendingBytes,
 		precheck,
+		type QueueInput,
 		queueProgress,
+		STATUS_LABELS,
 		sizeText,
 		summaryToast,
+		type UploadItem,
 		uploadError,
-		xhrUpload,
-		type EntryLike,
-		type QueueInput,
-		type UploadItem
+		xhrUpload
 	} from './upload-queue';
 
 	let {
@@ -422,7 +422,11 @@
 				aria-label={panelOpen ? 'Liste einklappen' : 'Liste aufklappen'}
 				onclick={() => (panelOpen = !panelOpen)}
 			>
-				{#if panelOpen}<ChevronDown />{:else}<ChevronUp />{/if}
+				{#if panelOpen}
+					<ChevronDown />
+				{:else}
+					<ChevronUp />
+				{/if}
 			</Button>
 			{#if !progress.busy}
 				<Button

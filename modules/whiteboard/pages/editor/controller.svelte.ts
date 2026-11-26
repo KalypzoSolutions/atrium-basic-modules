@@ -8,15 +8,15 @@
  * Strg + Mausrad (bzw. Trackpad-Pinch) zoomt.
  */
 import {
-	FILL_COLORS,
-	parseElementData,
 	type ConnectorData,
 	type ConnectorEnd,
 	type ConnectorRoute,
+	FILL_COLORS,
+	parseElementData,
 	type ShapeKind,
 	type WbElement
 } from '../../schemas';
-import { elementBounds } from './bounds';
+import { boundsOfElements, elementBounds } from './bounds';
 import { resolveConnector } from './connectors';
 import { finalizeStroke, type StrokePoint } from './freehand';
 import {
@@ -25,16 +25,15 @@ import {
 	frameChildren,
 	intersects,
 	isBoxElement,
+	type Point,
+	type Rect,
 	rectFromPoints,
 	rotatePoint,
-	toLocal,
-	type Point,
-	type Rect
+	toLocal
 } from './geometry';
 import type { BoardStore } from './store.svelte';
-import { clampZoom, fitRect, stepZoom, toWorld, visibleRect, zoomAt, type View } from './viewport';
-import { boundsOfElements } from './bounds';
 import { browserMeasure, textHeight } from './text-layout';
+import { clampZoom, fitRect, stepZoom, toWorld, type View, visibleRect, zoomAt } from './viewport';
 
 export type Tool =
 	| 'select'
@@ -596,7 +595,7 @@ export class EditorController {
 	/** Antippen einer schon ausgewählten Form/Notiz: Text bearbeiten */
 	private tapEdit(id: string): void {
 		const el = this.store.get(id);
-		if (!el || el.type !== 'shape' || el.data.locked || !this.store.canEdit) return;
+		if (el?.type !== 'shape' || el.data.locked || !this.store.canEdit) return;
 		if (this.editing?.id === id) return;
 		this.startEditing(id, 'text');
 	}
@@ -981,7 +980,7 @@ export class EditorController {
 	private finishDraw(): void {
 		const d = this.draft;
 		this.draft = null;
-		if (!d || !d.points.length) return;
+		if (!d?.points.length) return;
 		const f = finalizeStroke(d.points, d.size);
 		this.store.apply([
 			{

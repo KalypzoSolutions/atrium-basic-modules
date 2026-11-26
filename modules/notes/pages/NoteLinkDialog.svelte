@@ -1,8 +1,4 @@
 <script lang="ts">
-	// Öffentliche Links einer Notiz (mit Unterseiten): Stufe Ansehen/Bearbeiten, Ablauf, Passwort; Liste mit jederzeit
-	// kopierbarer Adresse und Widerrufen. Aufbau wie der Link-Dialog in „Dateien“.
-	import { tick } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import Check from '@lucide/svelte/icons/check';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Copy from '@lucide/svelte/icons/copy';
@@ -14,7 +10,11 @@
 	import LockOpen from '@lucide/svelte/icons/lock-open';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
-	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	// Öffentliche Links einer Notiz (mit Unterseiten): Stufe Ansehen/Bearbeiten, Ablauf, Passwort; Liste mit jederzeit
+	// kopierbarer Adresse und Widerrufen. Aufbau wie der Link-Dialog in „Dateien“.
+	import { tick } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { ConfirmDialog, FormField } from '$lib/components/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -22,17 +22,17 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { Switch } from '$lib/components/ui/switch';
-	import { ConfirmDialog, FormField } from '$lib/components/layout';
+	import { ApiClientError, apiFetch } from '$lib/sdk/client';
+	import { addDays, formatDateDe, formatDateTimeDe, todayBerlin } from '$lib/sdk/dates';
 	import {
 		LINK_LEVEL_LABELS,
+		type ShareLevel as LinkMode,
+		linkCreateInput,
 		MAX_LINK_PASSWORD as MAX_PASSWORD,
 		MIN_LINK_PASSWORD as MIN_PASSWORD,
 		SHARE_LEVELS,
-		linkCreateInput,
-		type NoteLink as ShareLink,
-		type ShareLevel as LinkMode
+		type NoteLink as ShareLink
 	} from '../schemas';
-	import { addDays, formatDateDe, formatDateTimeDe, todayBerlin } from '$lib/sdk/dates';
 	import { API, errMsg as errorText, noteTitle } from './helpers';
 
 	const formatDateTime = (iso: string) => formatDateTimeDe(iso);
@@ -405,8 +405,8 @@
 				Öffentlicher Link für „{noteTitle(node?.title)}“
 			</Dialog.Title>
 			<Dialog.Description>
-				Jede*r mit dem Link kann die Notiz{node?.hasChildren ? ' samt Unterseiten' : ''} – je nach Art
-				– ansehen oder live mitbearbeiten, ganz ohne Konto.
+				Jede*r mit dem Link kann die Notiz{node?.hasChildren ? ' samt Unterseiten' : ''} – je nach
+				Art – ansehen oder live mitbearbeiten, ganz ohne Konto.
 			</Dialog.Description>
 		</Dialog.Header>
 
@@ -556,9 +556,8 @@
 			<section class="grid gap-2" aria-labelledby="notes-link-list-title">
 				<h3 id="notes-link-list-title" class="font-semibold">
 					{#if !loading && !loadError}
-						Aktive Links <span class="font-normal text-muted-foreground"
-							>({activeLinks.length})</span
-						>
+						Aktive Links
+						<span class="font-normal text-muted-foreground">({activeLinks.length})</span>
 					{:else}
 						Aktive Links
 					{/if}

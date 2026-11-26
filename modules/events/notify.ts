@@ -8,13 +8,13 @@ import {
 	bestEffort,
 	core,
 	moduleDb,
-	principalUserIds,
-	todayBerlin,
 	type Principal,
-	type RequestContext
+	principalUserIds,
+	type RequestContext,
+	todayBerlin
 } from '$lib/sdk/server';
 import { loadShares } from './access';
-import { loadEventRow, type EventRow } from './events.service';
+import { type EventRow, loadEventRow } from './events.service';
 import { formatEventDate, formatEventRange } from './format';
 import { describeRecurrence, lastOccurrence } from './recurrence';
 import {

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import CalendarPlus from '@lucide/svelte/icons/calendar-plus';
 	import Copy from '@lucide/svelte/icons/copy';
 	import Ellipsis from '@lucide/svelte/icons/ellipsis';
@@ -8,13 +6,15 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import { apiFetch } from '$lib/sdk/client';
-	import { formatDateTimeDe } from '$lib/sdk/dates';
+	import { untrack } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { ConfirmDialog, EmptyState, ErrorState, LoadingState } from '$lib/components/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Input } from '$lib/components/ui/input';
-	import { ConfirmDialog, EmptyState, ErrorState, LoadingState } from '$lib/components/layout';
+	import { apiFetch } from '$lib/sdk/client';
+	import { formatDateTimeDe } from '$lib/sdk/dates';
 	import type { CalendarFeed, CalendarFeedList, EventGroupRef } from '../schemas';
 	import CalendarFeedDialog from './CalendarFeedDialog.svelte';
 
@@ -196,7 +196,8 @@
 						<p class="text-xs text-muted-foreground">
 							{f.lastUsedAt
 								? `Zuletzt abgerufen: ${formatDateTimeDe(f.lastUsedAt)}`
-								: 'Noch nicht abgerufen'} · Link geheim halten – wer ihn hat, sieht diese Termine.
+								: 'Noch nicht abgerufen'}
+							· Link geheim halten – wer ihn hat, sieht diese Termine.
 						</p>
 					</li>
 				{/each}

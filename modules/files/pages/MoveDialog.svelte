@@ -1,21 +1,21 @@
 <script lang="ts">
-	// Zielordner wählen: ein Baum ab „Dateien“ (eigene Wurzel + freigegebene Ordner), Kinder werden beim Aufklappen geladen.
-	import { untrack } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Folder from '@lucide/svelte/icons/folder';
 	import HardDrive from '@lucide/svelte/icons/hard-drive';
-	import { apiFetch } from '$lib/sdk/client';
+	// Zielordner wählen: ein Baum ab „Dateien“ (eigene Wurzel + freigegebene Ordner), Kinder werden beim Aufklappen geladen.
+	import { untrack } from 'svelte';
+	import { toast } from 'svelte-sonner';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { apiFetch } from '$lib/sdk/client';
 	import {
-		ROOT_LABEL,
 		type BulkResult,
 		type FileNode,
 		type FilesMeta,
-		type FolderListing
+		type FolderListing,
+		ROOT_LABEL
 	} from '../schemas';
 	import { API, compareNodes, errorText } from './helpers';
 

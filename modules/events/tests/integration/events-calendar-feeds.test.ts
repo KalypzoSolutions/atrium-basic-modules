@@ -7,25 +7,33 @@
  * Gruppen aus `members` und Aktionen (sichtbare/eigene Anmeldungen) prüft
  * `ep-intern-modules/modules/_integration/tests/integration/events-calendar-feeds.test.ts`.
  */
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { eq, sql } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { contextForUser } from '$testing';
-import { bootstrapAdmin, createUser, deleteUser, setUserActive } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { getDb, schema } from '$testing';
-import { listAudit } from '$testing';
-import { resetAllForTests } from '$testing';
 import { setTodayForTests } from '$lib/sdk/dates';
 import { moduleDb } from '$lib/sdk/server';
+import type { RequestContext } from '$lib/sdk/types';
 import eventsModule from '$modules/events/module';
 import type { CalendarFeed, CalendarFeedList } from '$modules/events/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	createApiKey,
+	createRole,
+	createUser,
+	deleteUser,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	listAudit,
+	registerCoreApi,
+	registerModule,
+	resetAllForTests,
+	schema,
+	setUserActive,
+	syncModules,
+	useTestDatabase
+} from '$testing';
 
 let close: () => Promise<void>;
 let admin: RequestContext;

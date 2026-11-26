@@ -1,7 +1,4 @@
 <script lang="ts">
-	// Schwebende Leiste bei Textauswahl (ohne @tiptap/extension-bubble-menu): Position aus `coordsAtPos`
-	import type { Editor } from '@tiptap/core';
-	import { TextSelection } from '@tiptap/pm/state';
 	import Baseline from '@lucide/svelte/icons/baseline';
 	import Bold from '@lucide/svelte/icons/bold';
 	import Highlighter from '@lucide/svelte/icons/highlighter';
@@ -10,6 +7,9 @@
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Strikethrough from '@lucide/svelte/icons/strikethrough';
 	import Underline from '@lucide/svelte/icons/underline';
+	// Schwebende Leiste bei Textauswahl (ohne @tiptap/extension-bubble-menu): Position aus `coordsAtPos`
+	import type { Editor } from '@tiptap/core';
+	import { TextSelection } from '@tiptap/pm/state';
 	import { Button } from '$lib/components/ui/button';
 	import { HIGHLIGHT_COLORS, TEXT_COLORS } from '../../schemas';
 	import ColorMenu from './ColorMenu.svelte';
@@ -31,7 +31,7 @@
 
 	const position = $derived.by(() => {
 		void tick;
-		if (!editor || !editor.isEditable) return null;
+		if (!editor?.isEditable) return null;
 		const sel = editor.state.selection;
 		if (!(sel instanceof TextSelection) || sel.empty) return null;
 		if (!editor.isFocused && !menuOpen) return null;

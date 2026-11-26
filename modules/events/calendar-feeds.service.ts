@@ -10,7 +10,7 @@
  *   und Tags; Aktionen über `ActionsService.listCalendarActions` (sichtbare + eigene Anmeldungen).
  * Core-Aufrufe nie innerhalb einer Modul-Transaktion (PGlite).
  */
-import { sql, type SQL } from 'drizzle-orm';
+import { type SQL, sql } from 'drizzle-orm';
 import {
 	core,
 	errors,
@@ -23,33 +23,33 @@ import {
 	toIso,
 	toIsoOrNull
 } from '$lib/sdk/server';
-import type { ActionsService } from './peer-contracts';
 import type { TaskRefsService } from '$modules/tasks/contract';
 import { visibleEventsFilter } from './access';
 import {
+	compareOccurrences,
 	EVENT_COLUMNS,
 	EVENT_ORDER,
-	compareOccurrences,
 	expandRow,
 	hydrateRows,
 	loadExceptions,
+	type OccurrenceRow,
 	singleOccurrence,
 	todayBerlin,
-	validateGroupIds,
-	type OccurrenceRow
+	validateGroupIds
 } from './events.service';
 import { stammName } from './groups';
 import { buildCalendar, type IcsEvent } from './ical';
+import type { ActionsService } from './peer-contracts';
 import { addDays } from './recurrence';
 import {
+	type CalendarFeed,
+	type CalendarFeedInput,
+	type CalendarFeedList,
 	FEED_FUTURE_DAYS,
 	FEED_PAST_DAYS,
 	MAX_CALENDAR_FEEDS,
 	MAX_OCCURRENCES,
-	MODULE_ID,
-	type CalendarFeed,
-	type CalendarFeedInput,
-	type CalendarFeedList
+	MODULE_ID
 } from './schemas';
 
 const mdb = () => moduleDb(MODULE_ID);

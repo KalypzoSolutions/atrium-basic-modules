@@ -1,20 +1,26 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'bun:test';
 import { eq } from 'drizzle-orm';
-import { useTestDatabase } from '$testing';
-import { contextForUser, systemContext } from '$testing';
-import { bootstrapAdmin, createUser } from '$testing';
-import { createRole } from '$testing';
-import { registerModule } from '$testing';
-import { enableModule, syncModules } from '$testing';
-import { registerCoreApi } from '$testing';
-import { handleApiRequest } from '$testing';
-import { createApiKey } from '$testing';
-import { getDb, schema } from '$testing';
+import type { RequestContext } from '$lib/sdk/types';
+import type { EventRefsService } from '$modules/events/contract';
 import eventsModule from '$modules/events/module';
 import { describeEventRefs, searchEventRefs, websiteEventRefs } from '$modules/events/refs.service';
-import type { EventRefsService } from '$modules/events/contract';
 import type { EventDetail } from '$modules/events/schemas';
-import type { RequestContext } from '$lib/sdk/types';
+import {
+	bootstrapAdmin,
+	contextForUser,
+	createApiKey,
+	createRole,
+	createUser,
+	enableModule,
+	getDb,
+	handleApiRequest,
+	registerCoreApi,
+	registerModule,
+	schema,
+	syncModules,
+	systemContext,
+	useTestDatabase
+} from '$testing';
 
 const users: Record<string, string> = {};
 const ids: Record<string, string> = {};
@@ -114,8 +120,8 @@ beforeAll(async () => {
 describe('EventRefsService', () => {
 	it('Eigentümerin sieht eigene Termine, neueste zuerst, mit Feldern', async () => {
 		const refs = await searchEventRefs(await ctxOf(users.alice!));
-		expect(refs.map((r) => r.id)).toEqual([ids.serie, ids.geteilt, ids.privat]);
-		expect(refs[0]).toEqual({
+		expect<unknown>(refs.map((r) => r.id)).toEqual([ids.serie, ids.geteilt, ids.privat]);
+		expect<unknown>(refs[0]).toEqual({
 			id: ids.serie,
 			title: 'Gruppenstunde',
 			startsOn: '2027-01-05',
@@ -135,9 +141,9 @@ describe('EventRefsService', () => {
 
 	it('Freigabe macht sichtbar, fremde Termine fehlen', async () => {
 		const bob = await ctxOf(users.bob!);
-		expect((await searchEventRefs(bob)).map((r) => r.id)).toEqual([ids.geteilt]);
+		expect<unknown>((await searchEventRefs(bob)).map((r) => r.id)).toEqual([ids.geteilt]);
 		const desc = await describeEventRefs(bob, [ids.privat!, ids.geteilt!, ids.serie!]);
-		expect(desc.map((r) => r.id)).toEqual([ids.geteilt]);
+		expect<unknown>(desc.map((r) => r.id)).toEqual([ids.geteilt]);
 	});
 
 	it('view-all sieht alles', async () => {
@@ -159,15 +165,17 @@ describe('EventRefsService', () => {
 
 	it('Suche ILIKE mit maskierten Platzhaltern und limit', async () => {
 		const alice = await ctxOf(users.alice!);
-		expect((await searchEventRefs(alice, { search: 'gruppen' })).map((r) => r.id)).toEqual([
-			ids.serie
-		]);
-		expect((await searchEventRefs(alice, { search: '100%' })).map((r) => r.id)).toEqual([
+		expect<unknown>((await searchEventRefs(alice, { search: 'gruppen' })).map((r) => r.id)).toEqual(
+			[ids.serie]
+		);
+		expect<unknown>((await searchEventRefs(alice, { search: '100%' })).map((r) => r.id)).toEqual([
 			ids.privat
 		]);
 		// `%` und `_` sind keine Platzhalter
 		expect(await searchEventRefs(alice, { search: '%' })).toHaveLength(1);
-		expect((await searchEventRefs(alice, { search: '_' })).map((r) => r.id)).toEqual([ids.geteilt]);
+		expect<unknown>((await searchEventRefs(alice, { search: '_' })).map((r) => r.id)).toEqual([
+			ids.geteilt
+		]);
 		expect(await searchEventRefs(alice, { search: 'Pri_at' })).toEqual([]);
 		expect(await searchEventRefs(alice, { limit: 1 })).toHaveLength(1);
 		expect(await searchEventRefs(alice, { limit: 0 })).toHaveLength(1);
@@ -177,7 +185,7 @@ describe('EventRefsService', () => {
 	it('describe in Reihenfolge der IDs, unbekannte fehlen, leere Liste', async () => {
 		const alice = await ctxOf(users.alice!);
 		const order = [ids.privat!, crypto.randomUUID(), ids.serie!, ids.geteilt!];
-		expect((await describeEventRefs(alice, order)).map((r) => r.id)).toEqual([
+		expect<unknown>((await describeEventRefs(alice, order)).map((r) => r.id)).toEqual([
 			ids.privat,
 			ids.serie,
 			ids.geteilt
@@ -187,7 +195,7 @@ describe('EventRefsService', () => {
 
 	it('websiteEventRefs liefert nur Website-Termine, ohne Rechteprüfung', async () => {
 		const refs = await websiteEventRefs([ids.privat!, ids.serie!, ids.geteilt!]);
-		expect(refs.map((r) => r.id)).toEqual([ids.serie]);
+		expect<unknown>(refs.map((r) => r.id)).toEqual([ids.serie]);
 		expect(refs[0]!.recurring).toBe(true);
 		expect(await websiteEventRefs([])).toEqual([]);
 	});

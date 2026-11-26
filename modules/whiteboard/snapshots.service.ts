@@ -5,19 +5,19 @@
  * als normale Änderungen (neue Änderungsnummer), danach bekommen alle Verbindungen `reset`.
  */
 import { sql } from 'drizzle-orm';
-import { errors, num, type RequestContext, rowsOf, toIso, type Tx } from '$lib/sdk/server';
+import { errors, num, type RequestContext, rowsOf, type Tx, toIso } from '$lib/sdk/server';
 import { lockBoard, requireBoardAccess } from './access';
 import { mdb, userRefs } from './boards.service';
 import { broadcast } from './live';
 import { checkOps, writeOps } from './ops.service';
-import { removeFiles } from './storage';
 import {
-	MAX_SNAPSHOTS_AUTO,
-	MAX_SNAPSHOTS_MANUAL,
 	type ElementOp,
 	type ElementType,
+	MAX_SNAPSHOTS_AUTO,
+	MAX_SNAPSHOTS_MANUAL,
 	type Snapshot
 } from './schemas';
+import { removeFiles } from './storage';
 
 /** Gelöschte Elemente so lange behalten (Wiederverbinden mit `since`) */
 const TOMBSTONE_DAYS = 30;

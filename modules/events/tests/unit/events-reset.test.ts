@@ -1,8 +1,8 @@
+import { describe, expect, it } from 'bun:test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
-import { modulesDir } from '$testing';
 import { resetAreas, resetUsers } from '$modules/events/reset';
+import { modulesDir } from '$testing';
 
 /** `tests/unit/module-reset-areas.test.ts` kennt nur members/actions/treasury – hier dasselbe für events. */
 const dir = join(modulesDir(), 'events', 'migrations');

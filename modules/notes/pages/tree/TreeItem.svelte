@@ -21,10 +21,10 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { cn } from '$lib/utils';
 	import type { NoteNode } from '../../schemas';
+	import { notePath, noteTitle } from '../helpers';
 	import NoteIcon from '../NoteIcon.svelte';
-	import { noteTitle, notePath } from '../helpers';
-	import type { NoteTreeState } from './tree-state.svelte';
 	import Self from './TreeItem.svelte';
+	import type { NoteTreeState } from './tree-state.svelte';
 
 	let {
 		node,
@@ -97,7 +97,9 @@
 
 {#snippet dropdownEntries(list: TreeMenuEntry[])}
 	{#each list as entry (entry.label)}
-		{#if entry.separatorBefore}<DropdownMenu.Separator />{/if}
+		{#if entry.separatorBefore}
+			<DropdownMenu.Separator />
+		{/if}
 		<DropdownMenu.Item
 			variant={entry.destructive ? 'destructive' : 'default'}
 			onclick={entry.onclick}
@@ -110,7 +112,9 @@
 
 {#snippet contextEntries(list: TreeMenuEntry[])}
 	{#each list as entry (entry.label)}
-		{#if entry.separatorBefore}<ContextMenu.Separator />{/if}
+		{#if entry.separatorBefore}
+			<ContextMenu.Separator />
+		{/if}
 		<ContextMenu.Item
 			variant={entry.destructive ? 'destructive' : 'default'}
 			onclick={entry.onclick}
@@ -152,7 +156,9 @@
 					{#if dropWhere === 'before'}
 						<span class="absolute inset-x-1 top-0 h-0.5 rounded bg-ring" aria-hidden="true"></span>
 					{:else if dropWhere === 'after'}
-						<span class="absolute inset-x-1 bottom-0 h-0.5 rounded bg-ring" aria-hidden="true"
+						<span
+							class="absolute inset-x-1 bottom-0 h-0.5 rounded bg-ring"
+							aria-hidden="true"
 						></span>
 					{/if}
 					<button

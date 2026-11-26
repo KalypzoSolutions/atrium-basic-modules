@@ -1,11 +1,4 @@
-import { sql, type SQL } from 'drizzle-orm';
-import {
-	eventSnapshot,
-	notifyEventCreated,
-	notifyEventDeleted,
-	notifyEventUpdated,
-	notifyOccurrence
-} from './notify';
+import { type SQL, sql } from 'drizzle-orm';
 import {
 	type ApiEndpoint,
 	core,
@@ -20,17 +13,18 @@ import {
 } from '$lib/sdk/server';
 import { accessForMany, loadShares, requireAccess, visibleEventsFilter } from './access';
 import {
-	EVENT_COLUMNS,
-	EVENT_ORDER,
 	buildDetail,
 	buildItems,
 	compareOccurrences,
 	deleteException,
+	EVENT_COLUMNS,
+	EVENT_ORDER,
 	expandRow,
 	hydrateRows,
 	insertEvent,
 	loadEventRow,
 	loadExceptions,
+	type OccurrenceRow,
 	resolveDetailOccurrence,
 	seriesDates,
 	seriesInfo,
@@ -39,24 +33,30 @@ import {
 	updateEvent,
 	upsertException,
 	validateGroupIds,
-	validateOverride,
-	type OccurrenceRow
+	validateOverride
 } from './events.service';
+import {
+	eventSnapshot,
+	notifyEventCreated,
+	notifyEventDeleted,
+	notifyEventUpdated,
+	notifyOccurrence
+} from './notify';
 import { addDays, isOccurrence } from './recurrence';
 import {
-	MAX_OCCURRENCES,
-	MODULE_ID,
-	PUBLISH_PERMISSION,
-	OPEN_WINDOW_DAYS,
 	deleteQuery,
 	detailQuery,
+	type EventAccess,
+	type EventList,
 	eventInput,
 	idParams,
 	listQuery,
+	MAX_OCCURRENCES,
+	MODULE_ID,
+	OPEN_WINDOW_DAYS,
 	occurrenceInput,
 	occurrenceParams,
-	type EventAccess,
-	type EventList
+	PUBLISH_PERMISSION
 } from './schemas';
 
 const tags = ['Modul: events'];

@@ -18,19 +18,19 @@
 	import { Slider } from '$lib/components/ui/slider';
 	import {
 		ARROW_HEADS,
+		type ArrowHead,
+		type ConnectorRoute,
 		FILL_COLORS,
 		SHAPE_KINDS,
 		SHAPE_LABELS,
-		STROKE_COLORS,
-		type ArrowHead,
-		type ConnectorRoute,
 		type ShapeKind,
+		STROKE_COLORS,
 		type StrokeStyle,
 		type WbElement
 	} from '../../schemas';
 	import ColorButton from './ColorButton.svelte';
-	import TextSettings from './TextSettings.svelte';
 	import type { EditorController } from './controller.svelte';
+	import TextSettings from './TextSettings.svelte';
 
 	let {
 		ctrl,
@@ -220,7 +220,8 @@
 										<Button
 											size="sm"
 											variant={firstShape?.strokeStyle === s.value ? 'secondary' : 'ghost'}
-											onclick={() => set(['shape'], { strokeStyle: s.value })}>{s.label}</Button
+											onclick={() => set(['shape'], { strokeStyle: s.value })}
+											>{s.label}</Button
 										>
 									{/each}
 								</div>
@@ -242,7 +243,8 @@
 						aria-label="Fett"
 						aria-pressed={firstShape.bold}
 						title="Fett"
-						onclick={() => set(['shape'], { bold: !firstShape?.bold })}><Bold /></Button
+						onclick={() => set(['shape'], { bold: !firstShape?.bold })}
+						><Bold /></Button
 					>
 					<Button
 						variant={firstShape.italic ? 'secondary' : 'ghost'}
@@ -250,7 +252,8 @@
 						aria-label="Kursiv"
 						aria-pressed={firstShape.italic}
 						title="Kursiv"
-						onclick={() => set(['shape'], { italic: !firstShape?.italic })}><Italic /></Button
+						onclick={() => set(['shape'], { italic: !firstShape?.italic })}
+						><Italic /></Button
 					>
 					{#if textShapes.length === 1 && selected.length === 1}
 						<Button
@@ -291,7 +294,8 @@
 											onclick={() => {
 												set(['connector'], { route: r.value, bend: 0 });
 												ctrl.connectorRoute = r.value;
-											}}>{r.label}</Button
+											}}
+											>{r.label}</Button
 										>
 									{/each}
 								</div>
@@ -311,11 +315,15 @@
 									<Button
 										size="sm"
 										variant={firstConnector?.strokeStyle === s.value ? 'secondary' : 'ghost'}
-										onclick={() => set(['connector'], { strokeStyle: s.value })}>{s.label}</Button
+										onclick={() => set(['connector'], { strokeStyle: s.value })}
+										>{s.label}</Button
 									>
 								{/each}
 							</div>
-							{#each [['startHead', 'Anfang'], ['endHead', 'Ende']] as const as [key, label] (key)}
+							{#each [
+								['startHead', 'Anfang'],
+								['endHead', 'Ende']
+							] as const as [key, label] (key)}
 								<div>
 									<p class="mb-1 text-xs font-medium text-muted-foreground">{label}</p>
 									<div class="flex flex-wrap gap-1">
@@ -323,7 +331,8 @@
 											<Button
 												size="sm"
 												variant={firstConnector?.[key] === h ? 'secondary' : 'ghost'}
-												onclick={() => set(['connector'], { [key]: h })}>{HEAD_LABELS[h]}</Button
+												onclick={() => set(['connector'], { [key]: h })}
+												>{HEAD_LABELS[h]}</Button
 											>
 										{/each}
 									</div>
@@ -421,7 +430,11 @@
 						><ArrowDownToLine /> Nach hinten</DropdownMenu.Item
 					>
 					<DropdownMenu.Item onclick={() => ctrl.toggleLock()}>
-						{#if allLocked}<LockOpen /> Entsperren{:else}<Lock /> Sperren{/if}
+						{#if allLocked}
+							<LockOpen /> Entsperren
+						{:else}
+							<Lock /> Sperren
+						{/if}
 					</DropdownMenu.Item>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>

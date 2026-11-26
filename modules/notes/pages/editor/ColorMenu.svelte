@@ -1,8 +1,8 @@
 <script lang="ts">
-	// Farbwahl der Werkzeugleiste (Textfarbe/Markierung): Vorschläge, eigene Farbe (ColorPicker), Entfernen
-	import type { Component } from 'svelte';
 	import Check from '@lucide/svelte/icons/check';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	// Farbwahl der Werkzeugleiste (Textfarbe/Markierung): Vorschläge, eigene Farbe (ColorPicker), Entfernen
+	import type { Component } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { ColorPicker, contrastTextColor } from '$lib/components/ui/color-picker';
 	import * as Popover from '$lib/components/ui/popover';
@@ -95,7 +95,8 @@
 				{presets}
 				class="min-w-0 flex-1"
 			/>
-			<Button type="button" variant="outline" size="sm" onclick={() => pick(null)}>Entfernen</Button
+			<Button type="button" variant="outline" size="sm" onclick={() => pick(null)}
+				>Entfernen</Button
 			>
 		</div>
 	</Popover.Content>
