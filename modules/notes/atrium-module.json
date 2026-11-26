@@ -3,7 +3,7 @@
 	"id": "notes",
 	"name": "Notizen",
 	"description": "Gemeinsame Notizen mit Unterseiten: live zusammen schreiben, Markdown, Tabellen, Bilder, eingebettete Whiteboards, Teilen und Export (Markdown, PDF, Word, HTML)",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"core": ">=2.0.0-0 <3.0.0",
 	"dependencies": {},
 	"optionalDependencies": {
@@ -29,6 +29,10 @@
 		"@tiptap/extension-collaboration": "3.32.0",
 		"@tiptap/extension-collaboration-caret": "3.32.0",
 		"@tiptap/y-tiptap": "3.0.9",
-		"@tiptap/markdown": "3.32.0"
+		"@tiptap/markdown": "3.32.0",
+		"@tiptap/extension-highlight": "3.32.0",
+		"@tiptap/extension-table": "3.32.0",
+		"@tiptap/extension-text-align": "3.32.0",
+		"@tiptap/extension-text-style": "3.32.0"
 	}
 }
